@@ -1,0 +1,23 @@
+/* apps/web/src/app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #2563eb;
+  --color-brand-dark: #1d4ed8;
+  --color-brand-gold: #f59e0b;
+  --color-brand-gray: #6b7280;
+  --color-brand-black: #111827;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    background: white !important;
+  }
+  @page {
+    margin: 12mm;
+  }
+}

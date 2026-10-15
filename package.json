@@ -1,0 +1,26 @@
+{
+  "name": "tm-construction-platform",
+  "private": true,
+  "scripts": {
+    "test": "pnpm -r run test",
+    "test:watch": "pnpm -r run test:watch",
+    "test:e2e": "playwright test",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "packageManager": "pnpm@10.25.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma",
+      "sharp"
+    ]
+  }
+}

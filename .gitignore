@@ -1,0 +1,8 @@
+node_modules/
+.env
+.next
+**/dist/
+
+# runtime-generated, don't commit
+apps/web/public/renders/
+apps/web/public/lead-plans/
