@@ -165,7 +165,7 @@ export function CsrImportForm() {
             <Input
               id="csr-doc"
               className={`mt-1.5 ${inputCls}`}
-              placeholder="e.g. Sindh CSR"
+              placeholder="e.g. Regional CSR"
               maxLength={100}
               value={documentName}
               onChange={(e) => setDocumentName(e.target.value)}
