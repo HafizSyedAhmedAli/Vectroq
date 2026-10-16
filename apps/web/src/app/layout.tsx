@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { brand } from "@/lib/brand";
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vectroq.vercel.app"),
@@ -14,8 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-stone-50 text-stone-900">{children}</body>
+    <html lang="en" className={jakarta.variable}>
+      <body className="bg-stone-50 font-sans text-stone-900 antialiased">
+        {children}
+      </body>
     </html>
   );
 }
