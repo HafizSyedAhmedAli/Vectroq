@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateRateItems } from "@vectroq/rate-cards";
 import { prisma } from "@vectroq/db";
+import { getCurrentOrg } from "@/lib/org";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
@@ -14,8 +15,10 @@ export async function POST(req: NextRequest) {
   const v = validateRateItems(body.items);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
 
+  const org = await getCurrentOrg();
   const draft = await prisma.rateSet.create({
     data: {
+      organizationId: org.id,
       city,
       category: body.category,
       status: "DRAFT",
@@ -23,6 +26,6 @@ export async function POST(req: NextRequest) {
       items: v.items as unknown as object,
     },
   });
-  
+
   return NextResponse.json(draft, { status: 201 });
 }

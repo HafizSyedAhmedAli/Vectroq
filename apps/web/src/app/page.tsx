@@ -17,7 +17,7 @@ import {
 import { BrandLogo } from "@/components/BrandLogo";
 import { CountUp } from "@/components/landing/CountUp";
 import { Reveal } from "@/components/landing/Reveal";
-import { brand } from "@/lib/brand";
+import { platformBrand as brand } from "@/lib/brand";
 
 const FEATURES = [
   {
@@ -78,8 +78,8 @@ const PLANS = [
       "PDF with Vectroq branding",
       "1 team member",
     ],
-    cta: "Try the demo",
-    href: "/office",
+    cta: "Create your company",
+    href: "/signup",
     featured: false,
   },
   {
@@ -153,7 +153,7 @@ export default function LandingPage() {
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-stone-100/80 bg-white/80 backdrop-blur-lg">
         <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4">
-          <BrandLogo priority />
+          <BrandLogo brand={brand} priority />
           <nav className="hidden items-center gap-8 text-sm font-medium text-stone-600 md:flex">
             {[
               ["#product", "Product"],
@@ -537,7 +537,7 @@ export default function LandingPage() {
       <footer className="border-t border-white/10 bg-[#0b1220] text-stone-400">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs">
           <span className="rounded-md bg-white p-1.5">
-            <BrandLogo className="h-7 w-auto" />
+            <BrandLogo brand={brand} className="h-7 w-auto" />
           </span>
           <nav className="flex gap-6">
             <a href="#product" className="hover:text-white">

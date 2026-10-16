@@ -1,5 +1,4 @@
 // apps/web/src/app/office/[projectId]/boq/page.tsx
-import { brand } from "@/lib/brand";
 import { BrandLogo } from "@/components/BrandLogo";
 import { SiteFooter } from "@/components/SiteFooter";
 import Link from "next/link";
@@ -20,6 +19,8 @@ import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import { prisma } from "@vectroq/db";
 import { BoqTable } from "@/components/BoqTable";
 import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
+import { getCurrentOrg } from "@/lib/org";
+import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -61,10 +62,14 @@ export default async function BoqPrintPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
+
+  const org = await getCurrentOrg();
+  const brand = brandFromOrg(org);
+  const project = await prisma.project.findFirst({
+    where: { id: projectId, organizationId: org.id },
     include: { lead: true, cadFile: true },
   });
+
   if (!project) notFound();
 
   const boq = project.cadFile?.boq as unknown as BOQResult | null;
@@ -93,7 +98,7 @@ export default async function BoqPrintPage({
       {/* Hero */}
       <section className="relative overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <BrandLogo className="h-14 w-auto mb-3" />
+        <BrandLogo brand={brand} className="h-14 w-auto mb-3" />
         <div className="absolute inset-0 bg-gradient-to-r from-stone-50 via-stone-50/90 to-stone-50/10 print:hidden" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-stone-50 to-transparent print:hidden" />
 
@@ -108,7 +113,7 @@ export default async function BoqPrintPage({
           <div className="rounded-2xl bg-white/95 backdrop-blur shadow-sm border border-stone-200 p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <BrandLogo className="h-14 w-auto mb-3" />
+                <BrandLogo brand={brand} className="h-14 w-auto mb-3" />
                 <h1 className="text-3xl font-bold text-brand-black">
                   Bill of Quantities &amp; Cost Estimate
                 </h1>
@@ -231,7 +236,7 @@ export default async function BoqPrintPage({
       </section>
 
       {/* Footer */}
-      <SiteFooter />
+      <SiteFooter brand={brand} />
     </main>
   );
 }

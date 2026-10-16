@@ -1,12 +1,9 @@
-// apps/web/src/app/api/projects/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@vectroq/db";
+import { getCurrentOrg } from "@/lib/org";
 
-// The team turns a Lead into a Project once the design-brief meeting has
-// happened. No auth/roles yet — this
-// route is reachable by anyone who can hit the API, same as /api/leads
-// today. Don't treat this as access-controlled.
 export async function POST(req: NextRequest) {
+  const org = await getCurrentOrg();
   const body = await req.json();
   const { leadId, model, category, city, meetingNotes } = body ?? {};
 
@@ -17,20 +14,30 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+  const lead = await prisma.lead.findFirst({
+    where: { id: leadId, organizationId: org.id },
+  });
   if (!lead) {
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
   }
 
   const project = await prisma.project.create({
-    data: { leadId, model, category, city, meetingNotes },
+    data: {
+      organizationId: org.id,
+      leadId,
+      model,
+      category,
+      city,
+      meetingNotes,
+    },
   });
-
   return NextResponse.json(project, { status: 201 });
 }
 
 export async function GET() {
+  const org = await getCurrentOrg();
   const projects = await prisma.project.findMany({
+    where: { organizationId: org.id },
     orderBy: { createdAt: "desc" },
     include: { cadFile: true, lead: true },
   });

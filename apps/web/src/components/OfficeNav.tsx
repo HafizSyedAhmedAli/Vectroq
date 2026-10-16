@@ -1,6 +1,6 @@
 "use client";
 
-import { brand } from "@/lib/brand";
+import type { Brand } from "@/lib/brand";
 import { BrandLogo } from "./BrandLogo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,22 +10,30 @@ const LINKS = [
   { href: "/office/leads", label: "1 · Leads" },
   { href: "/office", label: "2 · Projects", exact: true },
   { href: "/office/rates", label: "Rates" },
+  { href: "/office/settings", label: "Settings" },
 ];
 
-export function OfficeNav() {
+const OTHER = ["/office/leads", "/office/rates", "/office/settings"];
+
+export function OfficeNav({
+  brand,
+  orgSlug,
+}: {
+  brand: Brand;
+  orgSlug: string;
+}) {
   const pathname = usePathname();
   const active = (l: (typeof LINKS)[number]) =>
     l.exact
       ? pathname === l.href ||
         (pathname.startsWith("/office/") &&
-          !pathname.startsWith("/office/leads") &&
-          !pathname.startsWith("/office/rates"))
+          !OTHER.some((p) => pathname.startsWith(p)))
       : pathname.startsWith(l.href);
   return (
     <header className="print:hidden bg-white/90 backdrop-blur border-b border-stone-100">
       <div className="max-w-6xl mx-auto px-4 h-[72px] flex items-center justify-between gap-4">
         <Link href="/office/leads" className="flex items-center gap-2">
-          <BrandLogo priority />
+          <BrandLogo brand={brand} />
           <span className="hidden sm:inline text-xs font-medium text-stone-500 border-l border-stone-200 pl-2">
             Dashboard
           </span>
@@ -42,7 +50,7 @@ export function OfficeNav() {
               </Link>
             ))}
             <Link
-              href="/request"
+              href={`/c/${orgSlug}`}
               target="_blank"
               className="ml-2 px-3 py-1.5 text-stone-500 hover:text-brand"
             >

@@ -1,5 +1,5 @@
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
-import { brand } from "@/lib/brand";
+import type { Brand } from "@/lib/brand";
 import { BrandLogo } from "./BrandLogo";
 
 function FooterItem({
@@ -22,13 +22,14 @@ function FooterItem({
   );
 }
 
-export function SiteFooter() {
+export function SiteFooter({ brand }: { brand: Brand }) {
   const { contact, offices } = brand;
+
   return (
     <footer className="print:hidden bg-[#1c1a19] text-stone-300">
       <div className="max-w-6xl mx-auto px-4 py-10 flex flex-wrap gap-x-10 gap-y-6 text-xs">
         <div className="bg-white rounded-md p-2 w-fit h-fit">
-          <BrandLogo className="h-9 w-auto" />
+          <BrandLogo brand={brand} className="h-9 w-auto" />
         </div>
         {offices.map((o) => (
           <FooterItem

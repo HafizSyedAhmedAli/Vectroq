@@ -4,6 +4,8 @@ import { ArrowRight, House, Users } from "lucide-react";
 import { prisma, type Lead } from "@vectroq/db";
 import { ConvertLeadForm } from "@/components/ConvertLeadForm";
 import { SiteFooter } from "@/components/SiteFooter";
+import { getCurrentOrg } from "@/lib/org";
+import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +20,10 @@ const SOURCE_LABELS: Record<string, string> = {
 // none" filter is what keeps a Lead off this list once ConvertLeadForm
 // below has created a Project for it.
 export default async function OfficeLeadsPage() {
+  const org = await getCurrentOrg();
+  const brand = brandFromOrg(org);
   const leads = await prisma.lead.findMany({
-    where: { projects: { none: {} } },
+    where: { organizationId: org.id, projects: { none: {} } },
     orderBy: { createdAt: "desc" },
   });
 
@@ -131,7 +135,7 @@ export default async function OfficeLeadsPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter brand={brand} />
     </>
   );
 }

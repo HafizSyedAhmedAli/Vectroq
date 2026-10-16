@@ -15,8 +15,6 @@ export class RateSetError extends Error {
   }
 }
 
-// Thrown when no CSR / office-approved rates exist for the city or any
-// nearby hub. There is deliberately no AI or placeholder fallback.
 export class RateUnavailableError extends Error {
   constructor(
     public city: string,
@@ -29,24 +27,26 @@ export class RateUnavailableError extends Error {
 }
 
 export interface RateBasis {
-  /** Place whose rates were actually used. */
   place: string;
-  /** True when `place` is not the project's own city. */
   isFallback: boolean;
   origin: string; // "csr" | "manual"
   sources: unknown;
 }
 
-// "Nawabshah (also called Benazirabad), Sindh" -> "Nawabshah"
 const placeName = (label: string) => label.split(/\s*[(,]/)[0].trim();
 
-async function findApproved(place: string, category: Category) {
+async function findApproved(
+  organizationId: string,
+  place: string,
+  category: Category,
+) {
   const row = await prisma.rateSet.findFirst({
     where: {
+      organizationId,
       city: { equals: place, mode: "insensitive" },
       category,
       status: "APPROVED",
-      origin: { in: ["csr", "manual"] }, // never old AI-generated sets
+      origin: { in: ["csr", "manual"] },
     },
     orderBy: { approvedAt: "desc" },
   });
@@ -58,6 +58,7 @@ async function findApproved(place: string, category: Category) {
 }
 
 export async function getRateCardWithBasis(
+  organizationId: string,
   city: string,
   category: Category,
 ): Promise<{ card: RateCard; basis: RateBasis }> {
@@ -67,7 +68,7 @@ export async function getRateCardWithBasis(
   );
 
   for (const place of ladder) {
-    const hit = await findApproved(place, category);
+    const hit = await findApproved(organizationId, place, category);
     if (!hit) continue;
     return {
       card: withFixedLabour({ city: cleanCity, category, items: hit.items }),
@@ -87,26 +88,30 @@ export async function getRateCardWithBasis(
   );
 }
 
-/** Kept under the old name so existing routes/tests keep working. */
 export async function getLiveRateCard(
+  organizationId: string,
   city: string,
   category: Category,
 ): Promise<RateCard> {
-  return (await getRateCardWithBasis(city, category)).card;
+  return (await getRateCardWithBasis(organizationId, city, category)).card;
 }
 
 export async function approveRateSet(
+  organizationId: string,
   id: string,
   approvedBy: string,
   items?: RateCardItem[],
 ) {
   return prisma.$transaction(async (tx) => {
-    const target = await tx.rateSet.findUnique({ where: { id } });
+    const target = await tx.rateSet.findFirst({
+      where: { id, organizationId },
+    });
     if (!target) throw new RateSetError("NOT_FOUND");
     if (target.status !== "DRAFT") throw new RateSetError("NOT_DRAFT");
 
     await tx.rateSet.updateMany({
       where: {
+        organizationId,
         city: target.city,
         category: target.category,
         status: "APPROVED",
@@ -125,6 +130,9 @@ export async function approveRateSet(
   });
 }
 
-export async function rejectRateSet(id: string) {
-  return prisma.rateSet.update({ where: { id }, data: { status: "REJECTED" } });
+export async function rejectRateSet(organizationId: string, id: string) {
+  return prisma.rateSet.updateMany({
+    where: { id, organizationId, status: "DRAFT" },
+    data: { status: "REJECTED" },
+  });
 }

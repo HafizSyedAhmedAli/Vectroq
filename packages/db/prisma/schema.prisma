@@ -9,15 +9,15 @@ datasource db {
 }
 
 model Lead {
-  id              String    @id @default(cuid())
+  id              String       @id @default(cuid())
   name            String
   contact         String
   city            String
   model           Int
   category        String
-  source          String    @default("FORM")
+  source          String       @default("FORM")
   // Requirements captured on the homepage intake form
-  houseType       String    @default("House")
+  houseType       String       @default("House")
   floors          Int?
   bedrooms        Int?
   plotSizeSqYd    Float?
@@ -27,9 +27,13 @@ model Lead {
   additionalNotes String?
   planFileUrl     String?
   planFileName    String?
-  consent         Boolean   @default(false)
-  createdAt       DateTime  @default(now())
+  consent         Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id])
   projects        Project[]
+
+  @@index([organizationId])
 }
 
 // Team members work against a Project once a Lead's meeting has happened.
@@ -37,21 +41,25 @@ model Lead {
 // because a Lead can exist with no Project yet — a Project is created when
 // the team follows up.
 model Project {
-  id           String   @id @default(cuid())
-  leadId       String
-  lead         Lead     @relation(fields: [leadId], references: [id])
-  model        Int
-  category     String
-  city         String
+  id             String        @id @default(cuid())
+  leadId         String
+  lead           Lead          @relation(fields: [leadId], references: [id])
+  model          Int
+  category       String
+  city           String
   // NEW -> CAD_UPLOADED -> FINALIZED. Deliberately a plain string, not a
   // Prisma enum, so the team can move a project backward (e.g. re-upload
   // after a bad DXF) without a migration.
-  status       String   @default("NEW")
-  meetingNotes String?
-  cadFile      CadFile?
-  render       Render?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  status         String        @default("NEW")
+  meetingNotes   String?
+  cadFile        CadFile?
+  render         Render?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
+  @@index([organizationId])
 }
 
 // One uploaded CAD file per project, holding the geometry parseDxfToGeometry
@@ -93,17 +101,37 @@ model Render {
 // ever reads APPROVED rows, so totals stay stable and reviewable.
 // status is a plain string like Project.status: DRAFT | APPROVED | REJECTED | SUPERSEDED
 model RateSet {
-  id         String    @id @default(cuid())
-  city       String
-  category   String
-  status     String    @default("DRAFT")
-  origin     String    @default("manual") // manual | csr
-  taxPercent Float     @default(17)
-  items      Json      // RateCardItem[]
-  sources    Json?     // [{ itemType, sourceUrl, sourceDate, note }] from the AI refresh
-  createdAt  DateTime  @default(now())
-  approvedAt DateTime?
-  approvedBy String?
+  id             String        @id @default(cuid())
+  city           String
+  category       String
+  status         String        @default("DRAFT")
+  origin         String        @default("manual") // manual | csr
+  taxPercent     Float         @default(17)
+  items          Json // RateCardItem[]
+  sources        Json? // [{ itemType, sourceUrl, sourceDate, note }] from the AI refresh
+  createdAt      DateTime      @default(now())
+  approvedAt     DateTime?
+  approvedBy     String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
 
-  @@index([city, category, status])
+  @@index([organizationId, city, category, status])
+}
+
+model Organization {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  tagline      String?
+  logoUrl      String?
+  primaryColor String    @default("#2563EB")
+  phone        String?
+  email        String?
+  website      String?
+  offices      Json      @default("[]") // [{ title, address }]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  leads        Lead[]
+  projects     Project[]
+  rateSets     RateSet[]
 }

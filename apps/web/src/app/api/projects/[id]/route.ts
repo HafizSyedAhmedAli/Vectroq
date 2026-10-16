@@ -1,6 +1,7 @@
 // apps/web/src/app/api/projects/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@vectroq/db";
+import { getCurrentOrg } from "@/lib/org";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -14,9 +15,10 @@ interface RouteContext {
 export async function GET(_req: NextRequest, { params }: RouteContext) {
   const { id: projectId } = await params;
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    include: { lead: true, cadFile: true, render: true },
+  const org = await getCurrentOrg();
+
+  const project = await prisma.project.findFirst({
+    where: { id: projectId, organizationId: org.id },
   });
 
   if (!project) {

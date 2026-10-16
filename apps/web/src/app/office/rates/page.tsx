@@ -9,17 +9,22 @@ import type {
   DraftRateSet,
   RateSources,
 } from "@/lib/rate-set-types";
+import { getCurrentOrg } from "@/lib/org";
+import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export default async function OfficeRatesPage() {
+  const org = await getCurrentOrg();
+  const brand = brandFromOrg(org);
   const [drafts, approved] = await Promise.all([
     prisma.rateSet.findMany({
-      where: { status: "DRAFT" },
+      where: { organizationId: org.id, status: "DRAFT" },
       orderBy: { createdAt: "desc" },
     }),
+
     prisma.rateSet.findMany({
-      where: { status: "APPROVED" },
+      where: { organizationId: org.id, status: "APPROVED" },
       orderBy: { approvedAt: "desc" },
     }),
   ]);
@@ -100,7 +105,7 @@ export default async function OfficeRatesPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter brand={brand} />
     </>
   );
 }

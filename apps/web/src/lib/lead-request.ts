@@ -25,8 +25,9 @@ export async function readLeadRequest(
 }
 
 /** Whitelist: never spread the request body straight into Prisma. */
-export function pickLeadData(input: LeadIntakeInput) {
+export function pickLeadData(input: LeadIntakeInput, organizationId: string) {
   return {
+    organizationId,
     name: input.name.trim(),
     contact: input.contact.trim(),
     city: input.city,

@@ -4,7 +4,6 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ASSUMPTIONS, EXCLUSIONS, formatPkr } from "@/lib/boq-format";
-import { brand } from "@/lib/brand";
 import { prisma } from "@vectroq/db";
 import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import {
@@ -22,6 +21,8 @@ import {
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { getCurrentOrg } from "@/lib/org";
+import { brandFromOrg, brandStyle } from "@/lib/brand";
 
 const MODEL_LABELS: Record<number, string> = {
   1: "Land & Build, Then Sell",
@@ -69,8 +70,11 @@ export default async function ClientProjectPage({
 
   const project = await prisma.project.findUnique({
     where: { id: projectId },
-    include: { lead: true, cadFile: true },
+    include: { lead: true, cadFile: true, organization: true },
   });
+
+  if (!project) notFound();
+  const brand = brandFromOrg(project.organization!);
 
   if (!project) notFound();
 
@@ -88,11 +92,11 @@ export default async function ClientProjectPage({
   const modelLabel = MODEL_LABELS[project.model] ?? `Model ${project.model}`;
 
   return (
-    <>
+    <div style={brandStyle(brand)}>
       {/* Header */}
       <header className="print:hidden border-b border-stone-100 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4">
-          <BrandLogo priority />
+          <BrandLogo brand={brand} priority />
           {brand.contact.phone && (
             <a
               href={`tel:${brand.contact.phone.replace(/\s/g, "")}`}
@@ -262,7 +266,7 @@ export default async function ClientProjectPage({
         </div>
       </main>
 
-      <SiteFooter />
-    </>
+      <SiteFooter brand={brand} />
+    </div>
   );
 }

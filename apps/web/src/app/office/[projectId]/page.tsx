@@ -7,6 +7,8 @@ import { prisma } from "@vectroq/db";
 import { ProjectWorkspace } from "@/components/ProjectWorkspace";
 import { ProjectDetailsCard } from "@/components/ProjectDetailsCard";
 import { SiteFooter } from "@/components/SiteFooter";
+import { getCurrentOrg } from "@/lib/org";
+import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -27,10 +29,12 @@ export default async function OfficeProjectPage({
 }: {
   params: Promise<{ projectId: string }>;
 }) {
+  const org = await getCurrentOrg();
+  const brand = brandFromOrg(org);
   const { projectId } = await params;
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
+  const project = await prisma.project.findFirst({
+    where: { id: projectId, organizationId: org.id },
     include: { lead: true, cadFile: true },
   });
 
@@ -38,6 +42,7 @@ export default async function OfficeProjectPage({
 
   const approvedRates = await prisma.rateSet.findFirst({
     where: {
+      organizationId: org.id,
       city: project.city,
       category: project.category,
       status: "APPROVED",
@@ -137,7 +142,7 @@ export default async function OfficeProjectPage({
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter brand={brand} />
     </>
   );
 }

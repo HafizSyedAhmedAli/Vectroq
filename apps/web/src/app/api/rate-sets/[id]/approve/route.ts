@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateRateItems } from "@vectroq/rate-cards";
 import { approveRateSet, RateSetError } from "@/lib/rate-sets";
+import { getCurrentOrg } from "@/lib/org";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -26,7 +27,10 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   }
 
   try {
-    return NextResponse.json(await approveRateSet(id, approvedBy, items));
+    const org = await getCurrentOrg();
+    return NextResponse.json(
+      await approveRateSet(org.id, id, approvedBy, items),
+    );
   } catch (err) {
     if (err instanceof RateSetError) {
       return err.code === "NOT_FOUND"

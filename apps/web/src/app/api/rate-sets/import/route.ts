@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Category } from "@vectroq/shared-types";
 import { importCsr } from "@/lib/import-csr";
+import { getCurrentOrg } from "@/lib/org";
 
 export const maxDuration = 60;
 
@@ -42,13 +43,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const org = await getCurrentOrg();
+
   const result = await importCsr({
+    organizationId: org.id,
     csv: body.csv,
     document,
     year,
     categories,
     approvedBy,
   });
+
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }

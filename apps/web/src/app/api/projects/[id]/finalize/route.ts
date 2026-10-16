@@ -1,10 +1,15 @@
 // apps/web/src/app/api/projects/[id]/finalize/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import type { BOQResult, EngagementModel, Geometry } from "@vectroq/shared-types";
+import type {
+  BOQResult,
+  EngagementModel,
+  Geometry,
+} from "@vectroq/shared-types";
 import { estimateFromGeometry } from "@vectroq/rate-cards";
 import { prisma } from "@vectroq/db";
 import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
 import { toRateBasisInfo } from "@/lib/rate-basis";
+import { getCurrentOrg } from "@/lib/org";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -30,7 +35,8 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
   // project is not marked FINALIZED.
   let resolved;
   try {
-    resolved = await getRateCardWithBasis(project.city, category);
+    const org = await getCurrentOrg();
+    resolved = await getRateCardWithBasis(org.id, project.city, category);
   } catch (err) {
     if (err instanceof RateUnavailableError) {
       return NextResponse.json(

@@ -29,7 +29,18 @@ async function main() {
     process.exit(1);
   }
 
+  const orgSlug = arg("org") ?? "demo";
+  const org = await prisma.organization.findUnique({
+    where: { slug: orgSlug },
+  });
+  
+  if (!org) {
+    console.error(`Organization "${orgSlug}" not found.`);
+    process.exit(1);
+  }
+
   const result = await importCsr({
+    organizationId: org.id,
     csv: readFileSync(file, "utf8"),
     document,
     year,

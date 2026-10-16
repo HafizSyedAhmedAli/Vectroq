@@ -10,6 +10,7 @@ import { prisma } from "@vectroq/db";
 import { CSR_CSV_MAX_BYTES } from "./rate-set-types";
 
 export interface ImportCsrInput {
+  organizationId: string; // new
   csv: string;
   document: string; // e.g. "Sindh CSR"
   year: number;
@@ -94,6 +95,7 @@ export async function importCsr(
   await prisma.$transaction([
     prisma.rateSet.updateMany({
       where: {
+        organizationId: input.organizationId, // new
         city: { in: cities },
         category: { in: categories },
         status: "APPROVED",
@@ -104,6 +106,7 @@ export async function importCsr(
     prisma.rateSet.createMany({
       data: cities.flatMap((city) =>
         categories.map((category) => ({
+          organizationId: input.organizationId, // new
           city,
           category,
           status: "APPROVED",

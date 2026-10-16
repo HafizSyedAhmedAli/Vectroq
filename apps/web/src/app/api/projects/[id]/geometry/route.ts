@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Geometry } from "@vectroq/shared-types";
 import { Prisma, prisma } from "@vectroq/db";
+import { getCurrentOrg } from "@/lib/org";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -18,7 +19,11 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     );
   }
 
-  const cadFile = await prisma.cadFile.findUnique({ where: { projectId } });
+  const org = await getCurrentOrg();
+  const cadFile = await prisma.cadFile.findFirst({
+    where: { projectId, project: { organizationId: org.id } },
+  });
+
   if (!cadFile) {
     return NextResponse.json(
       { error: "No CAD file uploaded for this project yet" },

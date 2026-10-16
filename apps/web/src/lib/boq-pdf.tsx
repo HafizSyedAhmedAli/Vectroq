@@ -20,9 +20,10 @@ import {
   unitLabel,
 } from "@/lib/boq-format";
 import { rateBasisLine } from "./rate-basis";
-import { brand } from "./brand";
+import type { Brand } from "./brand";
 
 export interface BoqPdfData {
+  brand: Brand;
   boq: BOQResult;
   logo: Buffer | null;
   clientName: string;
@@ -34,7 +35,7 @@ export interface BoqPdfData {
   dateLabel: string;
 }
 
-const BRAND = brand.colors.primary;
+const BRAND = "#2563EB";
 const BLACK = "#231f1e";
 const GRAY = "#78716c";
 const LINE = "#e7e5e4";
@@ -168,24 +169,24 @@ function BoqPdf({ d }: { d: BoqPdfData }) {
   const perSqft = d.boq.total / Math.max(d.areaSqFt, 1);
 
   return (
-    <Document title={`BOQ - ${d.clientName}`} author={brand.name}>
+    <Document title={`BOQ - ${d.clientName}`} author={d.brand.name}>
       <Page size="A4" style={s.page}>
         {/* Letterhead: fixed on purpose, repeats on every page */}
-        <View style={s.header} fixed>
+        <View style={[s.header, { borderBottomColor: d.brand.colors.primary }]} fixed>
           {d.logo ? (
             // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt
             <Image src={d.logo} style={s.logo} />
           ) : (
-            <Text style={s.title}>{brand.name}</Text>
+            <Text style={s.title}>{d.brand.name}</Text>
           )}
           <View style={s.offices}>
-            {brand.offices.map((o) => (
+            {d.brand.offices.map((o) => (
               <Text key={o.title}>
                 {o.title}: {o.address}
               </Text>
             ))}
             <Text>
-              {[brand.contact.phone, brand.contact.email]
+              {[d.brand.contact.phone, d.brand.contact.email]
                 .filter(Boolean)
                 .join(" | ")}
             </Text>
@@ -310,13 +311,13 @@ function BoqPdf({ d }: { d: BoqPdfData }) {
           </View>
 
           <View style={s.sign}>
-            <Text style={s.signBox}>For {brand.name}</Text>
+            <Text style={s.signBox}>For {d.brand.name}</Text>
             <Text style={s.signBox}>Client acceptance</Text>
           </View>
         </View>
 
         <View style={s.footer} fixed>
-          <Text>{brand.name} - Bill of Quantities &amp; Cost Estimate</Text>
+          <Text>{d.brand.name} - Bill of Quantities &amp; Cost Estimate</Text>
           <Text
             render={({ pageNumber, totalPages }) =>
               `Page ${pageNumber} of ${totalPages}`

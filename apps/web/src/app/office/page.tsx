@@ -4,18 +4,25 @@ import { ArrowRight, Layers } from "lucide-react";
 import { prisma } from "@vectroq/db";
 import { ProjectsList, type ProjectCardData } from "@/components/ProjectsList";
 import { SiteFooter } from "@/components/SiteFooter";
+import { getCurrentOrg } from "@/lib/org";
+import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 
 export default async function OfficeProjectsPage() {
+  const org = await getCurrentOrg();
+  const brand = brandFromOrg(org);
   const [projects, pendingLeadCount] = await Promise.all([
     prisma.project.findMany({
+      where: { organizationId: org.id },
       orderBy: { createdAt: "desc" },
       include: { lead: true, render: true, cadFile: true },
     }),
-    prisma.lead.count({ where: { projects: { none: {} } } }),
+    prisma.lead.count({
+      where: { organizationId: org.id, projects: { none: {} } },
+    }),
   ]);
 
   // Everything is formatted here, on the server, so the client component
@@ -94,7 +101,7 @@ export default async function OfficeProjectsPage() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter brand={brand} />
     </>
   );
 }

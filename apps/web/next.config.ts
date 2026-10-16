@@ -11,8 +11,22 @@ const nextConfig: NextConfig = {
     "@vectroq/cad-parser",
     "@vectroq/db",
   ],
-  outputFileTracingIncludes: {
-    "/api/projects/[id]/boq-pdf": ["./public/logo.png"],
+
+  async headers() {
+    return [
+      {
+        source: "/embed/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors *" },
+        ],
+      },
+      {
+        source: "/((?!embed/).*)",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+        ],
+      },
+    ];
   },
 };
 
