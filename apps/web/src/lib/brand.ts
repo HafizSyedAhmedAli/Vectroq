@@ -14,11 +14,12 @@ export interface Brand {
 }
 
 export const brand: Brand = {
-  name: "BuildQuote", // placeholder
-  tagline: "From plan to priced BOQ in minutes",
-  description: "Upload a plan, get a priced Bill of Quantities and a 3D view.",
-  logo: null, // e.g. { src: "/logo.png", width: 520, height: 119 } (PNG or JPG only, for the PDF)
-  colors: { primary: "#2563eb" },
+  name: "Vectroq",
+  tagline: "From floor plan to final quote.",
+  description:
+    "Vectroq turns a floor plan into a priced Bill of Quantities and a 3D view in minutes.",
+  logo: { src: "/logo.png", width: 1560, height: 410 },
+  colors: { primary: "#2563EB" },
   contact: {},
   offices: [],
 };
