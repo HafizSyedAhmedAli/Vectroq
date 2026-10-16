@@ -1,7 +1,7 @@
 // apps/web/src/app/office/page.tsx
 import Link from "next/link";
 import { ArrowRight, Layers } from "lucide-react";
-import { prisma } from "@tmcc/db";
+import { prisma } from "@buildquote/db";
 import { ProjectsList, type ProjectCardData } from "@/components/ProjectsList";
 import { SiteFooter } from "@/components/SiteFooter";
 

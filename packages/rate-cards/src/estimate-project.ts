@@ -1,11 +1,11 @@
-import { calculateBoq } from "@tmcc/boq-engine";
+import { calculateBoq } from "@buildquote/boq-engine";
 import {
   taxPercentForModel,
   type BOQResult,
   type EngagementModel,
   type Geometry,
   type RateCard,
-} from "@tmcc/shared-types";
+} from "@buildquote/shared-types";
 
 export interface EstimateProjectInput {
   geometry: Geometry;

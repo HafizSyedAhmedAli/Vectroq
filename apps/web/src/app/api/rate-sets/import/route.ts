@@ -1,6 +1,6 @@
 // apps/web/src/app/api/rate-sets/import/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import type { Category } from "@tmcc/shared-types";
+import type { Category } from "@buildquote/shared-types";
 import { importCsr } from "@/lib/import-csr";
 
 export const maxDuration = 60;

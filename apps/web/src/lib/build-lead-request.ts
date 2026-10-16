@@ -1,5 +1,5 @@
 // apps/web/src/lib/build-lead-request.ts
-import type { LeadIntakeInput } from "@tmcc/lead-intake";
+import type { LeadIntakeInput } from "@buildquote/lead-intake";
 
 export function buildLeadRequest(
   data: LeadIntakeInput,

@@ -1,5 +1,5 @@
 import { put } from "@vercel/blob";
-import { planFileExtension } from "@tmcc/lead-intake";
+import { planFileExtension } from "@buildquote/lead-intake";
 
 export async function savePlanFile(
   leadId: string,

@@ -5,7 +5,7 @@ import type {
   Geometry,
   RateCard,
   RateItemType,
-} from "@tmcc/shared-types";
+} from "@buildquote/shared-types";
 import {
   brickCount,
   cementBags,

@@ -1,8 +1,8 @@
 // apps/web/src/app/api/projects/[id]/finalize/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import type { BOQResult, EngagementModel, Geometry } from "@tmcc/shared-types";
-import { estimateFromGeometry } from "@tmcc/rate-cards";
-import { prisma } from "@tmcc/db";
+import type { BOQResult, EngagementModel, Geometry } from "@buildquote/shared-types";
+import { estimateFromGeometry } from "@buildquote/rate-cards";
+import { prisma } from "@buildquote/db";
 import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
 import { toRateBasisInfo } from "@/lib/rate-basis";
 

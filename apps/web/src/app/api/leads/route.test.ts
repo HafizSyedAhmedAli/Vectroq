@@ -1,15 +1,15 @@
 // apps/web/src/app/api/leads/route.test.ts
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { BUDGET_RANGES, TIMELINES } from "@tmcc/lead-intake";
+import { BUDGET_RANGES, TIMELINES } from "@buildquote/lead-intake";
 import { POST } from "./route";
 
-vi.mock("@tmcc/db", () => ({
+vi.mock("@buildquote/db", () => ({
   prisma: { lead: { create: vi.fn(), update: vi.fn() } },
 }));
 vi.mock("@/lib/save-plan-file", () => ({ savePlanFile: vi.fn() }));
 
-import { prisma } from "@tmcc/db";
+import { prisma } from "@buildquote/db";
 import { savePlanFile } from "@/lib/save-plan-file";
 
 const validBody = {
@@ -83,7 +83,7 @@ describe("POST /api/leads", () => {
     expect(data.source).toBe("FORM");
   });
 
-  it("returns 400 and does not touch the DB when validation fails (FR-4)", async () => {
+  it("returns 400 and does not touch the DB when validation fails", async () => {
     const res = await POST(jsonReq({ ...validBody, city: "" }) as any);
     expect(res.status).toBe(400);
     expect(prisma.lead.create).not.toHaveBeenCalled();

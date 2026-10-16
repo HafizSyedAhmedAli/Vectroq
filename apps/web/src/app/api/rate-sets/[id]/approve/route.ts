@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateRateItems } from "@tmcc/rate-cards";
+import { validateRateItems } from "@buildquote/rate-cards";
 import { approveRateSet, RateSetError } from "@/lib/rate-sets";
 
 interface RouteContext {

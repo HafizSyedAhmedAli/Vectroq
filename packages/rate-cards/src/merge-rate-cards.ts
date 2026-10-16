@@ -1,4 +1,4 @@
-import type { RateCard } from "@tmcc/shared-types";
+import type { RateCard } from "@buildquote/shared-types";
 
 // `approved` overrides `base` item-by-item. Used to layer office-approved
 // rates over freshly researched ones, so a partial approved set is completed

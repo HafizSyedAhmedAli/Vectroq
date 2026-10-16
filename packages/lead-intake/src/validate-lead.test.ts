@@ -46,7 +46,7 @@ describe("validateLeadIntake — full submission", () => {
   });
 });
 
-describe("validateProjectDetails — FR-3 required fields", () => {
+describe("validateProjectDetails — required fields", () => {
   it.each([
     ["name", { ...validInput, name: "" }],
     ["contact", { ...validInput, contact: "" }],
@@ -68,7 +68,7 @@ describe("validateProjectDetails — FR-3 required fields", () => {
   });
 });
 
-describe("validateProjectDetails — FR-4 predefined lists", () => {
+describe("validateProjectDetails — predefined lists", () => {
   it("rejects a city not in the predefined list", () => {
     const result = validateProjectDetails({ ...validInput, city: "Atlantis" });
     expect(result.valid).toBe(false);

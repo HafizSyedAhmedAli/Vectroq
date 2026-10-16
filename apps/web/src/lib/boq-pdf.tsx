@@ -8,7 +8,7 @@ import {
   View,
   renderToBuffer,
 } from "@react-pdf/renderer";
-import type { BOQResult } from "@tmcc/shared-types";
+import type { BOQResult } from "@buildquote/shared-types";
 import {
   ASSUMPTIONS,
   BOQ_META,

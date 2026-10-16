@@ -1,5 +1,5 @@
 // apps/web/src/components/intake/StepProjectDetails.tsx
-import { CITY_NAMES } from "@tmcc/shared-types";
+import { CITY_NAMES } from "@buildquote/shared-types";
 import { MapPin, Phone, User } from "lucide-react";
 import { SelectField, TextField } from "./fields";
 import { MODEL_OPTIONS } from "./option-config";

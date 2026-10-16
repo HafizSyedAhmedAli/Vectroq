@@ -27,7 +27,7 @@ describe("ConvertLeadForm", () => {
     push.mockClear();
   });
 
-  it("creates a project from the lead's own details and navigates to it (FR-5)", async () => {
+  it("creates a project from the lead's own details and navigates to it", async () => {
     mockFetchOnce({ ok: true, json: { id: "proj_1" } });
     render(
       <ConvertLeadForm
@@ -56,7 +56,7 @@ describe("ConvertLeadForm", () => {
     expect(push).toHaveBeenCalledWith("/office/proj_1");
   });
 
-  it("includes trimmed meeting notes when office adds them (FR-6)", async () => {
+  it("includes trimmed meeting notes when office adds them", async () => {
     mockFetchOnce({ ok: true, json: { id: "proj_1" } });
     render(
       <ConvertLeadForm

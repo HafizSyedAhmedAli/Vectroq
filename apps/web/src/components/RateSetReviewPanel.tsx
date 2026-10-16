@@ -16,7 +16,7 @@ import {
   Tag,
   User,
 } from "lucide-react";
-import { CITY_NAMES, type RateCardItem } from "@tmcc/shared-types";
+import { CITY_NAMES, type RateCardItem } from "@buildquote/shared-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,7 +32,7 @@ import type {
 } from "@/lib/rate-set-types";
 import { CsrImportForm } from "./CsrImportForm";
 
-// Category is a material grade tier (see GRADE_HINT in @tmcc/rate-research).
+// Category is a material grade tier: A = Premium, B = Standard, C = Economy.
 const CATEGORY_META: Record<
   string,
   { label: string; badge: string; chip: string }
@@ -141,8 +141,8 @@ function SourceCell({
   );
 }
 
-// FR-15 / NFR-4: nothing reaches a BOQ until it is an APPROVED rate set,
-// either imported from a CSR or entered manually and approved here.
+// Nothing reaches a BOQ until it is an APPROVED rate set, either imported
+// from a CSR or entered manually and approved here.
 export function RateSetReviewPanel({
   initialDrafts,
   approved,

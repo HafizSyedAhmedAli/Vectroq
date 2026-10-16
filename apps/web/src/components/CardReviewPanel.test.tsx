@@ -38,7 +38,7 @@ describe("CadReviewPanel", () => {
     vi.unstubAllGlobals();
   });
 
-  it("uploads a DXF file and shows the extracted rooms for review (FR-9/10)", async () => {
+  it("uploads a DXF file and shows the extracted rooms for review", async () => {
     mockFetchSequence([{ ok: true, json: { geometry: GEOMETRY } }]);
     render(<CadReviewPanel projectId="p1" />);
 
@@ -75,7 +75,7 @@ describe("CadReviewPanel", () => {
     );
   });
 
-  it("lets office staff correct a room's area before calculating the BOQ (FR-10/14)", async () => {
+  it("lets the team correct a room's area before calculating the BOQ", async () => {
     mockFetchSequence([
       { ok: true, json: { geometry: GEOMETRY } },
       { ok: true, json: { id: "cad_1" } }, // PATCH /geometry response
@@ -104,7 +104,7 @@ describe("CadReviewPanel", () => {
     expect(patchBody.rooms[0].area).toBe(260);
   });
 
-  it("calculates and displays the BOQ (FR-11/12/13)", async () => {
+  it("calculates and displays the BOQ", async () => {
     mockFetchSequence([
       { ok: true, json: { geometry: GEOMETRY } },
       {

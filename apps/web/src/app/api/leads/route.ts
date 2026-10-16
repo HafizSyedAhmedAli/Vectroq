@@ -4,10 +4,10 @@ import {
   validateLeadIntake,
   validatePlanFile,
   type LeadIntakeInput,
-} from "@tmcc/lead-intake";
-import { canonicalCityName } from "@tmcc/shared-types";
-import { estimateLead } from "@tmcc/rate-cards";
-import { prisma } from "@tmcc/db";
+} from "@buildquote/lead-intake";
+import { canonicalCityName } from "@buildquote/shared-types";
+import { estimateLead } from "@buildquote/rate-cards";
+import { prisma } from "@buildquote/db";
 import { getLiveRateCard } from "@/lib/rate-sets";
 import { pickLeadData, readLeadRequest } from "@/lib/lead-request";
 import { savePlanFile } from "@/lib/save-plan-file";

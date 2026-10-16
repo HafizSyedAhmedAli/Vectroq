@@ -136,9 +136,8 @@ export interface RateCardItem {
   unit: "sqft" | "ton" | "bath" | "1000nos" | "bag" | "cft";
 }
 
-// Labour rates published by TM Construction Company itself. They are the same
-// in every city, so they are NEVER searched and never vary by location.
-// Source: TMCC "Construction mein mazdoori ke rate" rate sheet.
+// Default labour rates. They are the same in every city, so they are NEVER
+// searched and never vary by location.
 export const FIXED_LABOUR_TYPES = [
   "masonry",
   "plaster",
@@ -155,7 +154,7 @@ export const isFixedLabourType = (t: RateItemType): boolean =>
   (FIXED_LABOUR_TYPES as readonly string[]).includes(t);
 
 // The sheet gives false ceiling as a range (Rs 200-350 / sq ft). We map it to
-// the project category: A = 350, B = 275 (midpoint), C = 200. TMCC to confirm.
+// the project category: A = 350, B = 275 (midpoint), C = 200. To be confirmed.
 const FALSE_CEILING_BY_CATEGORY: Record<Category, number> = {
   A: 350,
   B: 275,

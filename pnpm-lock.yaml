@@ -35,19 +35,19 @@ importers:
       '@react-three/fiber':
         specifier: ^9.8.1
         version: 9.8.1(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.1)
-      '@tmcc/cad-parser':
+      '@buildquote/cad-parser':
         specifier: workspace:*
         version: link:../../packages/cad-parser
-      '@tmcc/db':
+      '@buildquote/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@tmcc/lead-intake':
+      '@buildquote/lead-intake':
         specifier: workspace:*
         version: link:../../packages/lead-intake
-      '@tmcc/rate-cards':
+      '@buildquote/rate-cards':
         specifier: workspace:*
         version: link:../../packages/rate-cards
-      '@tmcc/shared-types':
+      '@buildquote/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       '@vercel/blob':
@@ -117,7 +117,7 @@ importers:
 
   packages/boq-engine:
     dependencies:
-      '@tmcc/shared-types':
+      '@buildquote/shared-types':
         specifier: workspace:*
         version: link:../shared-types
     devDependencies:
@@ -127,7 +127,7 @@ importers:
 
   packages/cad-parser:
     dependencies:
-      '@tmcc/shared-types':
+      '@buildquote/shared-types':
         specifier: workspace:*
         version: link:../shared-types
       dxf-parser:
@@ -153,7 +153,7 @@ importers:
 
   packages/lead-intake:
     dependencies:
-      '@tmcc/shared-types':
+      '@buildquote/shared-types':
         specifier: workspace:*
         version: link:../shared-types
     devDependencies:
@@ -163,10 +163,10 @@ importers:
 
   packages/rate-cards:
     dependencies:
-      '@tmcc/boq-engine':
+      '@buildquote/boq-engine':
         specifier: workspace:*
         version: link:../boq-engine
-      '@tmcc/shared-types':
+      '@buildquote/shared-types':
         specifier: workspace:*
         version: link:../shared-types
     devDependencies:

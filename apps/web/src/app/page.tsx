@@ -6,7 +6,7 @@ import { IntakeForm, type IntakeSubmitResult } from "@/components/IntakeForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { brand } from "@/lib/brand";
 import { buildLeadRequest } from "@/lib/build-lead-request";
-import type { LeadIntakeInput } from "@tmcc/lead-intake";
+import type { LeadIntakeInput } from "@buildquote/lead-intake";
 import { MapPin, Phone, ShieldCheck } from "lucide-react";
 
 export default function HomePage() {

@@ -167,7 +167,7 @@ export function ProjectsList({ projects }: { projects: ProjectCardData[] }) {
             </p>
             <p className="mt-1 text-sm text-stone-500">
               {projects.length === 0
-                ? "A project is created once office follows up on a lead (SRS §3 step 4)."
+                ? "A project is created once you follow up on a lead."
                 : "Try a different search or clear the filters."}
             </p>
           </div>

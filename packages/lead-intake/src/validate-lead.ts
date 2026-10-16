@@ -1,6 +1,6 @@
 // packages/lead-intake/src/validate-lead.ts
-import type { Category, EngagementModel } from "@tmcc/shared-types";
-import { findCity } from "@tmcc/shared-types";
+import type { Category, EngagementModel } from "@buildquote/shared-types";
+import { findCity } from "@buildquote/shared-types";
 import {
   BEDROOM_OPTIONS,
   BUDGET_RANGES,
@@ -53,7 +53,7 @@ const finish = (errors: LeadIntakeErrors): LeadIntakeResult => ({
 const isPositive = (n: unknown): n is number =>
   typeof n === "number" && Number.isFinite(n) && n > 0;
 
-/** Step 1 — FR-3/FR-4 */
+/** Step 1 — project details */
 export function validateProjectDetails(input: Input): LeadIntakeResult {
   const errors: LeadIntakeErrors = {};
 

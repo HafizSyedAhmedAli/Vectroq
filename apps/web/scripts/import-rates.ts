@@ -1,10 +1,10 @@
 // apps/web/scripts/import-rates.ts
 // Usage (from repo root):
-//   DATABASE_URL=... pnpm --filter @tmcc/web exec tsx scripts/import-rates.ts \
+//   DATABASE_URL=... pnpm --filter @buildquote/web exec tsx scripts/import-rates.ts \
 //     data/rates/sindh-2026.csv --document "Sindh CSR" --year 2026 --by "Office" [--categories A,B,C]
 import { readFileSync } from "node:fs";
-import { prisma } from "@tmcc/db";
-import type { Category } from "@tmcc/shared-types";
+import { prisma } from "@buildquote/db";
+import type { Category } from "@buildquote/shared-types";
 import { importCsr } from "../src/lib/import-csr";
 
 function arg(name: string): string | undefined {

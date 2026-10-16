@@ -1,6 +1,6 @@
 // packages/shared-types/src/pakistan-cities.ts
 //
-// Every city/town TM CC can take a lead in. One registry feeds:
+// Every city/town a lead can be taken in. One registry feeds:
 //  - the intake / convert-lead dropdowns (grouped by province),
 //  - lead validation,
 //  - the rate search (aliases + nearby-market ladder, see searchPlacesFor).

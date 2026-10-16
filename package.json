@@ -1,5 +1,5 @@
 {
-  "name": "tm-construction-platform",
+  "name": "buildquote",
   "private": true,
   "scripts": {
     "test": "pnpm -r run test",

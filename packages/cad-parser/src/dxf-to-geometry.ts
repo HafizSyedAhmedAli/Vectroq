@@ -5,7 +5,7 @@ import type {
   Room,
   RoomType,
   Wall,
-} from "@tmcc/shared-types";
+} from "@buildquote/shared-types";
 import {
   dedupeSegments,
   roomsFromWallSegments,
@@ -17,13 +17,13 @@ import { snapToWall } from "./place-openings";
 
 // --- Layer conventions this parser expects the CAD file to follow ---
 // A client's actual drawings may use different layer names; treat these
-// as the contract to confirm with TM CC's drafting team, not a fixed
+// as the drawing convention to agree with each drafting team, not a fixed
 // industry standard.
 export const WALL_LAYER = "WALLS";
 export const DOOR_LAYER = "DOORS";
 export const WINDOW_LAYER = "WINDOWS";
 
-// Assumptions, not measured values — same figures the Phase-1 reference
+// Assumptions, not measured values — same figures the reference
 // geometry (packages/rate-cards) uses for its house archetype, so a real
 // parsed drawing and the ballpark estimate stay on the same footing until
 // real wall/opening heights are captured (DXF is inherently 2D — a plan
@@ -170,7 +170,7 @@ export function dxfToGeometry(dxf: RawDxfDocument): Geometry {
 
     // Each edge of the closed room outline becomes one wall segment. Note:
     // a wall shared between two adjacent rooms is currently counted once
-    // per room it borders — confirm with TM CC whether shared partition
+    // per room it borders — confirm whether shared partition
     // walls should be deduplicated before this feeds a client-facing BOQ.
     for (let i = 0; i < vertices.length; i++) {
       const start = vertices[i];

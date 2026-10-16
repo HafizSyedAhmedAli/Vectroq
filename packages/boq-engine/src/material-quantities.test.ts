@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { Geometry } from "@tmcc/shared-types";
+import type { Geometry } from "@buildquote/shared-types";
 import {
   brickCount,
   cementBags,

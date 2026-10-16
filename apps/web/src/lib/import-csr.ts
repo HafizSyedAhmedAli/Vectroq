@@ -1,12 +1,12 @@
 // apps/web/src/lib/import-csr.ts
-import { parseCsrCsv } from "@tmcc/rate-cards";
+import { parseCsrCsv } from "@buildquote/rate-cards";
 import {
   canonicalCityName,
   CORE_MATERIAL_TYPES,
   type Category,
   type RateCardItem,
-} from "@tmcc/shared-types";
-import { prisma } from "@tmcc/db";
+} from "@buildquote/shared-types";
+import { prisma } from "@buildquote/db";
 import { CSR_CSV_MAX_BYTES } from "./rate-set-types";
 
 export interface ImportCsrInput {

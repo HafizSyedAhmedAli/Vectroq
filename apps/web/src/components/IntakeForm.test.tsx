@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { BUDGET_RANGES, TIMELINES } from "@tmcc/lead-intake";
+import { BUDGET_RANGES, TIMELINES } from "@buildquote/lead-intake";
 import { IntakeForm } from "./IntakeForm";
 
 type User = ReturnType<typeof userEvent.setup>;
@@ -74,7 +74,7 @@ describe("IntakeForm — wizard", () => {
     expect(await screen.findByText(/thank you/i)).toBeInTheDocument();
   });
 
-  it("does not leave step 1 until its required fields are valid (FR-4)", async () => {
+  it("does not leave step 1 until its required fields are valid", async () => {
     const onSubmit = vi.fn();
     render(<IntakeForm onSubmit={onSubmit} />);
     const user = userEvent.setup();
@@ -133,7 +133,7 @@ describe("IntakeForm — wizard", () => {
     expect(screen.getByLabelText(/city/i)).toHaveValue("Hyderabad");
   });
 
-  it("only offers the predefined cities and models (FR-4)", () => {
+  it("only offers the predefined cities and models", () => {
     render(<IntakeForm onSubmit={vi.fn()} />);
     expect(
       screen.getByRole("option", { name: "Hyderabad" }),

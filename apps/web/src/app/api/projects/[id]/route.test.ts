@@ -3,13 +3,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "./route";
 
-vi.mock("@tmcc/db", () => ({
+vi.mock("@buildquote/db", () => ({
   prisma: {
     project: { findUnique: vi.fn() },
   },
 }));
 
-import { prisma } from "@tmcc/db";
+import { prisma } from "@buildquote/db";
 
 function ctx(id: string) {
   return { params: Promise.resolve({ id }) };

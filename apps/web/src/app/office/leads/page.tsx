@@ -1,7 +1,7 @@
 // apps/web/src/app/office/leads/page.tsx
 import Link from "next/link";
 import { ArrowRight, House, Users } from "lucide-react";
-import { prisma, type Lead } from "@tmcc/db";
+import { prisma, type Lead } from "@buildquote/db";
 import { ConvertLeadForm } from "@/components/ConvertLeadForm";
 import { SiteFooter } from "@/components/SiteFooter";
 
@@ -13,9 +13,8 @@ const SOURCE_LABELS: Record<string, string> = {
   FACEBOOK: "Facebook Page",
 };
 
-// FR-2/5: every WhatsApp/Form contact is logged as a Lead; office turns one
-// into a Project once the design-brief meeting has happened (SRS §3 steps
-// 3-5). This lists Leads that haven't been converted yet — the "projects:
+// Every WhatsApp/Form contact is logged as a Lead; the team turns one into a
+// Project once the design-brief meeting has happened. This lists Leads that haven't been converted yet — the "projects:
 // none" filter is what keeps a Lead off this list once ConvertLeadForm
 // below has created a Project for it.
 export default async function OfficeLeadsPage() {
@@ -49,8 +48,7 @@ export default async function OfficeLeadsPage() {
               </h1>
               <p className="mt-4 max-w-2xl text-base text-stone-500">
                 {leads.length} lead{leads.length === 1 ? "" : "s"} — create a
-                project once you&apos;ve met the client and finalized the brief
-                (SRS §3 step 4).
+                project once you&apos;ve met the client and finalized the brief.
               </p>
             </div>
             <Link

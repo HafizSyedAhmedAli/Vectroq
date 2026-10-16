@@ -1,5 +1,5 @@
 // packages/rate-cards/src/reference-geometry.ts
-import type { EngagementModel, Geometry } from "@tmcc/shared-types";
+import type { EngagementModel, Geometry } from "@buildquote/shared-types";
 
 // Stand-in for real CAD output, ONLY for the instant ballpark on the intake
 // form: four exterior walls, interior partitions ~90% of the perimeter,

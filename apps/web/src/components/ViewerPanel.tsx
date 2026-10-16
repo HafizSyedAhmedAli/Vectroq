@@ -1,7 +1,7 @@
 // apps/web/src/components/ViewerPanel.tsx
 "use client";
 import dynamic from "next/dynamic";
-import type { Geometry } from "@tmcc/shared-types";
+import type { Geometry } from "@buildquote/shared-types";
 
 const HouseViewer = dynamic(
   () => import("./HouseViewer").then((m) => m.HouseViewer),

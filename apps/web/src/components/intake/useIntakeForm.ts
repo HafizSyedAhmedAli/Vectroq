@@ -10,7 +10,7 @@ import {
   validateRequirements,
   type LeadIntakeErrors,
   type LeadIntakeInput,
-} from "@tmcc/lead-intake";
+} from "@buildquote/lead-intake";
 import {
   EMPTY_VALUES,
   toLeadInput,

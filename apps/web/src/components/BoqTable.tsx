@@ -6,7 +6,7 @@ import {
   PaintRoller,
   Wrench,
 } from "lucide-react";
-import type { BOQResult } from "@tmcc/shared-types";
+import type { BOQResult } from "@buildquote/shared-types";
 import {
   BOQ_META,
   formatPkr,

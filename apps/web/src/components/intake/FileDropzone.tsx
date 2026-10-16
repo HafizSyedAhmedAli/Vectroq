@@ -3,7 +3,7 @@
 
 import { useState, type DragEvent } from "react";
 import { FileCheck2, UploadCloud, X } from "lucide-react";
-import { PLAN_FILE_EXTENSIONS, PLAN_FILE_MAX_BYTES } from "@tmcc/lead-intake";
+import { PLAN_FILE_EXTENSIONS, PLAN_FILE_MAX_BYTES } from "@buildquote/lead-intake";
 import { FieldError } from "./fields";
 
 interface FileDropzoneProps {

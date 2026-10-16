@@ -10,7 +10,7 @@ import {
   CITY_NAMES,
   type Category,
   type EngagementModel,
-} from "@tmcc/shared-types";
+} from "@buildquote/shared-types";
 import {
   ArrowRight,
   FileText,
@@ -29,11 +29,11 @@ interface ConvertLeadFormProps {
   defaultCategory: string;
 }
 
-// SRS §3 steps 3-5: by the time office is looking at this form, they've
-// already met the client and finalized the design brief — city/model/
-// category default to whatever the client picked on intake (FR-3), but
-// office can adjust them here if the meeting changed anything, and can
-// record meeting notes (FR-6) before creating the Project (FR-5).
+// By the time the team is looking at this form, they've already met the
+// client and finalized the design brief — city/model/category default to
+// whatever the client picked on intake, but can be adjusted here if the
+// meeting changed anything, and meeting notes can be recorded before
+// creating the Project.
 export function ConvertLeadForm({
   leadId,
   defaultCity,

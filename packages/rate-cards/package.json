@@ -1,11 +1,11 @@
 {
-  "name": "@tmcc/rate-cards",
+  "name": "@buildquote/rate-cards",
   "version": "0.0.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "@tmcc/boq-engine": "workspace:*",
-    "@tmcc/shared-types": "workspace:*"
+    "@buildquote/boq-engine": "workspace:*",
+    "@buildquote/shared-types": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^2.1.0"

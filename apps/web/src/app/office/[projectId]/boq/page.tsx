@@ -2,7 +2,6 @@
 import { brand } from "@/lib/brand";
 import { BrandLogo } from "@/components/BrandLogo";
 import { SiteFooter } from "@/components/SiteFooter";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -10,17 +9,15 @@ import {
   Building2,
   ClipboardList,
   Download,
-  Globe,
   Home,
-  Mail,
   MapPin,
   Phone,
   Ruler,
   Tag,
   User,
 } from "lucide-react";
-import type { BOQResult, Geometry } from "@tmcc/shared-types";
-import { prisma } from "@tmcc/db";
+import type { BOQResult, Geometry } from "@buildquote/shared-types";
+import { prisma } from "@buildquote/db";
 import { BoqTable } from "@/components/BoqTable";
 import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
 
@@ -56,27 +53,7 @@ function Info({
   );
 }
 
-function FooterItem({
-  icon: Icon,
-  label,
-  children,
-}: {
-  icon: IconType;
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-start gap-2.5 md:border-l md:border-white/10 md:pl-5">
-      <Icon className="size-4 mt-0.5 text-white shrink-0" />
-      <div>
-        <p className="text-[11px] text-white/60 leading-none mb-1">{label}</p>
-        <p className="text-xs text-white leading-snug">{children}</p>
-      </div>
-    </div>
-  );
-}
-
-// FR-19: printable BOQ. "Download PDF" uses the react-pdf route; the browser
+// Printable BOQ. "Download PDF" uses the react-pdf route; the browser
 // print dialog also works and keeps the colours (see globals.css).
 export default async function BoqPrintPage({
   params,
@@ -131,13 +108,7 @@ export default async function BoqPrintPage({
           <div className="rounded-2xl bg-white/95 backdrop-blur shadow-sm border border-stone-200 p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <Image
-                  src="/tmcc-logo-full.png"
-                  alt="TM Construction Company"
-                  width={520}
-                  height={119}
-                  className="h-14 w-auto mb-3"
-                />
+                <BrandLogo className="h-14 w-auto mb-3" />
                 <h1 className="text-3xl font-bold text-brand-black">
                   Bill of Quantities &amp; Cost Estimate
                 </h1>

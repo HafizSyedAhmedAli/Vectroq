@@ -1,7 +1,7 @@
 // apps/web/src/components/intake/option-config.ts
 import { Building2, FileText, Home, Trees, Users } from "lucide-react";
-import type { Category, EngagementModel } from "@tmcc/shared-types";
-import type { HouseType } from "@tmcc/lead-intake";
+import type { Category, EngagementModel } from "@buildquote/shared-types";
+import type { HouseType } from "@buildquote/lead-intake";
 import type { CardOption } from "./OptionCards";
 
 export const MODEL_OPTIONS: CardOption<EngagementModel>[] = [
@@ -9,21 +9,21 @@ export const MODEL_OPTIONS: CardOption<EngagementModel>[] = [
     value: 1,
     label: "Land & Build, Then Sell",
     description:
-      "TM CC purchases the plot, designs and constructs the house, and offers the finished home for sale.",
+      "The company purchases the plot, designs and constructs the house, and offers the finished home for sale.",
     Icon: Home,
   },
   {
     value: 2,
     label: "Construction on Client's Plot",
     description:
-      "The client provides the plot, and TM CC handles the full design and construction of the house.",
+      "The client provides the plot, and the company handles the full design and construction of the house.",
     Icon: FileText,
   },
   {
     value: 3,
     label: "Client's Plot & Construction Cost",
     description:
-      "The plot and construction budget are provided by the client; TM CC manages the design and execution.",
+      "The plot and construction budget are provided by the client; the company manages the design and execution.",
     Icon: Users,
   },
 ];

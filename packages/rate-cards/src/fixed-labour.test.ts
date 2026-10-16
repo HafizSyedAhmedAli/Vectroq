@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { withFixedLabour } from "./fixed-labour";
 import { missingItemTypes } from "./rate-cards";
-import type { RateCard } from "@tmcc/shared-types";
+import type { RateCard } from "@buildquote/shared-types";
 
 const card = (
   category: RateCard["category"],
@@ -17,7 +17,7 @@ const card = (
 });
 
 describe("withFixedLabour", () => {
-  it("overrides searched labour rates with TMCC's fixed rates", () => {
+  it("overrides searched labour rates with the fixed labour rates", () => {
     const r = withFixedLabour(card("B"));
     const rate = (t: string) => r.items.find((i) => i.itemType === t)?.unitRate;
     expect(rate("masonry")).toBe(50);

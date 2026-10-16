@@ -1,5 +1,5 @@
 {
-  "name": "@tmcc/web",
+  "name": "@buildquote/web",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -8,11 +8,11 @@
     "@react-pdf/renderer": "^4.9.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
-    "@tmcc/cad-parser": "workspace:*",
-    "@tmcc/db": "workspace:*",
-    "@tmcc/lead-intake": "workspace:*",
-    "@tmcc/rate-cards": "workspace:*",
-    "@tmcc/shared-types": "workspace:*",
+    "@buildquote/cad-parser": "workspace:*",
+    "@buildquote/db": "workspace:*",
+    "@buildquote/lead-intake": "workspace:*",
+    "@buildquote/rate-cards": "workspace:*",
+    "@buildquote/shared-types": "workspace:*",
     "@vercel/blob": "^2.8.0",
     "ai": "^4.3.19",
     "class-variance-authority": "^0.7.1",
@@ -39,7 +39,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm --filter @tmcc/db generate && next build",
+    "build": "pnpm --filter @buildquote/db generate && next build",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",

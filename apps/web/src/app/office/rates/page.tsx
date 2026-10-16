@@ -1,7 +1,7 @@
 // apps/web/src/app/office/rates/page.tsx
 import { BadgeCheck, MapPin, ShieldCheck } from "lucide-react";
-import { prisma } from "@tmcc/db";
-import type { RateCardItem } from "@tmcc/shared-types";
+import { prisma } from "@buildquote/db";
+import type { RateCardItem } from "@buildquote/shared-types";
 import { SiteFooter } from "@/components/SiteFooter";
 import { RateSetReviewPanel } from "@/components/RateSetReviewPanel";
 import type {

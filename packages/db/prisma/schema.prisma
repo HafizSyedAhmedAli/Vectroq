@@ -32,10 +32,10 @@ model Lead {
   projects        Project[]
 }
 
-// FR-5/6/7: office staff work against a Project once a Lead's meeting has
-// happened. Kept separate from Lead (rather than adding these fields to
-// Lead directly) because a Lead can exist with no Project yet — a Project
-// is created when office follows up, per SRS §3 step 4.
+// Team members work against a Project once a Lead's meeting has happened.
+// Kept separate from Lead (rather than adding these fields to Lead directly)
+// because a Lead can exist with no Project yet — a Project is created when
+// the team follows up.
 model Project {
   id           String   @id @default(cuid())
   leadId       String
@@ -44,7 +44,7 @@ model Project {
   category     String
   city         String
   // NEW -> CAD_UPLOADED -> FINALIZED. Deliberately a plain string, not a
-  // Prisma enum, so office can move a project backward (e.g. re-upload
+  // Prisma enum, so the team can move a project backward (e.g. re-upload
   // after a bad DXF) without a migration.
   status       String   @default("NEW")
   meetingNotes String?
@@ -54,43 +54,42 @@ model Project {
   updatedAt    DateTime @updatedAt
 }
 
-// FR-8/9/10: one uploaded CAD file per project, holding the geometry
-// parseDxfToGeometry extracted. `geometry` and `boq` are stored as JSON
-// rather than normalized Room/Wall/Opening/BOQLineItem tables (as SRS §7
-// lists them) — same flat-JSON tradeoff the /api/leads route already makes
-// for `estimate`. Revisit if office ever needs to query across projects by
-// room type or line-item, rather than just loading one project's full
-// geometry for review.
+// One uploaded CAD file per project, holding the geometry parseDxfToGeometry
+// extracted. `geometry` and `boq` are stored as JSON rather than normalized
+// Room/Wall/Opening/BOQLineItem tables — same flat-JSON tradeoff the
+// /api/leads route already makes for `estimate`. Revisit if the team ever
+// needs to query across projects by room type or line-item, rather than just
+// loading one project's full geometry for review.
 model CadFile {
   id         String   @id @default(cuid())
   projectId  String   @unique
   project    Project  @relation(fields: [projectId], references: [id])
   fileName   String
-  format     String   @default("dxf") // FR-8: dwg->dxf conversion is not implemented yet — see cad-upload route
-  geometry   Json // Geometry shape from @tmcc/shared-types, staff-correctable per FR-10
-  boq        Json? // BOQResult once office finalizes (FR-13/14); null until then
+  format     String   @default("dxf") // dwg->dxf conversion is not implemented yet — see cad-upload route
+  geometry   Json // Geometry shape from @buildquote/shared-types, correctable by the team
+  boq        Json? // BOQResult once finalized; null until then
   uploadedAt DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
-// FR-16/17, §9.3: one presentation render per project, generated
-// independently from the BOQ pipeline (CadFile.boq) — the 3D render must
-// never be used to derive quantities, only shown to office/client. NFR-7:
-// this record simply won't exist yet if generation failed or hasn't been
-// tried; that must never block CadFile.boq from being finalized.
+// One presentation render per project, generated independently from the BOQ
+// pipeline (CadFile.boq) — the 3D render must never be used to derive
+// quantities, only shown to the team/client. This record simply won't exist
+// yet if generation failed or hasn't been tried; that must never block
+// CadFile.boq from being finalized.
 model Render {
   id          String   @id @default(cuid())
   projectId   String   @unique
   project     Project  @relation(fields: [projectId], references: [id])
   // Served from apps/web/public/renders for now (see the render route) —
-  // swap for real object storage (S3/Vercel Blob/etc, per §6) before this
+  // swap for real object storage (S3/Vercel Blob/etc) before this
   // needs to survive a redeploy or scale past one server.
   imageUrl    String
   promptUsed  String
   generatedAt DateTime @default(now())
 }
 
-// FR-15 / NFR-4: rate cards that office reviews and approves. A BOQ only
+// Rate cards that the team reviews and approves. A BOQ only
 // ever reads APPROVED rows, so totals stay stable and reviewable.
 // status is a plain string like Project.status: DRAFT | APPROVED | REJECTED | SUPERSEDED
 model RateSet {
@@ -98,7 +97,7 @@ model RateSet {
   city       String
   category   String
   status     String    @default("DRAFT")
-  origin     String    @default("manual") // manual | gemini
+  origin     String    @default("manual") // manual | csr
   taxPercent Float     @default(17)
   items      Json      // RateCardItem[]
   sources    Json?     // [{ itemType, sourceUrl, sourceDate, note }] from the AI refresh

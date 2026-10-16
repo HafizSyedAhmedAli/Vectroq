@@ -1,5 +1,5 @@
 // apps/web/src/lib/boq-format.ts
-import type { BOQLineItem, BOQResult, RateItemType } from "@tmcc/shared-types";
+import type { BOQLineItem, BOQResult, RateItemType } from "@buildquote/shared-types";
 
 export const GROUPS = [
   "Structure",

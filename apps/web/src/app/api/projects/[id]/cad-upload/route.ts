@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseDxfToGeometry } from "@tmcc/cad-parser";
-import { Prisma, prisma } from "@tmcc/db";
+import { parseDxfToGeometry } from "@buildquote/cad-parser";
+import { Prisma, prisma } from "@buildquote/db";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
     return NextResponse.json(
       {
         error:
-          ".dwg files aren't supported yet — DWG-to-DXF conversion (FR-8) isn't built. Please export the plan as .dxf and re-upload.",
+          ".dwg files aren't supported yet — DWG-to-DXF conversion isn't available. Please export the plan as .dxf and re-upload.",
       },
       { status: 422 },
     );

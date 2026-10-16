@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
 
-vi.mock("@tmcc/db", () => ({
+vi.mock("@buildquote/db", () => ({
   prisma: {
     project: { findUnique: vi.fn(), update: vi.fn() },
     cadFile: { upsert: vi.fn() },
@@ -16,7 +16,7 @@ vi.mock("@tmcc/db", () => ({
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
 
-import { prisma } from "@tmcc/db";
+import { prisma } from "@buildquote/db";
 
 function ctx(id: string) {
   return { params: Promise.resolve({ id }) };
@@ -90,7 +90,7 @@ describe("POST /api/projects/:id/cad-upload", () => {
     expect(res.status).toBe(404);
   });
 
-  it("rejects .dwg uploads with a clear message (FR-8 conversion not built yet)", async () => {
+  it("rejects .dwg uploads with a clear message", async () => {
     (prisma.project.findUnique as any).mockResolvedValue({ id: "p1" });
     const file = new File(["binary-ish content"], "plan.dwg");
 

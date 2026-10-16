@@ -5,8 +5,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ASSUMPTIONS, EXCLUSIONS, formatPkr } from "@/lib/boq-format";
 import { brand } from "@/lib/brand";
-import { prisma } from "@tmcc/db";
-import type { BOQResult, Geometry } from "@tmcc/shared-types";
+import { prisma } from "@buildquote/db";
+import type { BOQResult, Geometry } from "@buildquote/shared-types";
 import {
   Download,
   Home,
@@ -29,9 +29,9 @@ const MODEL_LABELS: Record<number, string> = {
   3: "Your Plot & Your Construction Cost",
 };
 
-// NOTE: this page now shows the full BOQ line items, the client's phone number
-// and a PDF download, as in the approved mockup. There is still no auth
-// (FR-20 access control isn't built), so anyone with the link can see it.
+// NOTE: this page shows the full BOQ line items, the client's phone number
+// and a PDF download. There is still no auth (access control isn't built),
+// so anyone with the link can see it.
 
 function DetailRow({
   icon,

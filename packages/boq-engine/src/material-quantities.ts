@@ -1,4 +1,4 @@
-import type { Geometry } from "@tmcc/shared-types";
+import type { Geometry } from "@buildquote/shared-types";
 
 export const MATERIAL_ASSUMPTIONS = {
   referenceThicknessFt: 0.75, // 9 in wall

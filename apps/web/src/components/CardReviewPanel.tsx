@@ -7,7 +7,7 @@ import type {
   Room,
   RoomType,
   Wall,
-} from "@tmcc/shared-types";
+} from "@buildquote/shared-types";
 import {
   BrickWall,
   Calculator,
@@ -58,7 +58,7 @@ function reorder<T>(items: T[], from: number, to: number): T[] {
   return next;
 }
 
-// FR-8/9/10/11/12/13: upload a DXF, let office staff correct what the parser
+// Upload a DXF, let the team correct what the parser
 // extracted, then price the corrected geometry. This talks to routes that
 // read/write a Project's one CadFile — it has no concept of picking a
 // project; the page embedding this decides which project's ID to pass in.
@@ -417,7 +417,7 @@ export function CadReviewPanel({
           {geometry.rooms.length === 0 && (
             <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
               No rooms were detected — this drawing may not follow the expected
-              layer convention (see SRS §9.1/9.3). Nothing was lost;
+              layer convention. Nothing was lost;
               double-check the file, or correct the quantities manually below.
             </p>
           )}

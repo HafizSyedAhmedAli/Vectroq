@@ -3,14 +3,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST, GET } from "./route";
 
-vi.mock("@tmcc/db", () => ({
+vi.mock("@buildquote/db", () => ({
   prisma: {
     lead: { findUnique: vi.fn() },
     project: { create: vi.fn(), findMany: vi.fn() },
   },
 }));
 
-import { prisma } from "@tmcc/db";
+import { prisma } from "@buildquote/db";
 
 function req(body: unknown) {
   return new Request("http://localhost/api/projects", {
@@ -42,7 +42,7 @@ describe("POST /api/projects", () => {
     expect(prisma.project.create).not.toHaveBeenCalled();
   });
 
-  it("creates a project against an existing lead (SRS §3 step 4) and returns 201", async () => {
+  it("creates a project against an existing lead and returns 201", async () => {
     (prisma.lead.findUnique as any).mockResolvedValue({ id: "lead_1" });
     (prisma.project.create as any).mockResolvedValue({
       id: "proj_1",

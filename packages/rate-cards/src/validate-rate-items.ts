@@ -1,4 +1,4 @@
-import type { RateCardItem } from "@tmcc/shared-types";
+import type { RateCardItem } from "@buildquote/shared-types";
 
 const TYPES = [
   "masonry",

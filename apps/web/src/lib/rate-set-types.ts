@@ -1,5 +1,5 @@
 // apps/web/src/lib/rate-set-types.ts
-import type { RateCardItem } from "@tmcc/shared-types";
+import type { RateCardItem } from "@buildquote/shared-types";
 
 export interface RateSourceItem {
   itemType: string;

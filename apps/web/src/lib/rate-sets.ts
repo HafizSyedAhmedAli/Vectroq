@@ -1,5 +1,5 @@
-import { prisma } from "@tmcc/db";
-import { withFixedLabour } from "@tmcc/rate-cards";
+import { prisma } from "@buildquote/db";
+import { withFixedLabour } from "@buildquote/rate-cards";
 import {
   canonicalCityName,
   CORE_MATERIAL_TYPES,
@@ -7,7 +7,7 @@ import {
   type Category,
   type RateCard,
   type RateCardItem,
-} from "@tmcc/shared-types";
+} from "@buildquote/shared-types";
 
 export class RateSetError extends Error {
   constructor(public code: "NOT_FOUND" | "NOT_DRAFT") {

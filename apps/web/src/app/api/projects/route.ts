@@ -1,9 +1,9 @@
 // apps/web/src/app/api/projects/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@tmcc/db";
+import { prisma } from "@buildquote/db";
 
-// FR-5/6: office turns a Lead into a Project once the design-brief meeting
-// (SRS §3 step 4) has happened. No auth/roles yet (FR-20 not started) — this
+// The team turns a Lead into a Project once the design-brief meeting has
+// happened. No auth/roles yet — this
 // route is reachable by anyone who can hit the API, same as /api/leads
 // today. Don't treat this as access-controlled.
 export async function POST(req: NextRequest) {

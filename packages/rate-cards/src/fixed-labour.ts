@@ -1,8 +1,8 @@
-import { fixedLabourItems } from "@tmcc/shared-types";
-import type { RateCard } from "@tmcc/shared-types";
+import { fixedLabourItems } from "@buildquote/shared-types";
+import type { RateCard } from "@buildquote/shared-types";
 
 /**
- * Overlays TM Construction Company's fixed labour rates on a card. Fixed rates
+ * Overlays the fixed labour rates on a card. Fixed rates
  * always win over anything found by search or saved in an older rate set, and
  * they are identical for every city.
  */

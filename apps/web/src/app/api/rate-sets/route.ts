@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateRateItems } from "@tmcc/rate-cards";
-import { prisma } from "@tmcc/db";
+import { validateRateItems } from "@buildquote/rate-cards";
+import { prisma } from "@buildquote/db";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
