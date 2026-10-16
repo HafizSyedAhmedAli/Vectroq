@@ -1,10 +1,10 @@
-import { calculateBoq } from "@buildquote/boq-engine";
+import { calculateBoq } from "@vectroq/boq-engine";
 import {
   taxPercentForModel,
   type BOQResult,
   type EngagementModel,
   type RateCard,
-} from "@buildquote/shared-types";
+} from "@vectroq/shared-types";
 import { REFERENCE_GEOMETRY } from "./reference-geometry";
 
 export interface EstimateInput {

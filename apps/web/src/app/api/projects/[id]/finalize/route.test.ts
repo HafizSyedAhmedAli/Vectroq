@@ -1,11 +1,11 @@
 // apps/web/src/app/api/projects/[id]/finalize/route.test.ts
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { RATE_ITEM_TYPES } from "@buildquote/shared-types";
-import type { Category, Geometry, RateCard } from "@buildquote/shared-types";
+import { RATE_ITEM_TYPES } from "@vectroq/shared-types";
+import type { Category, Geometry, RateCard } from "@vectroq/shared-types";
 import { POST } from "./route";
 
-vi.mock("@buildquote/db", () => ({
+vi.mock("@vectroq/db", () => ({
   prisma: {
     project: { findUnique: vi.fn(), update: vi.fn() },
     cadFile: { findUnique: vi.fn(), update: vi.fn() },
@@ -18,7 +18,7 @@ vi.mock("@/lib/rate-sets", async (importOriginal) => {
   return { ...actual, getRateCardWithBasis: vi.fn() };
 });
 
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
 
 const UNIT: Record<string, RateCard["items"][number]["unit"]> = {

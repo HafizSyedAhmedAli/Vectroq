@@ -13,7 +13,7 @@ import {
   FLOOR_OPTIONS,
   MAX_NOTES_LENGTH,
   TIMELINES,
-} from "@buildquote/lead-intake";
+} from "@vectroq/lead-intake";
 import { FileDropzone } from "./FileDropzone";
 import { SelectField, TextField } from "./fields";
 import { NotesField } from "./NotesField";

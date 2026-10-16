@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { RateCard } from "@buildquote/shared-types";
+import type { RateCard } from "@vectroq/shared-types";
 import { mergeRateCards } from "./merge-rate-cards";
 
 const base: RateCard = {

@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { BUDGET_RANGES, TIMELINES } from "@buildquote/lead-intake";
+import { BUDGET_RANGES, TIMELINES } from "@vectroq/lead-intake";
 import { IntakeForm } from "./IntakeForm";
 
 type User = ReturnType<typeof userEvent.setup>;

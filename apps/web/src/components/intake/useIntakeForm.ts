@@ -10,7 +10,7 @@ import {
   validateRequirements,
   type LeadIntakeErrors,
   type LeadIntakeInput,
-} from "@buildquote/lead-intake";
+} from "@vectroq/lead-intake";
 import {
   EMPTY_VALUES,
   toLeadInput,

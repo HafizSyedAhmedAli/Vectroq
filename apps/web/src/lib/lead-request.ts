@@ -1,5 +1,5 @@
 // apps/web/src/lib/lead-request.ts
-import type { LeadIntakeInput } from "@buildquote/lead-intake";
+import type { LeadIntakeInput } from "@vectroq/lead-intake";
 
 /** Accepts plain JSON, or multipart with a `data` JSON field and optional `file`. */
 export async function readLeadRequest(

@@ -7,7 +7,7 @@ import type {
   Room,
   RoomType,
   Wall,
-} from "@buildquote/shared-types";
+} from "@vectroq/shared-types";
 import {
   BrickWall,
   Calculator,

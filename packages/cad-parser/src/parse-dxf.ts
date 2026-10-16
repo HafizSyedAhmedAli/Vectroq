@@ -1,6 +1,6 @@
 // packages/cad-parser/src/parse-dxf.ts
 import DxfParser from "dxf-parser";
-import type { Geometry } from "@buildquote/shared-types";
+import type { Geometry } from "@vectroq/shared-types";
 import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
 
 // $INSUNITS code -> feet per drawing unit

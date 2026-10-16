@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { BOQResult, Geometry } from "@buildquote/shared-types";
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import { CadReviewPanel } from "@/components/CardReviewPanel";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ProjectStepper } from "@/components/ProjectStepper";

@@ -1,8 +1,8 @@
 // packages/lead-intake/src/options.ts
 
-import { CITY_NAMES } from "@buildquote/shared-types";
+import { CITY_NAMES } from "@vectroq/shared-types";
 
-// Every city in Pakistan, A to Z (see @buildquote/shared-types pakistan-cities.ts).
+// Every city in Pakistan, A to Z (see @vectroq/shared-types pakistan-cities.ts).
 // A city can be servable for intake before a rate card exists for it: nearby
 // markets' approved rates are used when the city has none.
 export const CITIES: readonly string[] = CITY_NAMES;

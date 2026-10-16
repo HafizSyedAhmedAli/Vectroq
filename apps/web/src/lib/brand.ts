@@ -20,6 +20,6 @@ export const brand: Brand = {
     "Vectroq turns a floor plan into a priced Bill of Quantities and a 3D view in minutes.",
   logo: { src: "/logo.png", width: 1560, height: 410 },
   colors: { primary: "#2563EB" },
-  contact: {},
+  contact: { website: "vectroq.vercel.app" },
   offices: [],
 };

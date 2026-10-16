@@ -6,7 +6,7 @@ import { IntakeForm, type IntakeSubmitResult } from "@/components/IntakeForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { brand } from "@/lib/brand";
 import { buildLeadRequest } from "@/lib/build-lead-request";
-import type { LeadIntakeInput } from "@buildquote/lead-intake";
+import type { LeadIntakeInput } from "@vectroq/lead-intake";
 import { MapPin, Phone, ShieldCheck } from "lucide-react";
 
 export default function HomePage() {
@@ -58,15 +58,15 @@ export default function HomePage() {
           <div className="flex items-center gap-3 text-xs font-semibold tracking-wide uppercase mb-4">
             <span className="h-0.5 w-8 bg-brand" />
             <span className="text-brand-black">
-              House Construction <span className="text-brand">Division</span>
+              Project <span className="text-brand">Request</span>
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
-            Let&apos;s Build Your <span className="text-brand">Home</span>
+            Request a <span className="text-brand">Quote</span>
           </h1>
           <p className="mt-4 max-w-md text-stone-500">
-            Tell us about your project and our team will contact you to discuss
-            the next steps.
+            Tell us about your project and we&apos;ll get back to you with the
+            next steps.
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-stone-600">
             <span className="flex items-center gap-1.5">

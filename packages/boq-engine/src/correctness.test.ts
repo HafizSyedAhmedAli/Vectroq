@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { calculateBoq } from "./calculate-boq";
-import type { Geometry, RateCard } from "@buildquote/shared-types";
+import type { Geometry, RateCard } from "@vectroq/shared-types";
 
 const g: Geometry = {
   walls: [

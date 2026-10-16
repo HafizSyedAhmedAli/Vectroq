@@ -42,7 +42,7 @@ export function OfficeNav() {
               </Link>
             ))}
             <Link
-              href="/"
+              href="/request"
               target="_blank"
               className="ml-2 px-3 py-1.5 text-stone-500 hover:text-brand"
             >

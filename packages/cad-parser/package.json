@@ -1,10 +1,10 @@
 {
-  "name": "@buildquote/cad-parser",
+  "name": "@vectroq/cad-parser",
   "version": "0.0.1",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
-    "@buildquote/shared-types": "workspace:*",
+    "@vectroq/shared-types": "workspace:*",
     "dxf-parser": "^1.1.2"
   },
   "devDependencies": {

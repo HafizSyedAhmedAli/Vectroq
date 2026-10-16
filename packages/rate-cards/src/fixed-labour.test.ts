@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { withFixedLabour } from "./fixed-labour";
 import { missingItemTypes } from "./rate-cards";
-import type { RateCard } from "@buildquote/shared-types";
+import type { RateCard } from "@vectroq/shared-types";
 
 const card = (
   category: RateCard["category"],

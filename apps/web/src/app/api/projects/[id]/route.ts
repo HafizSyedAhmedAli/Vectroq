@@ -1,6 +1,6 @@
 // apps/web/src/app/api/projects/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 
 interface RouteContext {
   params: Promise<{ id: string }>;

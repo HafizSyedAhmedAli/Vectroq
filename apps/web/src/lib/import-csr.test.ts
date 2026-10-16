@@ -2,14 +2,14 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@buildquote/db", () => ({
+vi.mock("@vectroq/db", () => ({
   prisma: {
     $transaction: vi.fn().mockResolvedValue([]),
     rateSet: { updateMany: vi.fn(), createMany: vi.fn() },
   },
 }));
 
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 import { importCsr } from "./import-csr";
 
 const HEADER = "city,itemType,unit,unitRate";

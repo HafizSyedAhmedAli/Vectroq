@@ -1,15 +1,15 @@
 // apps/web/src/app/api/leads/route.test.ts
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { BUDGET_RANGES, TIMELINES } from "@buildquote/lead-intake";
+import { BUDGET_RANGES, TIMELINES } from "@vectroq/lead-intake";
 import { POST } from "./route";
 
-vi.mock("@buildquote/db", () => ({
+vi.mock("@vectroq/db", () => ({
   prisma: { lead: { create: vi.fn(), update: vi.fn() } },
 }));
 vi.mock("@/lib/save-plan-file", () => ({ savePlanFile: vi.fn() }));
 
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 import { savePlanFile } from "@/lib/save-plan-file";
 
 const validBody = {

@@ -1,5 +1,5 @@
 // apps/web/src/lib/rate-basis.ts
-import type { RateBasisInfo } from "@buildquote/shared-types";
+import type { RateBasisInfo } from "@vectroq/shared-types";
 
 interface BasisInput {
   place: string;

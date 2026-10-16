@@ -1,6 +1,6 @@
-# BuildQuote
+# Vectroq
 
-> "BuildQuote" is a working name. The name, tagline, logo, colors and contact details live in one file: `apps/web/src/lib/brand.ts`.
+> "Vectroq" is a working name. The name, tagline, logo, colors and contact details live in one file: `apps/web/src/lib/brand.ts`.
 
 Upload a house plan, get a priced Bill of Quantities (BOQ) and an interactive 3D view.
 
@@ -141,7 +141,7 @@ packages/
   db/                     Prisma schema, migrations, client
 ```
 
-Packages are published inside the workspace under the `@buildquote/*` scope.
+Packages are published inside the workspace under the `@vectroq/*` scope.
 
 ### Setup
 
@@ -156,7 +156,7 @@ cp apps/web/.env.example apps/web/.env
 
 cd packages/db && pnpm migrate && pnpm generate && cd ../..
 
-pnpm --filter @buildquote/web dev      # http://localhost:3000
+pnpm --filter @vectroq/web dev      # http://localhost:3000
 ```
 
 Optional assets in `apps/web/public/`: `demo.jpg` (hero image) and a logo file referenced from `brand.ts`. Without a logo, the product name is shown as text.
@@ -176,11 +176,11 @@ Optional assets in `apps/web/public/`: `demo.jpg` (hero image) and a logo file r
 pnpm test                                  # unit tests in every package
 pnpm typecheck                             # TypeScript check in every package
 pnpm test:e2e                              # Playwright (needs the dev server on :3000)
-pnpm --filter @buildquote/web build        # production build
-pnpm --filter @buildquote/boq-engine test  # one package
+pnpm --filter @vectroq/web build        # production build
+pnpm --filter @vectroq/boq-engine test  # one package
 
 # Import a rate schedule from the command line
-pnpm --filter @buildquote/web exec tsx scripts/import-rates.ts data/pakistan-2026.csv \
+pnpm --filter @vectroq/web exec tsx scripts/import-rates.ts data/pakistan-2026.csv \
   --document "Sample rates" --year 2026 --by "Your name" --categories A,B,C
 ```
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { Geometry } from "@buildquote/shared-types";
+import type { Geometry } from "@vectroq/shared-types";
 import { estimateFromGeometry } from "./estimate-project";
 import { estimateLead } from "./estimate-lead";
 import { testRateCard } from "./test-rate-card";

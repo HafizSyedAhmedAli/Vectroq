@@ -1,4 +1,4 @@
-import type { Room, RoomType, Wall } from "@buildquote/shared-types";
+import type { Room, RoomType, Wall } from "@vectroq/shared-types";
 
 export interface Seg {
   x1: number;

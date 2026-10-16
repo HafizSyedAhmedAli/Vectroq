@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
 
-vi.mock("@buildquote/db", () => ({
+vi.mock("@vectroq/db", () => ({
   prisma: {
     project: { findUnique: vi.fn(), update: vi.fn() },
     cadFile: { upsert: vi.fn() },
@@ -16,7 +16,7 @@ vi.mock("@buildquote/db", () => ({
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
 
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 
 function ctx(id: string) {
   return { params: Promise.resolve({ id }) };

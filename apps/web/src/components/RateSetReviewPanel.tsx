@@ -16,7 +16,7 @@ import {
   Tag,
   User,
 } from "lucide-react";
-import { CITY_NAMES, type RateCardItem } from "@buildquote/shared-types";
+import { CITY_NAMES, type RateCardItem } from "@vectroq/shared-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

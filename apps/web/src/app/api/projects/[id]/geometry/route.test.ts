@@ -2,12 +2,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PATCH } from "./route";
 
-vi.mock("@buildquote/db", () => ({
+vi.mock("@vectroq/db", () => ({
   prisma: { cadFile: { findUnique: vi.fn(), update: vi.fn() } },
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
 
-import { Prisma, prisma } from "@buildquote/db";
+import { Prisma, prisma } from "@vectroq/db";
 
 function ctx(id: string) {
   return { params: Promise.resolve({ id }) };

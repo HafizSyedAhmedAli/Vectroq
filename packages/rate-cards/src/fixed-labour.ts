@@ -1,5 +1,5 @@
-import { fixedLabourItems } from "@buildquote/shared-types";
-import type { RateCard } from "@buildquote/shared-types";
+import { fixedLabourItems } from "@vectroq/shared-types";
+import type { RateCard } from "@vectroq/shared-types";
 
 /**
  * Overlays the fixed labour rates on a card. Fixed rates

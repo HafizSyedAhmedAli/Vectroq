@@ -1,6 +1,6 @@
 // apps/web/src/app/api/projects/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 
 // The team turns a Lead into a Project once the design-brief meeting has
 // happened. No auth/roles yet — this

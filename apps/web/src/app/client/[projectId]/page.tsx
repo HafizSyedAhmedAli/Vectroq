@@ -5,8 +5,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ASSUMPTIONS, EXCLUSIONS, formatPkr } from "@/lib/boq-format";
 import { brand } from "@/lib/brand";
-import { prisma } from "@buildquote/db";
-import type { BOQResult, Geometry } from "@buildquote/shared-types";
+import { prisma } from "@vectroq/db";
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import {
   Download,
   Home,

@@ -3,14 +3,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST, GET } from "./route";
 
-vi.mock("@buildquote/db", () => ({
+vi.mock("@vectroq/db", () => ({
   prisma: {
     lead: { findUnique: vi.fn() },
     project: { create: vi.fn(), findMany: vi.fn() },
   },
 }));
 
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 
 function req(body: unknown) {
   return new Request("http://localhost/api/projects", {

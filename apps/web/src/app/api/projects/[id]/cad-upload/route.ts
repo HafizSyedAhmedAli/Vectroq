@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseDxfToGeometry } from "@buildquote/cad-parser";
-import { Prisma, prisma } from "@buildquote/db";
+import { parseDxfToGeometry } from "@vectroq/cad-parser";
+import { Prisma, prisma } from "@vectroq/db";
 
 interface RouteContext {
   params: Promise<{ id: string }>;

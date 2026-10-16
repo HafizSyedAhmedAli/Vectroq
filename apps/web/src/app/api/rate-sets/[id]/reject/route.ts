@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@buildquote/db";
+import { prisma } from "@vectroq/db";
 
 interface RouteContext {
   params: Promise<{ id: string }>;

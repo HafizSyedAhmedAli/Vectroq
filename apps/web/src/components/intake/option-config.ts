@@ -1,7 +1,7 @@
 // apps/web/src/components/intake/option-config.ts
 import { Building2, FileText, Home, Trees, Users } from "lucide-react";
-import type { Category, EngagementModel } from "@buildquote/shared-types";
-import type { HouseType } from "@buildquote/lead-intake";
+import type { Category, EngagementModel } from "@vectroq/shared-types";
+import type { HouseType } from "@vectroq/lead-intake";
 import type { CardOption } from "./OptionCards";
 
 export const MODEL_OPTIONS: CardOption<EngagementModel>[] = [

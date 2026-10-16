@@ -1,5 +1,5 @@
 // packages/cad-parser/src/place-openings.ts
-import type { Wall } from "@buildquote/shared-types";
+import type { Wall } from "@vectroq/shared-types";
 import type { Point2D } from "./polygon";
 
 export interface Placement {

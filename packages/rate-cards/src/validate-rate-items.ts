@@ -1,4 +1,4 @@
-import type { RateCardItem } from "@buildquote/shared-types";
+import type { RateCardItem } from "@vectroq/shared-types";
 
 const TYPES = [
   "masonry",

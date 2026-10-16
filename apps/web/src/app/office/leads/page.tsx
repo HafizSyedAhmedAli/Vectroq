@@ -1,7 +1,7 @@
 // apps/web/src/app/office/leads/page.tsx
 import Link from "next/link";
 import { ArrowRight, House, Users } from "lucide-react";
-import { prisma, type Lead } from "@buildquote/db";
+import { prisma, type Lead } from "@vectroq/db";
 import { ConvertLeadForm } from "@/components/ConvertLeadForm";
 import { SiteFooter } from "@/components/SiteFooter";
 

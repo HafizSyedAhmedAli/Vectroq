@@ -4,10 +4,10 @@ import {
   validateLeadIntake,
   validatePlanFile,
   type LeadIntakeInput,
-} from "@buildquote/lead-intake";
-import { canonicalCityName } from "@buildquote/shared-types";
-import { estimateLead } from "@buildquote/rate-cards";
-import { prisma } from "@buildquote/db";
+} from "@vectroq/lead-intake";
+import { canonicalCityName } from "@vectroq/shared-types";
+import { estimateLead } from "@vectroq/rate-cards";
+import { prisma } from "@vectroq/db";
 import { getLiveRateCard } from "@/lib/rate-sets";
 import { pickLeadData, readLeadRequest } from "@/lib/lead-request";
 import { savePlanFile } from "@/lib/save-plan-file";

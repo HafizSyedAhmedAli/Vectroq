@@ -1,5 +1,5 @@
 {
-  "name": "buildquote",
+  "name": "vectroq",
   "private": true,
   "scripts": {
     "test": "pnpm -r run test",

@@ -1,8 +1,8 @@
 // packages/rate-cards/src/test-rate-card.ts
 // TEST-ONLY fixture. Not exported from index.ts and never imported by app
 // code: the app has no built-in rates, so tests supply their own.
-import { RATE_ITEM_TYPES } from "@buildquote/shared-types";
-import type { RateCard, RateCardItem } from "@buildquote/shared-types";
+import { RATE_ITEM_TYPES } from "@vectroq/shared-types";
+import type { RateCard, RateCardItem } from "@vectroq/shared-types";
 
 const UNIT: Record<string, RateCardItem["unit"]> = {
   steelFixing: "ton",

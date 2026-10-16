@@ -3,6 +3,7 @@ import "./globals.css";
 import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://vectroq.vercel.app"),
   title: brand.name,
   description: brand.description,
 };

@@ -4,7 +4,7 @@
 import { useMemo, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, Text } from "@react-three/drei";
-import type { Geometry } from "@buildquote/shared-types";
+import type { Geometry } from "@vectroq/shared-types";
 
 const SILL_FT = 3; // window sill height
 

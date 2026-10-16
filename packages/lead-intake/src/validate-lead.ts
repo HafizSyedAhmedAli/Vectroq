@@ -1,6 +1,6 @@
 // packages/lead-intake/src/validate-lead.ts
-import type { Category, EngagementModel } from "@buildquote/shared-types";
-import { findCity } from "@buildquote/shared-types";
+import type { Category, EngagementModel } from "@vectroq/shared-types";
+import { findCity } from "@vectroq/shared-types";
 import {
   BEDROOM_OPTIONS,
   BUDGET_RANGES,

@@ -1,7 +1,7 @@
 // apps/web/src/app/api/projects/[id]/geometry/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import type { Geometry } from "@buildquote/shared-types";
-import { Prisma, prisma } from "@buildquote/db";
+import type { Geometry } from "@vectroq/shared-types";
+import { Prisma, prisma } from "@vectroq/db";
 
 interface RouteContext {
   params: Promise<{ id: string }>;

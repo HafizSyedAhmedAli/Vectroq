@@ -1,5 +1,4 @@
 // apps/web/src/components/intake/StepConfirm.tsx
-import { brand } from "@/lib/brand";
 import { FieldError } from "./fields";
 import type { StepProps } from "./types";
 
@@ -27,8 +26,7 @@ export function StepConfirm({
             onChange={(e) => setField("consent", e.target.checked)}
             className="mt-0.5 size-4 accent-brand"
           />
-          I agree to be contacted by {brand.name} Company regarding my
-          project request.
+          I agree to be contacted regarding my project request.
         </label>
         <FieldError message={errors.consent} />
       </div>

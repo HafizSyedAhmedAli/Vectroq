@@ -5,7 +5,7 @@ import type {
   Geometry,
   RateCard,
   RateItemType,
-} from "@buildquote/shared-types";
+} from "@vectroq/shared-types";
 import {
   brickCount,
   cementBags,

@@ -1,8 +1,8 @@
 // apps/web/src/app/api/projects/[id]/boq-pdf/route.ts
 import { renderBoqPdf } from "@/lib/boq-pdf";
 import { brand } from "@/lib/brand";
-import { prisma } from "@buildquote/db";
-import type { BOQResult, Geometry } from "@buildquote/shared-types";
+import { prisma } from "@vectroq/db";
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";

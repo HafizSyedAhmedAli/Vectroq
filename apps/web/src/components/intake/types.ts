@@ -1,10 +1,10 @@
 // apps/web/src/components/intake/types.ts
-import type { BOQResult, Category, EngagementModel } from "@buildquote/shared-types";
+import type { BOQResult, Category, EngagementModel } from "@vectroq/shared-types";
 import type {
   HouseType,
   LeadIntakeErrors,
   LeadIntakeInput,
-} from "@buildquote/lead-intake";
+} from "@vectroq/lead-intake";
 
 export interface IntakeSubmitResult {
   estimate: BOQResult | null;

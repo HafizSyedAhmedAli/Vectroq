@@ -10,7 +10,7 @@ import {
   CITY_NAMES,
   type Category,
   type EngagementModel,
-} from "@buildquote/shared-types";
+} from "@vectroq/shared-types";
 import {
   ArrowRight,
   FileText,

@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { BOQResult, Geometry } from "@buildquote/shared-types";
-import { prisma } from "@buildquote/db";
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import { prisma } from "@vectroq/db";
 import { ProjectWorkspace } from "@/components/ProjectWorkspace";
 import { ProjectDetailsCard } from "@/components/ProjectDetailsCard";
 import { SiteFooter } from "@/components/SiteFooter";

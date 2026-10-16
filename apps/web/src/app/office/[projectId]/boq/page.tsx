@@ -16,8 +16,8 @@ import {
   Tag,
   User,
 } from "lucide-react";
-import type { BOQResult, Geometry } from "@buildquote/shared-types";
-import { prisma } from "@buildquote/db";
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import { prisma } from "@vectroq/db";
 import { BoqTable } from "@/components/BoqTable";
 import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
 

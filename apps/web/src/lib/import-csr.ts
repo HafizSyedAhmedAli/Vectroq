@@ -1,12 +1,12 @@
 // apps/web/src/lib/import-csr.ts
-import { parseCsrCsv } from "@buildquote/rate-cards";
+import { parseCsrCsv } from "@vectroq/rate-cards";
 import {
   canonicalCityName,
   CORE_MATERIAL_TYPES,
   type Category,
   type RateCardItem,
-} from "@buildquote/shared-types";
-import { prisma } from "@buildquote/db";
+} from "@vectroq/shared-types";
+import { prisma } from "@vectroq/db";
 import { CSR_CSV_MAX_BYTES } from "./rate-set-types";
 
 export interface ImportCsrInput {
