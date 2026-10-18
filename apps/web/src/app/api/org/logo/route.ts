@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
+import { guard } from "@/lib/auth/guard";
 
 const MAX_BYTES = 1024 * 1024;
 
 export async function POST(req: NextRequest) {
-  const org = await getCurrentOrg();
+  const g = await guard("OWNER"); // minimum role from the table
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
   const file = (await req.formData()).get("file");
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "Choose a file." }, { status: 400 });

@@ -1,24 +1,30 @@
 // apps/web/src/app/api/projects/[id]/finalize/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { guard } from "@/lib/auth/guard";
+import { toRateBasisInfo } from "@/lib/rate-basis";
+import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
+import { prisma } from "@vectroq/db";
+import { estimateFromGeometry } from "@vectroq/rate-cards";
 import type {
   BOQResult,
   EngagementModel,
   Geometry,
 } from "@vectroq/shared-types";
-import { estimateFromGeometry } from "@vectroq/rate-cards";
-import { prisma } from "@vectroq/db";
-import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
-import { toRateBasisInfo } from "@/lib/rate-basis";
-import { getCurrentOrg } from "@/lib/org";
+import { NextRequest, NextResponse } from "next/server";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
 export async function POST(_req: NextRequest, { params }: RouteContext) {
+  const g = await guard("ESTIMATOR");
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
   const { id: projectId } = await params;
 
-  const project = await prisma.project.findUnique({ where: { id: projectId } });
+  const project = await prisma.project.findFirst({
+    where: { id: projectId, organizationId: org.id },
+  });
+
   if (!project)
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
 
@@ -35,7 +41,6 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
   // project is not marked FINALIZED.
   let resolved;
   try {
-    const org = await getCurrentOrg();
     resolved = await getRateCardWithBasis(org.id, project.city, category);
   } catch (err) {
     if (err instanceof RateUnavailableError) {

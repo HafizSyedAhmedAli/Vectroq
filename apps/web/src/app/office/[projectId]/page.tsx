@@ -7,8 +7,10 @@ import { prisma } from "@vectroq/db";
 import { ProjectWorkspace } from "@/components/ProjectWorkspace";
 import { ProjectDetailsCard } from "@/components/ProjectDetailsCard";
 import { SiteFooter } from "@/components/SiteFooter";
-import { getCurrentOrg } from "@/lib/org";
+import { getCurrentOrg, requirePage } from "@/lib/org";
 import { brandFromOrg } from "@/lib/brand";
+import { ShareLinkPanel } from "@/components/ShareLinkPanel";
+import { hasRole } from "@/lib/auth/roles";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +31,12 @@ export default async function OfficeProjectPage({
 }: {
   params: Promise<{ projectId: string }>;
 }) {
-  const org = await getCurrentOrg();
+  const auth = await requirePage();
+
+  const org = auth.org;
+
   const brand = brandFromOrg(org);
+
   const { projectId } = await params;
 
   const project = await prisma.project.findFirst({
@@ -116,6 +122,26 @@ export default async function OfficeProjectPage({
               Manage rates <ArrowRight className="size-4" />
             </Link>
           </div>
+
+          {project.cadFile?.boq && hasRole(auth.role, "ESTIMATOR") && (
+            <div className="mt-4">
+              <ShareLinkPanel
+                projectId={project.id}
+                initial={
+                  project.shareToken && project.shareExpiresAt
+                    ? {
+                        token: project.shareToken,
+                        expiresAt: project.shareExpiresAt.toISOString(),
+                        label: project.shareExpiresAt.toLocaleDateString(
+                          "en-PK",
+                          { dateStyle: "medium" },
+                        ),
+                      }
+                    : null
+                }
+              />
+            </div>
+          )}
 
           {project.meetingNotes && (
             <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/90 px-5 py-3 text-sm text-amber-900">

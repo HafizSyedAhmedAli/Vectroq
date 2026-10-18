@@ -171,11 +171,17 @@ export default function LandingPage() {
             ))}
           </nav>
           <Link
-            href="/office"
+            href="/signup"
             className="group inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/25 transition hover:-translate-y-0.5 hover:bg-brand-dark"
           >
             Try the demo
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+          <Link
+            href="/login"
+            className="text-sm font-medium text-stone-600 hover:text-brand"
+          >
+            Log in
           </Link>
         </div>
       </header>

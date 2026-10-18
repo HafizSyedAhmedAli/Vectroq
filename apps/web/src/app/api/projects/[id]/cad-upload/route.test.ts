@@ -10,13 +10,25 @@ import { POST } from "./route";
 
 vi.mock("@vectroq/db", () => ({
   prisma: {
-    project: { findUnique: vi.fn(), update: vi.fn() },
+    project: { findFirst: vi.fn(), update: vi.fn() },
     cadFile: { upsert: vi.fn() },
   },
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
 
 import { prisma } from "@vectroq/db";
+
+vi.mock("@/lib/auth/guard", () => ({
+  guard: vi.fn().mockResolvedValue({
+    ok: true,
+    auth: {
+      org: { id: "org_1", slug: "demo" },
+      role: "OWNER",
+      user: { id: "u1", email: "t@t.co", name: "Test" },
+    },
+  }),
+}));
+import { guard } from "@/lib/auth/guard";
 
 function ctx(id: string) {
   return { params: Promise.resolve({ id }) };
@@ -81,7 +93,7 @@ describe("POST /api/projects/:id/cad-upload", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("404s when the project doesn't exist", async () => {
-    (prisma.project.findUnique as any).mockResolvedValue(null);
+    (prisma.project.findFirst as any).mockResolvedValue(null);
     const file = new File([MINIMAL_DXF], "plan.dxf", {
       type: "application/dxf",
     });
@@ -91,7 +103,7 @@ describe("POST /api/projects/:id/cad-upload", () => {
   });
 
   it("rejects .dwg uploads with a clear message", async () => {
-    (prisma.project.findUnique as any).mockResolvedValue({ id: "p1" });
+    (prisma.project.findFirst as any).mockResolvedValue({ id: "p1" });
     const file = new File(["binary-ish content"], "plan.dwg");
 
     const res = await POST(uploadReq(file) as any, ctx("p1"));
@@ -103,7 +115,7 @@ describe("POST /api/projects/:id/cad-upload", () => {
   });
 
   it("parses a valid .dxf, stores the geometry, and marks the project CAD_UPLOADED", async () => {
-    (prisma.project.findUnique as any).mockResolvedValue({ id: "p1" });
+    (prisma.project.findFirst as any).mockResolvedValue({ id: "p1" });
     (prisma.cadFile.upsert as any).mockImplementation(({ create }: any) =>
       Promise.resolve({ id: "cad_1", ...create }),
     );
@@ -122,7 +134,7 @@ describe("POST /api/projects/:id/cad-upload", () => {
   });
 
   it("returns 422 (not a 500) when the file can't be parsed as DXF", async () => {
-    (prisma.project.findUnique as any).mockResolvedValue({ id: "p1" });
+    (prisma.project.findFirst as any).mockResolvedValue({ id: "p1" });
     const file = new File(["not a dxf file at all"], "plan.dxf");
 
     const res = await POST(uploadReq(file) as any, ctx("p1"));

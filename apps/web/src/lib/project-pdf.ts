@@ -1,0 +1,64 @@
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import type { Prisma } from "@vectroq/db";
+import { renderBoqPdf } from "@/lib/boq-pdf";
+import { brandFromOrg } from "@/lib/brand";
+
+export type ProjectForPdf = Prisma.ProjectGetPayload<{
+  include: { lead: true; cadFile: true; organization: true };
+}>;
+
+const MODEL_LABELS: Record<number, string> = {
+  1: "Model 1 - Land & Build, Then Sell",
+  2: "Model 2 - Construction on Client's Plot",
+  3: "Model 3 - Client's Plot & Client's Construction Cost",
+};
+
+async function fetchLogo(url: string | null): Promise<Buffer | null> {
+  if (!url) return null;
+  try {
+    const res = await fetch(url);
+    return res.ok ? Buffer.from(await res.arrayBuffer()) : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function projectPdfResponse(
+  project: ProjectForPdf,
+): Promise<Response> {
+  if (!project.cadFile?.boq) {
+    return Response.json(
+      { error: "No BOQ has been calculated for this project yet" },
+      { status: 404 },
+    );
+  }
+  const brand = brandFromOrg(project.organization!);
+  const boq = project.cadFile.boq as unknown as BOQResult;
+  const geometry = project.cadFile.geometry as unknown as Geometry;
+  const areaSqFt = Math.round(geometry.rooms.reduce((s, r) => s + r.area, 0));
+
+  const pdf = await renderBoqPdf({
+    brand,
+    boq,
+    logo: await fetchLogo(brand.logoUrl),
+    clientName: project.lead.name,
+    contact: project.lead.contact,
+    city: project.city,
+    category: project.category,
+    engagement: MODEL_LABELS[project.model] ?? `Model ${project.model}`,
+    areaSqFt,
+    dateLabel: new Date().toLocaleDateString("en-PK", { dateStyle: "long" }),
+  });
+
+  const safeName =
+    project.lead.name.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") ||
+    "project";
+
+  return new Response(new Uint8Array(pdf), {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename="BOQ-${safeName}.pdf"`,
+      "Cache-Control": "no-store",
+    },
+  });
+}

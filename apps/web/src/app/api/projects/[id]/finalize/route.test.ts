@@ -7,11 +7,23 @@ import { POST } from "./route";
 
 vi.mock("@vectroq/db", () => ({
   prisma: {
-    project: { findUnique: vi.fn(), update: vi.fn() },
+    project: { findFirst: vi.fn(), update: vi.fn() },
     cadFile: { findUnique: vi.fn(), update: vi.fn() },
     rateSet: { findFirst: vi.fn().mockResolvedValue(null) },
   },
 }));
+
+vi.mock("@/lib/auth/guard", () => ({
+  guard: vi.fn().mockResolvedValue({
+    ok: true,
+    auth: {
+      org: { id: "org_1", slug: "demo" },
+      role: "OWNER",
+      user: { id: "u1", email: "t@t.co", name: "Test" },
+    },
+  }),
+}));
+import { guard } from "@/lib/auth/guard";
 
 vi.mock("@/lib/rate-sets", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/rate-sets")>();
@@ -87,7 +99,7 @@ const GEOMETRY: Geometry = {
 };
 
 function arrange(city: string) {
-  (prisma.project.findUnique as any).mockResolvedValue({
+  (prisma.project.findFirst as any).mockResolvedValue({
     id: "p1",
     city,
     category: "B",
@@ -112,7 +124,7 @@ describe("POST /api/projects/:id/finalize", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("404s when the project doesn't exist", async () => {
-    (prisma.project.findUnique as any).mockResolvedValue(null);
+    (prisma.project.findFirst as any).mockResolvedValue(null);
 
     const res = await POST(req() as any, ctx("missing"));
     expect(res.status).toBe(404);
@@ -120,7 +132,7 @@ describe("POST /api/projects/:id/finalize", () => {
   });
 
   it("404s when no CAD file has been uploaded for the project yet", async () => {
-    (prisma.project.findUnique as any).mockResolvedValue({
+    (prisma.project.findFirst as any).mockResolvedValue({
       id: "p1",
       city: "Karachi",
       category: "B",
@@ -177,6 +189,7 @@ describe("POST /api/projects/:id/finalize", () => {
       where: { id: "p1" },
       data: { status: "FINALIZED" },
     });
+    expect(getRateCardWithBasis).toHaveBeenCalledWith("org_1", "Karachi", "B");
   });
 
   it("flags the BOQ when another market's rates were used", async () => {

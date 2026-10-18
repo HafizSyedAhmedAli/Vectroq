@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { validateRateItems } from "@vectroq/rate-cards";
 import { prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
+import { guard } from "@/lib/auth/guard";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
@@ -15,7 +16,9 @@ export async function POST(req: NextRequest) {
   const v = validateRateItems(body.items);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
 
-  const org = await getCurrentOrg();
+  const g = await guard("ESTIMATOR"); // minimum role from the table
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
   const draft = await prisma.rateSet.create({
     data: {
       organizationId: org.id,

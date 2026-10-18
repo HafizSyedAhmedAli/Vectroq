@@ -1,14 +1,14 @@
-import Link from "next/link";
+import { EmbedCode } from "@/components/EmbedCode";
 import { OrgSettingsForm } from "@/components/OrgSettingsForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { brandFromOrg } from "@/lib/brand";
-import { getCurrentOrg } from "@/lib/org";
-import { EmbedCode } from "@/components/EmbedCode";
+import { requirePage } from "@/lib/org";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const org = await getCurrentOrg();
+  const { org } = await requirePage("OWNER");
   const brand = brandFromOrg(org);
   return (
     <>

@@ -7,47 +7,83 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { slugify } from "@/lib/org-slug";
+import { AuthSubmit } from "@/components/auth/AuthSubmit";
+
 
 export function SignupForm() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
+  const [f, setF] = useState({
+    name: "",
+    email: "",
+    password: "",
+    company: "",
+    slug: "",
+  });
   const [slugTouched, setSlugTouched] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const set = (k: keyof typeof f, v: string) => setF((p) => ({ ...p, [k]: v }));
 
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/orgs", {
+    const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, slug }),
+      body: JSON.stringify(f),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       setBusy(false);
-      return setError(data.error ?? "Could not create your company.");
+      return setError(data.error ?? "Could not create your account.");
     }
     router.push("/office/settings");
+    router.refresh();
   }
 
+  const field = (
+    id: string,
+    label: string,
+    key: keyof typeof f,
+    type = "text",
+    auto?: string,
+  ) => (
+    <div>
+      <Label htmlFor={id}>{label}</Label>
+      <Input
+        id={id}
+        type={type}
+        autoComplete={auto}
+        className="mt-1.5 h-11"
+        value={f[key]}
+        onChange={(e) => set(key, e.target.value)}
+      />
+    </div>
+  );
+
   return (
-    <form
-      onSubmit={submit}
-      className="space-y-5 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
-    >
+    <form onSubmit={submit} className="space-y-5">
+      {field("su-name", "Your name", "name", "text", "name")}
+      {field("su-email", "Email", "email", "email", "email")}
+      {field(
+        "su-pw",
+        "Password (min 8 characters)",
+        "password",
+        "password",
+        "new-password",
+      )}
       <div>
-        <Label htmlFor="su-name">Company name</Label>
+        <Label htmlFor="su-company">Company name</Label>
         <Input
-          id="su-name"
+          id="su-company"
           className="mt-1.5 h-11"
-          value={name}
+          value={f.company}
           maxLength={100}
           onChange={(e) => {
-            setName(e.target.value);
-            if (!slugTouched) setSlug(slugify(e.target.value));
+            set("company", e.target.value);
+            if (!slugTouched) set("slug", slugify(e.target.value));
           }}
         />
       </div>
@@ -58,10 +94,10 @@ export function SignupForm() {
           <Input
             id="su-slug"
             className="h-11"
-            value={slug}
+            value={f.slug}
             onChange={(e) => {
               setSlugTouched(true);
-              setSlug(slugify(e.target.value));
+              set("slug", slugify(e.target.value));
             }}
           />
         </div>
@@ -74,14 +110,10 @@ export function SignupForm() {
           {error}
         </p>
       )}
-      <Button
-        type="submit"
-        disabled={busy || !name.trim() || !slug}
-        className="h-11 w-full gap-2 bg-brand text-white hover:bg-brand-dark"
-      >
-        {busy && <Loader2 className="size-4 animate-spin" />}
+      <AuthSubmit busy={busy} busyLabel="Creating…" arrow={false}>
         Create my company
-      </Button>
+      </AuthSubmit>
+      
     </form>
   );
 }

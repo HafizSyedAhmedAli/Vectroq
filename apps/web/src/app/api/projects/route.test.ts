@@ -5,10 +5,22 @@ import { POST, GET } from "./route";
 
 vi.mock("@vectroq/db", () => ({
   prisma: {
-    lead: { findUnique: vi.fn() },
+    lead: { findFirst: vi.fn() },
     project: { create: vi.fn(), findMany: vi.fn() },
   },
 }));
+
+vi.mock("@/lib/auth/guard", () => ({
+  guard: vi.fn().mockResolvedValue({
+    ok: true,
+    auth: {
+      org: { id: "org_1", slug: "demo" },
+      role: "OWNER",
+      user: { id: "u1", email: "t@t.co", name: "Test" },
+    },
+  }),
+}));
+import { guard } from "@/lib/auth/guard";
 
 import { prisma } from "@vectroq/db";
 
@@ -36,14 +48,14 @@ describe("POST /api/projects", () => {
   });
 
   it("404s when the referenced lead doesn't exist", async () => {
-    (prisma.lead.findUnique as any).mockResolvedValue(null);
+    (prisma.lead.findFirst as any).mockResolvedValue(null);
     const res = await POST(req(validBody) as any);
     expect(res.status).toBe(404);
     expect(prisma.project.create).not.toHaveBeenCalled();
   });
 
   it("creates a project against an existing lead and returns 201", async () => {
-    (prisma.lead.findUnique as any).mockResolvedValue({ id: "lead_1" });
+    (prisma.lead.findFirst as any).mockResolvedValue({ id: "lead_1" });
     (prisma.project.create as any).mockResolvedValue({
       id: "proj_1",
       ...validBody,
@@ -57,6 +69,7 @@ describe("POST /api/projects", () => {
     expect(json.id).toBe("proj_1");
     expect(prisma.project.create).toHaveBeenCalledWith({
       data: {
+        organizationId: "org_1",
         leadId: "lead_1",
         model: 2,
         category: "B",
@@ -82,8 +95,19 @@ describe("GET /api/projects", () => {
     expect(res.status).toBe(200);
     expect(json).toHaveLength(2);
     expect(prisma.project.findMany).toHaveBeenCalledWith({
+      where: { organizationId: "org_1" },
       orderBy: { createdAt: "desc" },
       include: { cadFile: true, lead: true },
     });
+  });
+
+  it("403s for a user without permission and writes nothing", async () => {
+    (guard as any).mockResolvedValueOnce({
+      ok: false,
+      res: Response.json({ error: "no" }, { status: 403 }),
+    });
+    const res = await POST(req(validBody) as any);
+    expect(res.status).toBe(403);
+    expect(prisma.project.create).not.toHaveBeenCalled();
   });
 });

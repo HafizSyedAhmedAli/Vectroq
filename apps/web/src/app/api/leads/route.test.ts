@@ -7,8 +7,26 @@ import { POST } from "./route";
 vi.mock("@vectroq/db", () => ({
   prisma: { lead: { create: vi.fn(), update: vi.fn() } },
 }));
+vi.mock("@/lib/auth/guard", () => ({
+  guard: vi.fn().mockResolvedValue({
+    ok: true,
+    auth: {
+      org: { id: "org_1", slug: "demo" },
+      role: "OWNER",
+      user: { id: "u1", email: "t@t.co", name: "Test" },
+    },
+  }),
+}));
+vi.mock("@/lib/org", () => ({
+  getOrgBySlug: vi.fn().mockResolvedValue({ id: "org_1", slug: "demo" }),
+}));
+vi.mock("@/lib/rate-sets", () => ({
+  getLiveRateCard: vi.fn().mockRejectedValue(new Error("no rates")),
+}));
 vi.mock("@/lib/save-plan-file", () => ({ savePlanFile: vi.fn() }));
 
+import { getOrgBySlug } from "@/lib/org";
+import { guard } from "@/lib/auth/guard";
 import { prisma } from "@vectroq/db";
 import { savePlanFile } from "@/lib/save-plan-file";
 
@@ -31,13 +49,13 @@ const validBody = {
 function jsonReq(body: unknown) {
   return new Request("http://localhost/api/leads", {
     method: "POST",
-    body: JSON.stringify(body),
+    body: JSON.stringify({ orgSlug: "demo", ...(body as object) }),
   });
 }
 
 function multipartReq(body: unknown, file: File) {
   const form = new FormData();
-  form.append("data", JSON.stringify(body));
+  form.append("data", JSON.stringify({ orgSlug: "demo", ...(body as object) }));
   form.append("file", file);
   return new Request("http://localhost/api/leads", {
     method: "POST",
@@ -52,6 +70,8 @@ describe("POST /api/leads", () => {
     (prisma.lead.create as any).mockResolvedValue({
       id: "lead_1",
       ...validBody,
+      organizationId: "org_1",
+      additionalNotes: null,
       source: "FORM",
       createdAt: new Date(),
     });
@@ -75,12 +95,17 @@ describe("POST /api/leads", () => {
     (prisma.lead.create as any).mockResolvedValue({ id: "lead_1" });
 
     await POST(
-      jsonReq({ ...validBody, id: "hacked", source: "WHATSAPP" }) as any,
+      jsonReq({
+        ...validBody,
+        id: "hacked",
+        source: "WHATSAPP",
+        organizationId: "org_evil",
+      }) as any,
     );
-
     const data = (prisma.lead.create as any).mock.calls[0][0].data;
     expect(data.id).toBeUndefined();
     expect(data.source).toBe("FORM");
+    expect(data.organizationId).toBe("org_1");
   });
 
   it("returns 400 and does not touch the DB when validation fails", async () => {
@@ -150,5 +175,22 @@ describe("POST /api/leads", () => {
     expect(res.status).toBe(201);
     expect(prisma.lead.update).not.toHaveBeenCalled();
     spy.mockRestore();
+  });
+
+  it("404s for an unknown company and creates nothing", async () => {
+    (getOrgBySlug as any).mockResolvedValueOnce(null);
+    const res = await POST(jsonReq(validBody) as any);
+    expect(res.status).toBe(404);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
+  });
+
+  it("400s when no company is given", async () => {
+    const res = await POST(
+      new Request("http://localhost/api/leads", {
+        method: "POST",
+        body: JSON.stringify(validBody), // no orgSlug
+      }) as any,
+    );
+    expect(res.status).toBe(400);
   });
 });

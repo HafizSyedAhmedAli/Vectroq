@@ -3,12 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Geometry } from "@vectroq/shared-types";
 import { Prisma, prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
+import { guard } from "@/lib/auth/guard";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
 export async function PATCH(req: NextRequest, { params }: RouteContext) {
+  const g = await guard("ESTIMATOR");
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
   const { id: projectId } = await params;
   const geometry = (await req.json()) as Geometry;
 
@@ -19,7 +23,6 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     );
   }
 
-  const org = await getCurrentOrg();
   const cadFile = await prisma.cadFile.findFirst({
     where: { projectId, project: { organizationId: org.id } },
   });

@@ -94,7 +94,15 @@ export default async function OfficeLeadsPage() {
                         </p>
                         <p className="text-sm text-stone-500">
                           {lead.contact} ·{" "}
-                          {SOURCE_LABELS[lead.source] ?? lead.source} ·{" "}
+                          {lead.planFileUrl && (
+                            <a
+                              href={`/api/leads/${lead.id}/plan`}
+                              className="mt-1 inline-block text-sm font-semibold text-brand underline"
+                            >
+                              Download plot plan ({lead.planFileName}) 
+                            </a>
+                          )}
+                          ·{" "} {SOURCE_LABELS[lead.source] ?? lead.source} ·{" "}
                           {lead.createdAt.toLocaleDateString("en-PK")}
                         </p>
                       </div>

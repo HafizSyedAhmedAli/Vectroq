@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
+import { guard } from "@/lib/auth/guard";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -15,10 +16,13 @@ interface RouteContext {
 export async function GET(_req: NextRequest, { params }: RouteContext) {
   const { id: projectId } = await params;
 
-  const org = await getCurrentOrg();
+  const g = await guard("VIEWER");
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
 
   const project = await prisma.project.findFirst({
-    where: { id: projectId, organizationId: org.id },
+    where: { id: projectId, organizationId: g.auth.org.id },
+    include: { lead: true, cadFile: true, render: true },
   });
 
   if (!project) {

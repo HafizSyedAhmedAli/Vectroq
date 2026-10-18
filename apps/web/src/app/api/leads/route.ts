@@ -16,8 +16,12 @@ export async function POST(req: NextRequest) {
   const { body, planFile } = await readLeadRequest(req);
   const raw = (body ?? {}) as Partial<LeadIntakeInput> & { orgSlug?: unknown };
 
-  const org =
-    typeof raw.orgSlug === "string" ? await getOrgBySlug(raw.orgSlug) : null;
+  if (typeof raw.orgSlug !== "string") {
+    return NextResponse.json({ error: "Missing company." }, { status: 400 });
+  }
+
+  const org = await getOrgBySlug(raw.orgSlug);
+
   if (!org) {
     return NextResponse.json({ error: "Unknown company." }, { status: 404 });
   }

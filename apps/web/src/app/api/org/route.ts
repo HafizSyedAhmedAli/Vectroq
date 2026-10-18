@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
 import { validateOrgSettings } from "@/lib/org-settings";
+import { guard } from "@/lib/auth/guard";
 
 export async function PATCH(req: NextRequest) {
-  const org = await getCurrentOrg();
+  const g = await guard("OWNER"); // minimum role from the table
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
   const body = await req.json().catch(() => null);
 
   if (body?.removeLogo === true) {

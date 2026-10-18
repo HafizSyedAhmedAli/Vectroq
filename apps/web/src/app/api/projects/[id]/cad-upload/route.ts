@@ -1,15 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseDxfToGeometry } from "@vectroq/cad-parser";
 import { Prisma, prisma } from "@vectroq/db";
+import { guard } from "@/lib/auth/guard";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
 export async function POST(req: NextRequest, { params }: RouteContext) {
+  const g = await guard("ESTIMATOR");
+  if (!g.ok) return g.res;
   const { id: projectId } = await params;
 
-  const project = await prisma.project.findUnique({ where: { id: projectId } });
+  const project = await prisma.project.findFirst({
+    where: { id: projectId, organizationId: g.auth.org.id },
+  });
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }

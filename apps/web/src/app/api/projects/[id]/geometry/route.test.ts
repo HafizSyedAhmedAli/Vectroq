@@ -3,11 +3,23 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PATCH } from "./route";
 
 vi.mock("@vectroq/db", () => ({
-  prisma: { cadFile: { findUnique: vi.fn(), update: vi.fn() } },
+  prisma: { cadFile: { findFirst: vi.fn(), update: vi.fn() } },
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
 
 import { Prisma, prisma } from "@vectroq/db";
+
+vi.mock("@/lib/auth/guard", () => ({
+  guard: vi.fn().mockResolvedValue({
+    ok: true,
+    auth: {
+      org: { id: "org_1", slug: "demo" },
+      role: "OWNER",
+      user: { id: "u1", email: "t@t.co", name: "Test" },
+    },
+  }),
+}));
+import { guard } from "@/lib/auth/guard";
 
 function ctx(id: string) {
   return { params: Promise.resolve({ id }) };
@@ -41,7 +53,7 @@ describe("PATCH /api/projects/:id/geometry", () => {
   beforeEach(() => vi.clearAllMocks());
 
   it("404s when no CAD file has been uploaded yet", async () => {
-    (prisma.cadFile.findUnique as any).mockResolvedValue(null);
+    (prisma.cadFile.findFirst as any).mockResolvedValue(null);
     const res = await PATCH(req(VALID_GEOMETRY) as any, ctx("p1"));
     expect(res.status).toBe(404);
   });
@@ -53,7 +65,7 @@ describe("PATCH /api/projects/:id/geometry", () => {
   });
 
   it("saves the corrected geometry and clears any stale BOQ", async () => {
-    (prisma.cadFile.findUnique as any).mockResolvedValue({
+    (prisma.cadFile.findFirst as any).mockResolvedValue({
       id: "cad_1",
       projectId: "p1",
     });

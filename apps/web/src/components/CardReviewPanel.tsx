@@ -417,8 +417,8 @@ export function CadReviewPanel({
           {geometry.rooms.length === 0 && (
             <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
               No rooms were detected — this drawing may not follow the expected
-              layer convention. Nothing was lost;
-              double-check the file, or correct the quantities manually below.
+              layer convention. Nothing was lost; double-check the file, or
+              correct the quantities manually below.
             </p>
           )}
 
@@ -660,13 +660,6 @@ export function CadReviewPanel({
                 className="rounded-lg border border-stone-300 px-3 py-1.5 font-medium text-stone-700 hover:bg-stone-50"
               >
                 Print / Save PDF
-              </Link>
-              <Link
-                href={`/client/${projectId}`}
-                target="_blank"
-                className="rounded-lg bg-brand px-3 py-1.5 font-medium text-white hover:bg-brand-dark"
-              >
-                Client view
               </Link>
             </div>
           </div>

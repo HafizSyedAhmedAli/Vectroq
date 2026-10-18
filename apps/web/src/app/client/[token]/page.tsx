@@ -1,13 +1,14 @@
 // apps/web/src/app/client/[projectId]/page.tsx
 import { BoqTable } from "@/components/BoqTable";
 import { BrandLogo } from "@/components/BrandLogo";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ASSUMPTIONS, EXCLUSIONS, formatPkr } from "@/lib/boq-format";
+import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { prisma } from "@vectroq/db";
 import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import {
-  Download,
   Home,
   Info,
   Layers,
@@ -19,10 +20,9 @@ import {
   Tag,
   User,
 } from "lucide-react";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import { getCurrentOrg } from "@/lib/org";
-import { brandFromOrg, brandStyle } from "@/lib/brand";
 
 const MODEL_LABELS: Record<number, string> = {
   1: "Land & Build, Then Sell",
@@ -61,15 +61,20 @@ function DetailRow({
 const card =
   "rounded-3xl border border-stone-200/70 bg-white/95 shadow-[0_10px_40px_-12px_rgba(35,31,30,0.12)] backdrop-blur";
 
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+  referrer: "no-referrer",
+};
+
 export default async function ClientProjectPage({
   params,
 }: {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ token: string }>;
 }) {
-  const { projectId } = await params;
+  const { token } = await params;
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
+  const project = await prisma.project.findFirst({
+    where: { shareToken: token, shareExpiresAt: { gt: new Date() } },
     include: { lead: true, cadFile: true, organization: true },
   });
 
@@ -175,23 +180,10 @@ export default async function ClientProjectPage({
               </div>
 
               {boq && (
-                <a
-                  href={`/api/projects/${projectId}/boq-pdf`}
-                  download
-                  className="print:hidden mt-6 flex items-center gap-4 rounded-2xl bg-red-50 px-4 py-4 transition hover:bg-red-100/70"
-                >
-                  <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-white text-brand shadow-sm">
-                    <Download className="size-5" />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-brand">
-                      Print / Save as PDF
-                    </span>
-                    <span className="block text-xs leading-snug text-stone-500">
-                      Download or print the project details and cost estimate.
-                    </span>
-                  </span>
-                </a>
+                <DownloadPdfButton
+                  variant="card"
+                  href={`/api/share/${token}/boq-pdf`}
+                />
               )}
             </aside>
           </div>

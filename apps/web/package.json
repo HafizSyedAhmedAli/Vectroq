@@ -19,6 +19,7 @@
     "next": "16.3.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "resend": "^6.34.1",
     "three": "^0.186.1"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "import-rates": "tsx scripts/import-rates.ts",
-    "seed-orgs": "tsx scripts/seed-orgs.ts"
+    "seed-orgs": "tsx scripts/seed-orgs.ts",
+    "create-owner": "tsx scripts/create-owner.ts"
   }
 }

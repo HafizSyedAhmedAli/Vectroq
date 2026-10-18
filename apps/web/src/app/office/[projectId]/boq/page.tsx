@@ -1,26 +1,26 @@
 // apps/web/src/app/office/[projectId]/boq/page.tsx
+import { BoqTable } from "@/components/BoqTable";
 import { BrandLogo } from "@/components/BrandLogo";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { SiteFooter } from "@/components/SiteFooter";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
+import { brandFromOrg } from "@/lib/brand";
+import { getCurrentOrg } from "@/lib/org";
+import { prisma } from "@vectroq/db";
+import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import {
   ArrowLeft,
   Building2,
   ClipboardList,
-  Download,
   Home,
   MapPin,
   Phone,
   Ruler,
   Tag,
-  User,
+  User
 } from "lucide-react";
-import type { BOQResult, Geometry } from "@vectroq/shared-types";
-import { prisma } from "@vectroq/db";
-import { BoqTable } from "@/components/BoqTable";
-import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
-import { getCurrentOrg } from "@/lib/org";
-import { brandFromOrg } from "@/lib/brand";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -121,14 +121,7 @@ export default async function BoqPrintPage({
                   Prepared on {today}
                 </p>
               </div>
-              <a
-                href={`/api/projects/${projectId}/boq-pdf`}
-                download
-                className="print:hidden inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
-              >
-                <Download className="size-4" />
-                Download PDF
-              </a>
+              <DownloadPdfButton href={`/api/projects/${projectId}/boq-pdf`} />
             </div>
 
             <div className="mt-6 grid gap-6 md:grid-cols-[1fr_1fr_1fr_1.2fr] items-start">

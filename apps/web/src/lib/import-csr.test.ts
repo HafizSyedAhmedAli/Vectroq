@@ -24,6 +24,7 @@ const rows = (city: string, skip?: string) =>
 const csvOf = (...lines: string[]) => [HEADER, ...lines].join("\n");
 
 const base = {
+  organizationId: "org_1",
   document: "Sindh CSR",
   year: 2026,
   categories: ["A", "B", "C"] as ("A" | "B" | "C")[],
@@ -40,6 +41,7 @@ describe("importCsr", () => {
     const { data } = (prisma.rateSet.createMany as any).mock.calls[0][0];
     expect(data).toHaveLength(3);
     expect(data[0]).toMatchObject({
+      organizationId: "org_1", // new
       city: "Karachi",
       status: "APPROVED",
       origin: "csr",
@@ -49,7 +51,11 @@ describe("importCsr", () => {
     expect(prisma.rateSet.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
         data: { status: "SUPERSEDED" },
-        where: expect.objectContaining({ origin: "csr", status: "APPROVED" }),
+        where: expect.objectContaining({
+          organizationId: "org_1", // new: only this company's old rates are superseded
+          origin: "csr",
+          status: "APPROVED",
+        }),
       }),
     );
   });
