@@ -94,7 +94,9 @@ describe("POST /api/auth/reset", () => {
     expect(tx.user.update).toHaveBeenCalledWith({
       where: { id: "u1" },
       data: {
-        passwordHash: expect.stringMatching(/^[0-9a-f]{32}:[0-9a-f]{128}$/),
+        passwordHash: expect.stringMatching(
+          /^scrypt\$\d+\$\d+\$\d+\$[0-9a-f]{32}\$[0-9a-f]{128}$/,
+        ),
       },
     });
     expect(tx.session.deleteMany).toHaveBeenCalledWith({

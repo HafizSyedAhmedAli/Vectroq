@@ -15,6 +15,13 @@ export async function POST(req: NextRequest) {
   if (!g.ok) return g.res;
   const org = g.auth.org;
 
+  if (!g.auth.user.emailVerified) {
+    return NextResponse.json(
+      { error: "Confirm your email address before inviting teammates." },
+      { status: 403 },
+    );
+  }
+
   const b = await req.json().catch(() => null);
   const email = normalizeEmail(b?.email);
   if (!isEmail(email))

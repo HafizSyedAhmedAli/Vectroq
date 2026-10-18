@@ -4,6 +4,7 @@ import { ArrowRight, House, Users } from "lucide-react";
 import { prisma, type Lead } from "@vectroq/db";
 import { ConvertLeadForm } from "@/components/ConvertLeadForm";
 import { getCurrentOrg } from "@/lib/org";
+import { BrandHero } from "@/components/BrandHero";
 
 export const dynamic = "force-dynamic";
 
@@ -27,14 +28,7 @@ export default async function OfficeLeadsPage() {
   return (
     <>
       <main className="relative min-h-[calc(100vh-72px)] overflow-hidden bg-gradient-to-b from-stone-50 to-white pb-32">
-        {/* Hero picture, faded into the page (same treatment as the home page) */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/demo.jpg"
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute right-0 top-0 hidden h-[430px] w-[46%] object-cover opacity-90 lg:block [mask-image:linear-gradient(to_right,transparent,black_45%)]"
-        />
+        <BrandHero />
 
         <div className="relative mx-auto max-w-6xl px-4 pt-12 sm:px-6">
           {/* Heading */}

@@ -31,7 +31,6 @@ export default async function SettingsPage() {
 
         <div className="mt-8 space-y-6">
           <OrgSettingsForm
-            slug={org.slug}
             initial={{
               name: org.name,
               tagline: org.tagline ?? "",

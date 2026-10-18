@@ -4,7 +4,7 @@ const TOP = "color-mix(in srgb, var(--color-brand) 30%, white)";
 const LEFT = "color-mix(in srgb, var(--color-brand) 62%, white)";
 const RIGHT = "var(--color-brand)";
 
-function IsoBox({
+export function IsoBox({
   cx,
   cy,
   a,
@@ -61,11 +61,19 @@ function Chip({
 }
 
 // Decorative; recolours with the organisation's brand color.
-export function CompanyIllustration() {
+export function CompanyIllustration({
+  className = "h-52",
+}: {
+  className?: string;
+}) {
   return (
     <div
       aria-hidden
-      className="relative h-52 overflow-hidden rounded-xl bg-gradient-to-b from-blue-100/70 via-blue-50 to-white"
+      className={`relative overflow-hidden rounded-xl ${className}`}
+      style={{
+        background:
+          "linear-gradient(to bottom, color-mix(in srgb, var(--color-brand) 14%, white), white)",
+      }}
     >
       <svg
         viewBox="0 0 270 190"

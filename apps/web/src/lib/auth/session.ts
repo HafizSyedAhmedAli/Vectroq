@@ -9,7 +9,7 @@ const MAX_AGE_S = 60 * 60 * 24 * 30;
 const SHORT_S = 60 * 60 * 24; // 1 day when "Remember me" is off
 
 export interface AuthContext {
-  user: { id: string; email: string; name: string };
+  user: { id: string; email: string; name: string; emailVerified: boolean };
   org: Organization;
   role: Role;
 }
@@ -69,7 +69,12 @@ export const getAuth = cache(async (): Promise<AuthContext | null> => {
   if (!m || !isRole(m.role)) return null;
 
   return {
-    user: { id: s.user.id, email: s.user.email, name: s.user.name },
+    user: {
+      id: s.user.id,
+      email: s.user.email,
+      name: s.user.name,
+      emailVerified: s.user.emailVerifiedAt !== null,
+    },
     org: m.organization,
     role: m.role,
   };

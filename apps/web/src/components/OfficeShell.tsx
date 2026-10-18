@@ -12,15 +12,19 @@ import {
   Inbox,
   LogOut,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   Settings,
   Users,
   Tag,
+  UserCog,
   X,
   type LucideIcon,
 } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import { ROLE_LABEL, hasRole, type Role } from "@/lib/auth/roles";
 import { BrandLogo } from "./BrandLogo";
+import { VerifyEmailBanner } from "./VerifyEmailBanner";
 
 interface NavItem {
   href: string;
@@ -37,6 +41,7 @@ const NAV: NavItem[] = [
   { href: "/office/team", label: "Team", icon: Users, owner: true },
   { href: "/office/rates", label: "Rates", icon: Tag },
   { href: "/office/settings", label: "Settings", icon: Settings, owner: true },
+  { href: "/office/account", label: "Account", icon: UserCog },
 ];
 
 // Static pages under /office. Anything else under /office/ is a project page.
@@ -46,7 +51,10 @@ const STATIC_PAGES = [
   "/office/rates",
   "/office/team",
   "/office/settings",
+  "/office/account",
 ];
+
+const COLLAPSE_KEY = "vq_sidebar_collapsed";
 
 function isActive(item: NavItem, pathname: string) {
   if (item.exact) {
@@ -65,6 +73,7 @@ export function OfficeShell({
   role,
   userName,
   userEmail,
+  emailVerified,
   children,
 }: {
   brand: Brand;
@@ -72,12 +81,35 @@ export function OfficeShell({
   role: Role;
   userName: string;
   userEmail: string;
+  emailVerified: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [drawer, setDrawer] = useState(false);
+  const [drawer, setDrawer] = useState(false); // mobile slide-out
   const [menu, setMenu] = useState(false);
+  const [collapsed, setCollapsed] = useState(false); // desktop icon rail
+
+  // Restore the saved choice after mount (storage can be unavailable).
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem(COLLAPSE_KEY) === "1");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  function toggleCollapsed() {
+    setCollapsed((c) => {
+      const next = !c;
+      try {
+        localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }
 
   // close the drawer and the user menu whenever the page changes
   useEffect(() => {
@@ -103,6 +135,11 @@ export function OfficeShell({
 
   const links = NAV.filter((l) => !l.owner || hasRole(role, "OWNER"));
   const initial = userName.trim().charAt(0).toUpperCase() || "?";
+  const brandInitial = brand.name.trim().charAt(0).toUpperCase() || "?";
+
+  // Collapsed styles only apply from lg up; the mobile drawer is always full.
+  const hideWhenCollapsed = collapsed ? "lg:hidden" : "";
+  const centerWhenCollapsed = collapsed ? "lg:justify-center lg:px-0" : "";
 
   return (
     <div className="min-h-screen bg-stone-50 print:bg-white">
@@ -116,14 +153,30 @@ export function OfficeShell({
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-stone-200/70 bg-white transition-transform lg:translate-x-0 print:hidden ${
-          drawer ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-stone-200/70 bg-white transition-all duration-200 lg:translate-x-0 print:hidden ${
+          collapsed ? "lg:w-[76px]" : "lg:w-64"
+        } ${drawer ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex h-[72px] items-center justify-between px-5">
+        <div
+          className={`flex h-[72px] items-center justify-between px-5 ${
+            collapsed ? "lg:justify-center lg:px-0" : ""
+          }`}
+        >
           <Link href="/office/dashboard" className="flex items-center">
-            <BrandLogo brand={brand} className="h-9 w-auto" />
+            <span className={hideWhenCollapsed}>
+              <BrandLogo brand={brand} className="h-9 w-auto" />
+            </span>
+            {collapsed && (
+              <span
+                aria-label={brand.name}
+                className="hidden size-10 place-items-center rounded-xl bg-brand text-lg font-extrabold text-white lg:grid"
+              >
+                {brandInitial}
+              </span>
+            )}
           </Link>
+
+          {/* mobile: close the drawer */}
           <button
             type="button"
             aria-label="Close menu"
@@ -132,6 +185,20 @@ export function OfficeShell({
           >
             <X className="size-5" />
           </button>
+
+          {/* desktop: collapse, shown next to the logo while expanded */}
+          {!collapsed && (
+            <button
+              type="button"
+              aria-label="Collapse sidebar"
+              aria-expanded
+              title="Collapse sidebar"
+              onClick={toggleCollapsed}
+              className="hidden size-9 cursor-pointer place-items-center rounded-lg text-stone-500 hover:bg-stone-100 lg:grid"
+            >
+              <PanelLeftClose className="size-5" />
+            </button>
+          )}
         </div>
 
         <nav className="mt-2 flex-1 space-y-1 px-3" aria-label="Main">
@@ -142,15 +209,19 @@ export function OfficeShell({
               <Link
                 key={l.href}
                 href={l.href}
+                title={collapsed ? l.label : undefined}
+                aria-label={l.label}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition ${centerWhenCollapsed} ${
                   active
                     ? "bg-brand/10 text-brand"
                     : "text-stone-600 hover:bg-stone-100 hover:text-brand-black"
                 }`}
               >
-                <Icon className="size-5" />
-                {l.label}
+                <Icon className="size-5 shrink-0" />
+                <span className={`truncate ${hideWhenCollapsed}`}>
+                  {l.label}
+                </span>
               </Link>
             );
           })}
@@ -160,19 +231,30 @@ export function OfficeShell({
           <Link
             href={`/c/${orgSlug}`}
             target="_blank"
-            className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-brand-black"
+            title={collapsed ? "Client Form" : undefined}
+            aria-label="Client Form"
+            className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-brand-black ${centerWhenCollapsed}`}
           >
-            <FileText className="size-5" />
-            <span className="flex-1">Client Form</span>
-            <ExternalLink className="size-4 text-stone-400" />
+            <FileText className="size-5 shrink-0" />
+            <span className={`flex-1 truncate ${hideWhenCollapsed}`}>
+              Client Form
+            </span>
+            <ExternalLink
+              className={`size-4 text-stone-400 ${hideWhenCollapsed}`}
+            />
           </Link>
         </div>
       </aside>
 
       {/* Content column */}
-      <div className="lg:pl-64 print:pl-0">
+      <div
+        className={`transition-[padding] duration-200 print:pl-0 ${
+          collapsed ? "lg:pl-[76px]" : "lg:pl-64"
+        }`}
+      >
         {/* 72px tall on purpose: pages use min-h-[calc(100vh-72px)] */}
         <header className="sticky top-0 z-30 flex h-[72px] items-center gap-3 border-b border-stone-200/70 bg-white/90 px-4 backdrop-blur sm:px-6 print:hidden">
+          {/* mobile: open the drawer */}
           <button
             type="button"
             aria-label="Open menu"
@@ -181,6 +263,21 @@ export function OfficeShell({
           >
             <Menu className="size-5" />
           </button>
+
+          {/* desktop: expand, shown only while the sidebar is collapsed */}
+          {collapsed && (
+            <button
+              type="button"
+              aria-label="Expand sidebar"
+              aria-expanded={false}
+              title="Expand sidebar"
+              onClick={toggleCollapsed}
+              className="hidden size-10 cursor-pointer place-items-center rounded-lg text-stone-600 hover:bg-stone-100 lg:grid"
+            >
+              <PanelLeftOpen className="size-5" />
+            </button>
+          )}
+
           <Link href="/office/dashboard" className="lg:hidden">
             <BrandLogo brand={brand} className="h-8 w-auto" />
           </Link>
@@ -218,6 +315,13 @@ export function OfficeShell({
                   </p>
                   <p className="truncate text-xs text-stone-500">{userEmail}</p>
                 </div>
+                <Link
+                  href="/office/account"
+                  role="menuitem"
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50"
+                >
+                  <UserCog className="size-4" /> Account and password
+                </Link>
                 {hasRole(role, "OWNER") && (
                   <Link
                     href="/office/settings"
@@ -239,6 +343,8 @@ export function OfficeShell({
             )}
           </div>
         </header>
+
+        {!emailVerified && <VerifyEmailBanner email={userEmail} />}
 
         {children}
       </div>

@@ -1,11 +1,19 @@
 import { ROLE_LABEL, type Role } from "@/lib/auth/roles";
 
 const esc = (s: string) =>
-  s.replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,
+  s.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
   );
 
-function layout(title: string, body: string, cta: { label: string; url: string }) {
+function layout(
+  title: string,
+  body: string,
+  cta: { label: string; url: string },
+) {
   return `<!doctype html><html><body style="margin:0;background:#f5f7fb;font-family:Arial,Helvetica,sans-serif;color:#0f172a">
 <div style="max-width:480px;margin:32px auto;background:#fff;border-radius:16px;padding:32px">
   <p style="font-size:20px;font-weight:800;margin:0 0 16px">Vectroq</p>
@@ -42,5 +50,29 @@ export function inviteEmail(p: {
       { label: "Accept invitation", url: p.link },
     ),
     text: `${p.inviterName} invited you to join ${p.orgName} on Vectroq as ${ROLE_LABEL[p.role]}.\nAccept (valid 7 days): ${p.link}`,
+  };
+}
+
+export function verifyEmail(link: string) {
+  return {
+    subject: "Confirm your Vectroq email",
+    html: layout(
+      "Confirm your email",
+      "<p>Welcome to Vectroq. Confirm this address so we can reach you about your account. The link works once and expires in 24 hours.</p><p>If you didn't create an account, ignore this email.</p>",
+      { label: "Confirm email", url: link },
+    ),
+    text: `Confirm your Vectroq email (link works once, expires in 24 hours):\n${link}\n\nIf you didn't create an account, ignore this email.`,
+  };
+}
+
+export function passwordChangedEmail(link: string) {
+  return {
+    subject: "Your Vectroq password was changed",
+    html: layout(
+      "Your password was changed",
+      "<p>The password on your account was just changed and all your other devices were signed out.</p><p>If this wasn't you, reset your password now.</p>",
+      { label: "Reset password", url: link },
+    ),
+    text: `Your Vectroq password was just changed and your other devices were signed out.\nIf this wasn't you, reset it now: ${link}`,
   };
 }

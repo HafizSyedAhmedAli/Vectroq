@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
         email: inv.email,
         name,
         passwordHash: await hashPassword(password),
+        emailVerifiedAt: new Date(),
       },
     });
     userId = user.id;

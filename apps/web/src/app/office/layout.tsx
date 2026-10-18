@@ -19,6 +19,7 @@ export default async function OfficeLayout({
         role={auth.role}
         userName={auth.user.name}
         userEmail={auth.user.email}
+        emailVerified={auth.user.emailVerified}
       >
         {children}
       </OfficeShell>

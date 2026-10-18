@@ -19,6 +19,7 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
+import { CompanyIllustration } from "./CompanyIllustration";
 
 export interface ProjectCardData {
   id: string;
@@ -178,12 +179,16 @@ export function ProjectsList({ projects }: { projects: ProjectCardData[] }) {
               href={`/office/${p.id}`}
               className="group flex flex-col gap-5 rounded-2xl border border-stone-200/70 bg-white/95 p-5 shadow-[0_10px_40px_-12px_rgba(35,31,30,0.12)] backdrop-blur transition hover:border-brand/40 hover:shadow-[0_14px_44px_-12px_rgba(35,31,30,0.22)] sm:flex-row"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- renders are served from public/ and overwritten in place */}
-              <img
-                src={p.imageUrl}
-                alt=""
-                className="h-40 w-full shrink-0 rounded-xl object-cover sm:h-36 sm:w-52"
-              />
+              {p.hasRender ? (
+                // eslint-disable-next-line @next/next/no-img-element -- renders are served from public/
+                <img
+                  src={p.imageUrl}
+                  alt=""
+                  className="h-40 w-full shrink-0 rounded-xl object-cover sm:h-36 sm:w-52"
+                />
+              ) : (
+                <CompanyIllustration className="h-40 w-full shrink-0 sm:h-36 sm:w-52" />
+              )}
 
               <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
                 <div className="flex items-start gap-4">

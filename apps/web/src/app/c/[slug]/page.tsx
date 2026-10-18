@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { PublicIntake } from "@/components/intake/PublicIntake";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { getOrgBySlug } from "@/lib/org";
+import { BrandHero } from "@/components/BrandHero";
 
 export const dynamic = "force-dynamic";
 
@@ -42,12 +43,7 @@ export default async function OrgIntakePage({ params }: Props) {
       </header>
 
       <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-white">
-        <img
-          src="/demo.jpg"
-          alt=""
-          aria-hidden
-          className="hidden lg:block absolute right-0 top-0 h-[420px] w-[45%] object-cover opacity-90 [mask-image:linear-gradient(to_right,transparent,black_45%)]"
-        />
+        <BrandHero />
         <div className="relative max-w-6xl mx-auto px-4 pt-10 pb-8">
           <div className="flex items-center gap-3 text-xs font-semibold tracking-wide uppercase mb-4">
             <span className="h-0.5 w-8 bg-brand" />

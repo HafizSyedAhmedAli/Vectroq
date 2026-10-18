@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { Prisma, prisma } from "@vectroq/db";
 import {
   hashPassword,
@@ -7,8 +7,10 @@ import {
   validatePassword,
 } from "@/lib/auth/credentials";
 import { createSession } from "@/lib/auth/session";
+import { sendVerificationEmail } from "@/lib/auth/email-verification";
 import { insertSampleRates, loadSampleRates } from "@/lib/sample-rates";
 import { slugify, validateSlug } from "@/lib/org-slug";
+import { appUrl } from "@/lib/app-url";
 
 export async function POST(req: NextRequest) {
   const b = await req.json().catch(() => null);
@@ -33,6 +35,7 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await hashPassword(b.password);
   const samples = await loadSampleRates();
+  const base = appUrl(req);
 
   try {
     const { user, org } = await prisma.$transaction(async (tx) => {
@@ -49,6 +52,16 @@ export async function POST(req: NextRequest) {
       return { user, org };
     });
     await createSession(user.id, org.id);
+
+    // After the response, so a slow or failing email never blocks signup.
+    after(async () => {
+      try {
+        await sendVerificationEmail(user, base);
+      } catch (err) {
+        console.error("Verification email failed", err);
+      }
+    });
+
     return NextResponse.json({ slug: org.slug }, { status: 201 });
   } catch (err) {
     if (
