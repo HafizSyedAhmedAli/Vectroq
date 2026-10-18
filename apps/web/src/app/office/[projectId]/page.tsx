@@ -6,9 +6,7 @@ import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import { prisma } from "@vectroq/db";
 import { ProjectWorkspace } from "@/components/ProjectWorkspace";
 import { ProjectDetailsCard } from "@/components/ProjectDetailsCard";
-import { SiteFooter } from "@/components/SiteFooter";
 import { getCurrentOrg, requirePage } from "@/lib/org";
-import { brandFromOrg } from "@/lib/brand";
 import { ShareLinkPanel } from "@/components/ShareLinkPanel";
 import { hasRole } from "@/lib/auth/roles";
 
@@ -35,7 +33,6 @@ export default async function OfficeProjectPage({
 
   const org = auth.org;
 
-  const brand = brandFromOrg(org);
 
   const { projectId } = await params;
 
@@ -167,8 +164,6 @@ export default async function OfficeProjectPage({
           </div>
         </div>
       </main>
-
-      <SiteFooter brand={brand} />
     </>
   );
 }

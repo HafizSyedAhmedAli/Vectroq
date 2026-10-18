@@ -1,4 +1,4 @@
-import { OfficeNav } from "@/components/OfficeNav";
+import { OfficeShell } from "@/components/OfficeShell";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { requirePage } from "@/lib/org";
 
@@ -13,13 +13,15 @@ export default async function OfficeLayout({
   const brand = brandFromOrg(auth.org);
   return (
     <div style={brandStyle(brand)}>
-      <OfficeNav
+      <OfficeShell
         brand={brand}
         orgSlug={auth.org.slug}
         role={auth.role}
         userName={auth.user.name}
-      />
-      {children}
+        userEmail={auth.user.email}
+      >
+        {children}
+      </OfficeShell>
     </div>
   );
 }

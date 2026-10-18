@@ -35,7 +35,7 @@ export function AcceptInviteForm({
       setBusy(false);
       return setError(data.error ?? "Could not accept the invitation.");
     }
-    router.push("/office");
+    router.push("/office/dashboard");
     router.refresh();
   }
 

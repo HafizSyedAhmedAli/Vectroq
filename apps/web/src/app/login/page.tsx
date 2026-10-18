@@ -14,7 +14,9 @@ export default async function LoginPage({
   const { next, reset } = await searchParams;
 
   const safeNext =
-    next && next.startsWith("/") && !next.startsWith("//") ? next : "/office";
+    next && next.startsWith("/") && !next.startsWith("//")
+      ? next
+      : "/office/dashboard";
 
   return (
     <AuthShell
@@ -33,7 +35,10 @@ export default async function LoginPage({
       }
     >
       {reset === "1" && (
-        <p role="status" className="mb-5 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
+        <p
+          role="status"
+          className="mb-5 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800"
+        >
           Password updated. Log in with your new password.
         </p>
       )}

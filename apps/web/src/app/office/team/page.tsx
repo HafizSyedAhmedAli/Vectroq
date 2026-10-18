@@ -1,7 +1,6 @@
 import { prisma } from "@vectroq/db";
-import { SiteFooter } from "@/components/SiteFooter";
+import { Users } from "lucide-react";
 import { TeamPanel } from "@/components/TeamPanel";
-import { brandFromOrg } from "@/lib/brand";
 import { isRole } from "@/lib/auth/roles";
 import { requirePage } from "@/lib/org";
 
@@ -26,13 +25,23 @@ export default async function TeamPage() {
   ]);
 
   return (
-    <>
-      <main className="mx-auto min-h-[calc(100vh-72px)] max-w-3xl px-4 py-12">
-        <h1 className="text-3xl font-extrabold text-brand-black">Team</h1>
-        <p className="mt-2 text-sm text-stone-500">
-          Owners manage everything. Estimators work on projects, drawings and
-          rates. Viewers are read-only.
-        </p>
+    <main className="min-h-[calc(100vh-72px)] bg-gradient-to-b from-blue-50/40 to-white pb-16">
+      <div className="mx-auto max-w-5xl px-4 pt-10 sm:px-6">
+        <div className="flex items-center gap-4">
+          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-blue-50 text-brand">
+            <Users className="size-6" />
+          </span>
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-brand-black">
+              Team
+            </h1>
+            <p className="mt-1 text-sm text-stone-500">
+              Owners manage everything. Estimators work on projects, drawings
+              and rates. Viewers are read-only.
+            </p>
+          </div>
+        </div>
+
         <div className="mt-8">
           <TeamPanel
             members={members
@@ -56,8 +65,7 @@ export default async function TeamPage() {
               }))}
           />
         </div>
-      </main>
-      <SiteFooter brand={brandFromOrg(org)} />
-    </>
+      </div>
+    </main>
   );
 }

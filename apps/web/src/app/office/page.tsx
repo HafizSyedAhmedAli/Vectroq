@@ -3,9 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Layers } from "lucide-react";
 import { prisma } from "@vectroq/db";
 import { ProjectsList, type ProjectCardData } from "@/components/ProjectsList";
-import { SiteFooter } from "@/components/SiteFooter";
 import { getCurrentOrg } from "@/lib/org";
-import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +11,6 @@ const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 
 export default async function OfficeProjectsPage() {
   const org = await getCurrentOrg();
-  const brand = brandFromOrg(org);
   const [projects, pendingLeadCount] = await Promise.all([
     prisma.project.findMany({
       where: { organizationId: org.id },
@@ -100,8 +97,6 @@ export default async function OfficeProjectsPage() {
           </div>
         </div>
       </main>
-
-      <SiteFooter brand={brand} />
     </>
   );
 }

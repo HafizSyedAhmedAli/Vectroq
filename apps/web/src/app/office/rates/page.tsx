@@ -2,7 +2,6 @@
 import { BadgeCheck, MapPin, ShieldCheck } from "lucide-react";
 import { prisma } from "@vectroq/db";
 import type { RateCardItem } from "@vectroq/shared-types";
-import { SiteFooter } from "@/components/SiteFooter";
 import { RateSetReviewPanel } from "@/components/RateSetReviewPanel";
 import type {
   ApprovedRateSet,
@@ -10,13 +9,11 @@ import type {
   RateSources,
 } from "@/lib/rate-set-types";
 import { getCurrentOrg } from "@/lib/org";
-import { brandFromOrg } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export default async function OfficeRatesPage() {
   const org = await getCurrentOrg();
-  const brand = brandFromOrg(org);
   const [drafts, approved] = await Promise.all([
     prisma.rateSet.findMany({
       where: { organizationId: org.id, status: "DRAFT" },
@@ -104,8 +101,6 @@ export default async function OfficeRatesPage() {
           </div>
         </div>
       </main>
-
-      <SiteFooter brand={brand} />
     </>
   );
 }

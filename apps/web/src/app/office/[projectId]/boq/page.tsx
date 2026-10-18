@@ -2,7 +2,6 @@
 import { BoqTable } from "@/components/BoqTable";
 import { BrandLogo } from "@/components/BrandLogo";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
-import { SiteFooter } from "@/components/SiteFooter";
 import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
 import { brandFromOrg } from "@/lib/brand";
 import { getCurrentOrg } from "@/lib/org";
@@ -227,9 +226,6 @@ export default async function BoqPrintPage({
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <SiteFooter brand={brand} />
     </main>
   );
 }
