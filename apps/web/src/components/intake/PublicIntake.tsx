@@ -1,7 +1,10 @@
 "use client";
 
-import type { EngagementModel } from "@vectroq/shared-types";
-import { modelOptionsFromRules } from "./option-config";
+import type { Category, EngagementModel } from "@vectroq/shared-types";
+import {
+  categoryOptionsFromRules,
+  modelOptionsFromRules,
+} from "./option-config";
 import { IntakeForm, type IntakeSubmitResult } from "@/components/IntakeForm";
 import { buildLeadRequest } from "@/lib/build-lead-request";
 import type { LeadIntakeInput } from "@vectroq/lead-intake";
@@ -9,9 +12,11 @@ import type { LeadIntakeInput } from "@vectroq/lead-intake";
 export function PublicIntake({
   orgSlug,
   models,
+  categories,
 }: {
   orgSlug: string;
   models: Record<EngagementModel, { label: string; description: string }>;
+  categories: Record<Category, { label: string }>;
 }) {
   async function handleSubmit(
     data: LeadIntakeInput,
@@ -36,6 +41,7 @@ export function PublicIntake({
     <IntakeForm
       onSubmit={handleSubmit}
       modelOptions={modelOptionsFromRules(models)}
+      categoryOptions={categoryOptionsFromRules(categories)}
     />
   );
 }

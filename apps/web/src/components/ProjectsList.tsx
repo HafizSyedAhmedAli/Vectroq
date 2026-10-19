@@ -32,6 +32,8 @@ export interface ProjectCardData {
   imageUrl: string;
   createdLabel: string;
   valueLabel: string | null;
+  modelLabel: string;
+  categoryLabel: string;
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -201,7 +203,7 @@ export function ProjectsList({ projects }: { projects: ProjectCardData[] }) {
                     </p>
                     <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-sm text-stone-500">
                       <MapPin className="size-3.5" />
-                      {p.city} · Model {p.model} · Category {p.category}
+                      {p.city} · {p.modelLabel} · {p.categoryLabel}
                       {p.hasRender && <> · render ready</>}
                     </p>
                   </div>
@@ -234,12 +236,12 @@ export function ProjectsList({ projects }: { projects: ProjectCardData[] }) {
                   <Stat
                     icon={<Box className="size-4" />}
                     label="Category"
-                    value={p.category}
+                    value={p.categoryLabel}
                   />
                   <Stat
                     icon={<Box className="size-4" />}
                     label="Model"
-                    value={`Model ${p.model}`}
+                    value={p.modelLabel}
                   />
                 </div>
               </div>

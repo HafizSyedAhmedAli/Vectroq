@@ -1,5 +1,25 @@
 import type { Category, EngagementModel } from "./index";
 
+export const categoryName = (
+  rules: Pick<OrgRules, "categories">,
+  category: string,
+): string => rules.categories[category as Category]?.label ?? category;
+
+/** { A: "Premium", B: "Standard", C: "Economy" } for passing to client components. */
+export const categoryLabelMap = (
+  rules: Pick<OrgRules, "categories">,
+): Record<Category, string> =>
+  Object.fromEntries(
+    CATEGORY_KEYS.map((c) => [c, rules.categories[c].label]),
+  ) as Record<Category, string>;
+
+export const modelLabelMap = (
+  rules: Pick<OrgRules, "models">,
+): Record<EngagementModel, string> =>
+  Object.fromEntries(
+    MODEL_KEYS.map((m) => [m, rules.models[m].label]),
+  ) as Record<EngagementModel, string>;
+
 export interface ModelRule {
   label: string;
   description: string;
@@ -142,7 +162,10 @@ const str = (v: unknown, max: number, min = 1): string | null => {
   return t.length >= min && t.length <= max ? t : null;
 };
 
-type Spec<K extends string> = Record<K, [label: string, min: number, max: number]>;
+type Spec<K extends string> = Record<
+  K,
+  [label: string, min: number, max: number]
+>;
 
 function section<K extends string>(
   raw: unknown,
@@ -154,7 +177,10 @@ function section<K extends string>(
     const [label, min, max] = spec[k];
     const n = num(o[k], min, max);
     if (n === null)
-      return { ok: false, error: `${label} must be a number between ${min} and ${max}.` };
+      return {
+        ok: false,
+        error: `${label} must be a number between ${min} and ${max}.`,
+      };
     value[k] = n;
   }
   return { ok: true, value };
@@ -203,7 +229,10 @@ function noteLines(
     const t = x.trim();
     if (!t) continue;
     if (t.length > 300)
-      return { ok: false, error: `Each ${name} line can be at most 300 characters.` };
+      return {
+        ok: false,
+        error: `Each ${name} line can be at most 300 characters.`,
+      };
     lines.push(t);
   }
   if (lines.length > 15)
@@ -220,12 +249,16 @@ export function validateOrgRules(input: unknown): OrgRulesResult {
     const r = sub(b.models, m);
     const label = str(r.label, 60);
     const description =
-      r.description == null || r.description === "" ? "" : str(r.description, 200, 0);
+      r.description == null || r.description === ""
+        ? ""
+        : str(r.description, 200, 0);
     const taxPercent = num(r.taxPercent, 0, 100);
     if (label === null)
       return fail(`Service type ${m}: a name is required (max 60 characters).`);
     if (description === null)
-      return fail(`Service type ${m}: description is too long (max 200 characters).`);
+      return fail(
+        `Service type ${m}: description is too long (max 200 characters).`,
+      );
     if (taxPercent === null)
       return fail(`Service type ${m}: tax must be between 0 and 100.`);
     models[m] = { label, description, taxPercent };
@@ -241,8 +274,14 @@ export function validateOrgRules(input: unknown): OrgRulesResult {
     if (typeof r.marbleInLiving !== "boolean")
       return fail(`Category ${c}: choose marble or tiles.`);
     if (rate === null)
-      return fail(`Category ${c}: false ceiling rate must be between 0 and 1,000,000.`);
-    categories[c] = { label, marbleInLiving: r.marbleInLiving, falseCeilingRate: rate };
+      return fail(
+        `Category ${c}: false ceiling rate must be between 0 and 1,000,000.`,
+      );
+    categories[c] = {
+      label,
+      marbleInLiving: r.marbleInLiving,
+      falseCeilingRate: rate,
+    };
   }
 
   const labour = section(b.labour, LABOUR_SPEC);
@@ -317,8 +356,12 @@ const cats = (xs: string[]) =>
 /** "Basis of estimate" text generated from the numbers actually in use. */
 export function buildAssumptions(rules: OrgRules): string[] {
   const c = rules.construction;
-  const marble = CATEGORY_KEYS.filter((k) => rules.categories[k].marbleInLiving);
-  const tiled = CATEGORY_KEYS.filter((k) => !rules.categories[k].marbleInLiving);
+  const marble = CATEGORY_KEYS.filter(
+    (k) => rules.categories[k].marbleInLiving,
+  );
+  const tiled = CATEGORY_KEYS.filter(
+    (k) => !rules.categories[k].marbleInLiving,
+  );
   const finish =
     marble.length === 0
       ? "Tile flooring in all areas, including kitchens and bathrooms."

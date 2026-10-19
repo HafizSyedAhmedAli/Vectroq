@@ -22,6 +22,7 @@ export default async function OrgIntakePage({ params }: Props) {
   const org = await getOrgBySlug((await params).slug);
   if (!org) notFound();
   const brand = brandFromOrg(org);
+  const rules = resolveOrgRules(org.rules);
 
   return (
     <div
@@ -75,7 +76,8 @@ export default async function OrgIntakePage({ params }: Props) {
         <div className="max-w-6xl mx-auto px-4">
           <PublicIntake
             orgSlug={org.slug}
-            models={resolveOrgRules(org.rules).models}
+            models={rules.models}
+            categories={rules.categories}
           />
         </div>
       </main>

@@ -27,6 +27,8 @@ interface ConvertLeadFormProps {
   defaultCity: string;
   defaultModel: number;
   defaultCategory: string;
+  modelLabels?: Record<number, string>;
+  categoryLabels?: Record<string, string>;
 }
 
 // By the time the team is looking at this form, they've already met the
@@ -39,6 +41,8 @@ export function ConvertLeadForm({
   defaultCity,
   defaultModel,
   defaultCategory,
+  modelLabels,
+  categoryLabels,
 }: ConvertLeadFormProps) {
   const router = useRouter();
   const [city, setCity] = useState(defaultCity);
@@ -84,7 +88,7 @@ export function ConvertLeadForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid gap-5 sm:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="grid gap-5 sm:grid-cols-[1fr_1.4fr_1fr]">
         <div>
           <Label htmlFor={`city-${leadId}`} className={labelCls}>
             <MapPin className="size-4 text-brand" />
@@ -108,34 +112,22 @@ export function ConvertLeadForm({
             <FileText className="size-4 text-brand" />
             Model
           </Label>
-          <NativeSelect
-            id={`model-${leadId}`}
-            className={selectCls}
-            value={model}
-            onChange={(e) =>
-              setModel(Number(e.target.value) as EngagementModel)
-            }
-          >
-            <NativeSelectOption value={1}>1</NativeSelectOption>
-            <NativeSelectOption value={2}>2</NativeSelectOption>
-            <NativeSelectOption value={3}>3</NativeSelectOption>
-          </NativeSelect>
+          {[1, 2, 3].map((m) => (
+            <NativeSelectOption key={m} value={m}>
+              {modelLabels?.[m] ? `${m} · ${modelLabels[m]}` : m}
+            </NativeSelectOption>
+          ))}
         </div>
         <div>
           <Label htmlFor={`category-${leadId}`} className={labelCls}>
             <LayoutGrid className="size-4 text-brand" />
             Category
           </Label>
-          <NativeSelect
-            id={`category-${leadId}`}
-            className={selectCls}
-            value={category}
-            onChange={(e) => setCategory(e.target.value as Category)}
-          >
-            <NativeSelectOption value="A">A</NativeSelectOption>
-            <NativeSelectOption value="B">B</NativeSelectOption>
-            <NativeSelectOption value="C">C</NativeSelectOption>
-          </NativeSelect>
+          {["A", "B", "C"].map((c) => (
+            <NativeSelectOption key={c} value={c}>
+              {categoryLabels?.[c] ? `${c} · ${categoryLabels[c]}` : c}
+            </NativeSelectOption>
+          ))}
         </div>
       </div>
 

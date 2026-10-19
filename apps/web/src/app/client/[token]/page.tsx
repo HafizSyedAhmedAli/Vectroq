@@ -9,6 +9,7 @@ import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { prisma } from "@vectroq/db";
 import {
   BOQResult,
+  categoryName,
   Geometry,
   modelName,
   resolveNotes,
@@ -169,7 +170,8 @@ export default async function ClientProjectPage({
                   icon={<Layers className="size-5" />}
                   label="Material category"
                 >
-                  Category {project.category}
+                  Category {project.category} ·{" "}
+                  {categoryName(rules, project.category)}
                 </DetailRow>
                 {areaSqFt !== null && (
                   <DetailRow

@@ -78,8 +78,15 @@ function IconField({
   );
 }
 
-function CategoryBadge({ category }: { category: string }) {
+function CategoryBadge({
+  category,
+  label,
+}: {
+  category: string;
+  label?: string;
+}) {
   const meta = CATEGORY_META[category];
+  const name = label ?? meta?.label ?? "Custom";
   return (
     <span className="inline-flex items-center gap-2">
       <span
@@ -90,7 +97,7 @@ function CategoryBadge({ category }: { category: string }) {
       <span
         className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${meta?.chip ?? "bg-stone-50 text-stone-600"}`}
       >
-        {category} ({meta?.label ?? "Custom"})
+        {category} ({name})
       </span>
     </span>
   );
@@ -146,10 +153,14 @@ function SourceCell({
 export function RateSetReviewPanel({
   initialDrafts,
   approved,
+  categoryLabels,
 }: {
   initialDrafts: DraftRateSet[];
   approved: ApprovedRateSet[];
+  categoryLabels?: Record<string, string>;
 }) {
+  const labelOf = (c: string) =>
+    categoryLabels?.[c] ?? CATEGORY_META[c]?.label ?? "Custom";
   const router = useRouter();
   const [drafts, setDrafts] = useState(initialDrafts);
 
@@ -285,25 +296,11 @@ export function RateSetReviewPanel({
                   Category
                 </Label>
                 <IconField icon={<Tag className="size-4" />}>
-                  <NativeSelect
-                    id="rs-cat"
-                    className={fieldWrap}
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <NativeSelectOption value="">
-                      All categories
+                  {(["A", "B", "C"] as const).map((c) => (
+                    <NativeSelectOption key={c} value={c}>
+                      {c} ({labelOf(c)})
                     </NativeSelectOption>
-                    <NativeSelectOption value="A">
-                      A (Premium)
-                    </NativeSelectOption>
-                    <NativeSelectOption value="B">
-                      B (Standard)
-                    </NativeSelectOption>
-                    <NativeSelectOption value="C">
-                      C (Economy)
-                    </NativeSelectOption>
-                  </NativeSelect>
+                  ))}
                 </IconField>
               </div>
               <div>
@@ -423,7 +420,10 @@ export function RateSetReviewPanel({
                           </span>
                         </td>
                         <td className="px-3 py-4">
-                          <CategoryBadge category={a.category} />
+                          <CategoryBadge
+                            category={a.category}
+                            label={labelOf(a.category)}
+                          />
                         </td>
                         <td className="px-3 py-4">
                           <p className="font-semibold text-brand-black">
@@ -539,7 +539,10 @@ export function RateSetReviewPanel({
                 <div className="flex items-center gap-3">
                   <MapPin className="size-4 text-brand" />
                   <h3 className="font-semibold text-brand-black">{d.city}</h3>
-                  <CategoryBadge category={d.category} />
+                  <CategoryBadge
+                    category={d.category}
+                    label={labelOf(d.category)}
+                  />
                 </div>
                 <span className="text-xs text-stone-400">
                   {d.origin} · {d.createdLabel ?? ""}

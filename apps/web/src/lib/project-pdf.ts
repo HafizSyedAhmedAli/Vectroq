@@ -1,5 +1,6 @@
 import type { BOQResult, Geometry } from "@vectroq/shared-types";
 import {
+  categoryName,
   modelName,
   resolveNotes,
   resolveOrgRules,
@@ -45,7 +46,7 @@ export async function projectPdfResponse(
     clientName: project.lead.name,
     contact: project.lead.contact,
     city: project.city,
-    category: project.category,
+    category: `${project.category} (${categoryName(rules, project.category)})`,
     engagement: `Model ${project.model} - ${modelName(rules, project.model)}`,
     assumptions: notes.assumptions,
     exclusions: notes.exclusions,

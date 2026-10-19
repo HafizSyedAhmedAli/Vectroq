@@ -1,4 +1,5 @@
 import { prisma } from "@vectroq/db";
+import { categoryLabelMap, resolveOrgRules } from "@vectroq/shared-types";
 import { withFixedLabour } from "@vectroq/rate-cards";
 import {
   canonicalCityName,
@@ -89,7 +90,7 @@ export async function getRateCardWithBasis(
   throw new RateUnavailableError(
     cleanCity,
     category,
-    `no CSR data for ${ladder.join(", ")}. Import the CSR or enter rates manually on the Rates page`,
+    `no rates for ${ladder.join(", ")}. Import a rate schedule or add rates on the Rates page`,
   );
 }
 

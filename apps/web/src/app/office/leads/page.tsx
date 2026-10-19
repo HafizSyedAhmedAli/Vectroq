@@ -1,4 +1,9 @@
 // apps/web/src/app/office/leads/page.tsx
+import {
+  categoryLabelMap,
+  modelLabelMap,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import Link from "next/link";
 import { ArrowRight, House, Users } from "lucide-react";
 import { prisma, type Lead } from "@vectroq/db";
@@ -20,6 +25,10 @@ const SOURCE_LABELS: Record<string, string> = {
 // below has created a Project for it.
 export default async function OfficeLeadsPage() {
   const org = await getCurrentOrg();
+  const rules = resolveOrgRules(org.rules);
+  const modelLabels = modelLabelMap(rules);
+  const categoryLabels = categoryLabelMap(rules);
+
   const leads = await prisma.lead.findMany({
     where: { organizationId: org.id, projects: { none: {} } },
     orderBy: { createdAt: "desc" },
@@ -90,10 +99,10 @@ export default async function OfficeLeadsPage() {
                               href={`/api/leads/${lead.id}/plan`}
                               className="mt-1 inline-block text-sm font-semibold text-brand underline"
                             >
-                              Download plot plan ({lead.planFileName}) 
+                              Download plot plan ({lead.planFileName})
                             </a>
                           )}
-                          ·{" "} {SOURCE_LABELS[lead.source] ?? lead.source} ·{" "}
+                          · {SOURCE_LABELS[lead.source] ?? lead.source} ·{" "}
                           {lead.createdAt.toLocaleDateString("en-PK")}
                         </p>
                       </div>
@@ -103,6 +112,8 @@ export default async function OfficeLeadsPage() {
                       defaultCity={lead.city}
                       defaultModel={lead.model}
                       defaultCategory={lead.category}
+                      modelLabels={modelLabels}
+                      categoryLabels={categoryLabels}
                     />
                   </section>
                 ))}

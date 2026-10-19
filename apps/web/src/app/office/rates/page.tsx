@@ -1,4 +1,5 @@
 // apps/web/src/app/office/rates/page.tsx
+import { categoryLabelMap, resolveOrgRules } from "@vectroq/shared-types";
 import { BadgeCheck, MapPin, ShieldCheck } from "lucide-react";
 import { prisma } from "@vectroq/db";
 import type { RateCardItem } from "@vectroq/shared-types";
@@ -15,6 +16,8 @@ export const dynamic = "force-dynamic";
 
 export default async function OfficeRatesPage() {
   const org = await getCurrentOrg();
+  const categoryLabels = categoryLabelMap(resolveOrgRules(org.rules));
+
   const [drafts, approved] = await Promise.all([
     prisma.rateSet.findMany({
       where: { organizationId: org.id, status: "DRAFT" },
@@ -92,6 +95,7 @@ export default async function OfficeRatesPage() {
             <RateSetReviewPanel
               initialDrafts={initialDrafts}
               approved={approvedSets}
+              categoryLabels={categoryLabels}
             />
           </div>
         </div>

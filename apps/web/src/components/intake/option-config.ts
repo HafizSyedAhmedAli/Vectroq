@@ -1,8 +1,8 @@
 import { Building2, FileText, Home, Trees, Users } from "lucide-react";
-import { DEFAULT_ORG_RULES } from "@vectroq/shared-types";
 import type { Category, EngagementModel } from "@vectroq/shared-types";
 import type { HouseType } from "@vectroq/lead-intake";
 import type { CardOption } from "./OptionCards";
+import { CATEGORY_KEYS, DEFAULT_ORG_RULES } from "@vectroq/shared-types";
 
 const MODEL_ICONS = { 1: Home, 2: FileText, 3: Users } as const;
 
@@ -14,6 +14,15 @@ export function modelOptionsFromRules(
     label: models[value].label,
     description: models[value].description || undefined,
     Icon: MODEL_ICONS[value],
+  }));
+}
+
+export function categoryOptionsFromRules(
+  categories: Record<Category, { label: string }>,
+): CardOption<Category>[] {
+  return CATEGORY_KEYS.map((value) => ({
+    value,
+    label: `Category ${value} · ${categories[value].label}`,
   }));
 }
 

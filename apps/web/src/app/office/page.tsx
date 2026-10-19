@@ -1,4 +1,9 @@
 // apps/web/src/app/office/page.tsx
+import {
+  categoryName,
+  modelName,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import Link from "next/link";
 import { ArrowRight, Layers } from "lucide-react";
 import { prisma } from "@vectroq/db";
@@ -12,6 +17,8 @@ const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 
 export default async function OfficeProjectsPage() {
   const org = await getCurrentOrg();
+  const rules = resolveOrgRules(org.rules);
+
   const [projects, pendingLeadCount] = await Promise.all([
     prisma.project.findMany({
       where: { organizationId: org.id },
@@ -33,6 +40,8 @@ export default async function OfficeProjectsPage() {
       city: p.city,
       model: p.model,
       category: p.category,
+      modelLabel: modelName(rules, p.model),
+      categoryLabel: `Category ${p.category} · ${categoryName(rules, p.category)}`,
       status: p.status,
       hasRender: !!p.render,
       imageUrl: p.render?.imageUrl ?? "/demo.jpg",

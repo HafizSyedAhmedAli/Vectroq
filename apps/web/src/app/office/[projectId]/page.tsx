@@ -1,5 +1,9 @@
 // apps/web/src/app/office/[projectId]/page.tsx
-import { modelName, resolveOrgRules } from "@vectroq/shared-types";
+import {
+  categoryName,
+  modelName,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -48,7 +52,8 @@ export default async function OfficeProjectPage({
     orderBy: { approvedAt: "desc" },
   });
 
-  const modelLabel = `Model ${project.model} — ${modelName(resolveOrgRules(org.rules), project.model)}`;
+  const rules = resolveOrgRules(org.rules);
+  const modelLabel = `Model ${project.model} — ${modelName(rules, project.model)}`;
 
   return (
     <>
@@ -95,7 +100,10 @@ export default async function OfficeProjectPage({
               <span className="font-semibold text-brand-black">
                 Rates applied:
               </span>{" "}
-              {project.city} · Category {project.category} ·{" "}
+              <span>
+                Category {project.category} ·{" "}
+                {categoryName(rules, project.category)}
+              </span>
               {approvedRates
                 ? `market rates approved ${approvedRates.approvedAt?.toISOString().slice(0, 10)} by ${approvedRates.approvedBy}`
                 : "live market rates are searched when the first BOQ is calculated"}

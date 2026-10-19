@@ -1,4 +1,7 @@
 // apps/web/src/components/intake/StepRequirements.tsx
+import type { Category } from "@vectroq/shared-types";
+import { OptionCards, type CardOption } from "./OptionCards";
+import { HOUSE_TYPE_OPTIONS } from "./option-config";
 import {
   BedDouble,
   Calendar,
@@ -17,14 +20,14 @@ import {
 import { FileDropzone } from "./FileDropzone";
 import { SelectField, TextField } from "./fields";
 import { NotesField } from "./NotesField";
-import { OptionCards } from "./OptionCards";
-import { CATEGORY_OPTIONS, HOUSE_TYPE_OPTIONS } from "./option-config";
+import { CATEGORY_OPTIONS } from "./option-config";
 import type { StepProps } from "./types";
 
 interface StepRequirementsProps extends StepProps {
   planFile: File | null;
   planFileError: string | null;
   onPlanFileChange: (file: File | null) => void;
+  categoryOptions: CardOption<Category>[];
 }
 
 const asOptions = (values: readonly string[]) =>
@@ -46,6 +49,7 @@ export function StepRequirements({
   planFile,
   planFileError,
   onPlanFileChange,
+  categoryOptions,
 }: StepRequirementsProps) {
   return (
     <section className="space-y-5">
@@ -138,7 +142,7 @@ export function StepRequirements({
       <OptionCards
         legend="Material / Finish Category"
         required
-        options={CATEGORY_OPTIONS}
+        options={categoryOptions}
         value={values.category}
         error={errors.category}
         onChange={(v) => setField("category", v)}

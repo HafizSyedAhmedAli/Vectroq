@@ -6,8 +6,9 @@ import { brandFromOrg } from "@/lib/brand";
 import { getCurrentOrg } from "@/lib/org";
 import { prisma } from "@vectroq/db";
 import {
-    BOQResult,
-    Geometry,
+  BOQResult,
+  categoryName,
+  Geometry,
   modelName,
   resolveNotes,
   resolveOrgRules,
@@ -145,7 +146,7 @@ export default async function BoqPrintPage({
                 <Info
                   icon={Building2}
                   label="Material category"
-                  value={`Category ${project.category}`}
+                  value={`Category ${project.category} · ${categoryName(rules, project.category)}`}
                 />
                 <Info
                   icon={Ruler}

@@ -1,5 +1,10 @@
 "use client";
 
+import {
+  categoryName,
+  modelName,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";

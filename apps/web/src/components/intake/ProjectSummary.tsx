@@ -1,7 +1,5 @@
 // apps/web/src/components/intake/ProjectSummary.tsx
-import type { EngagementModel } from "@vectroq/shared-types";
-import type { CardOption } from "./OptionCards";
-import type { ReactNode } from "react";
+import type { Category, EngagementModel } from "@vectroq/shared-types";
 import {
   Building2,
   FileText,
@@ -11,6 +9,8 @@ import {
   Tag,
   Wallet,
 } from "lucide-react";
+import type { ReactNode } from "react";
+import type { CardOption } from "./OptionCards";
 import type { IntakeFormValues } from "./types";
 
 function SummaryRow({
@@ -40,9 +40,11 @@ function SummaryRow({
 export function ProjectSummary({
   values,
   modelOptions,
+  categoryOptions,
 }: {
   values: IntakeFormValues;
   modelOptions: CardOption<EngagementModel>[];
+  categoryOptions: CardOption<Category>[];
 }) {
   const model = modelOptions.find((m) => m.value === values.model);
   const none = "Not selected";
@@ -68,7 +70,8 @@ export function ProjectSummary({
         {values.houseType ?? none}
       </SummaryRow>
       <SummaryRow icon={<Tag className="size-4" />} label="Material Category">
-        {values.category ? `Category ${values.category}` : none}
+        {categoryOptions.find((c) => c.value === values.category)?.label ??
+          none}
       </SummaryRow>
       <SummaryRow icon={<Wallet className="size-4" />} label="Budget Range">
         {values.budgetRange || none}

@@ -1,6 +1,8 @@
 // apps/web/src/components/IntakeForm.tsx
 "use client";
 
+import type { Category, EngagementModel } from "@vectroq/shared-types";
+import { CATEGORY_OPTIONS, MODEL_OPTIONS } from "./intake/option-config";
 import { IntakeStepper } from "./intake/IntakeStepper";
 import { ProjectSummary } from "./intake/ProjectSummary";
 import { StepActions } from "./intake/StepActions";
@@ -10,15 +12,14 @@ import { StepRequirements } from "./intake/StepRequirements";
 import { ThankYou } from "./intake/ThankYou";
 import type { IntakeSubmitHandler } from "./intake/types";
 import { STEPS, useIntakeForm } from "./intake/useIntakeForm";
-import type { EngagementModel } from "@vectroq/shared-types";
 import type { CardOption } from "./intake/OptionCards";
-import { MODEL_OPTIONS } from "./intake/option-config";
 
 export type { IntakeSubmitResult } from "./intake/types";
 
 interface IntakeFormProps {
   onSubmit: IntakeSubmitHandler;
   modelOptions?: CardOption<EngagementModel>[];
+  categoryOptions?: CardOption<Category>[];
 }
 
 // Three-step wizard: Project Details -> Requirements -> Contact. Each step is
@@ -26,6 +27,7 @@ interface IntakeFormProps {
 export function IntakeForm({
   onSubmit,
   modelOptions = MODEL_OPTIONS,
+  categoryOptions = CATEGORY_OPTIONS,
 }: IntakeFormProps) {
   const form = useIntakeForm(onSubmit);
 
@@ -60,6 +62,7 @@ export function IntakeForm({
         {form.step === 1 && (
           <StepRequirements
             {...stepProps}
+            categoryOptions={categoryOptions}
             planFile={form.planFile}
             planFileError={form.planFileError}
             onPlanFileChange={form.choosePlanFile}
@@ -77,7 +80,11 @@ export function IntakeForm({
         />
       </form>
 
-      <ProjectSummary values={form.values} modelOptions={modelOptions} />
+      <ProjectSummary
+        values={form.values}
+        modelOptions={modelOptions}
+        categoryOptions={categoryOptions}
+      />
     </div>
   );
 }

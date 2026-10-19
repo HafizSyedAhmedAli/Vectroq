@@ -14,13 +14,15 @@ export default async function EmbedPage({
 }) {
   const org = await getOrgBySlug((await params).slug);
   if (!org) notFound();
+  const rules = resolveOrgRules(org.rules);
 
   return (
     <div style={brandStyle(brandFromOrg(org))} className="p-2">
       <style>{"body{background:transparent!important}"}</style>
       <PublicIntake
         orgSlug={org.slug}
-        models={resolveOrgRules(org.rules).models}
+        models={rules.models}
+        categories={rules.categories}
       />
       <EmbedResizer />
     </div>
