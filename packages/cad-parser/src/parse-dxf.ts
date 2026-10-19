@@ -1,6 +1,6 @@
 // packages/cad-parser/src/parse-dxf.ts
+import type { ConstructionDefaults, Geometry } from "@vectroq/shared-types";
 import DxfParser from "dxf-parser";
-import type { Geometry } from "@vectroq/shared-types";
 import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
 
 // $INSUNITS code -> feet per drawing unit
@@ -29,7 +29,10 @@ function scaleEntity(e: any, k: number): RawEntity {
   } as RawEntity;
 }
 
-export function parseDxfToGeometry(dxfText: string): Geometry {
+export function parseDxfToGeometry(
+  dxfText: string,
+  construction?: ConstructionDefaults,
+): Geometry {
   const parser = new DxfParser();
   const dxf = parser.parseSync(dxfText);
   if (!dxf) {
@@ -54,5 +57,8 @@ export function parseDxfToGeometry(dxfText: string): Geometry {
   ]);
   const maxExtent = coords.length ? Math.max(...coords) : 0;
   const k = feetPerUnit((dxf.header as any)?.$INSUNITS, maxExtent);
-  return dxfToGeometry({ entities: normalised.map((e) => scaleEntity(e, k)) });
+  return dxfToGeometry(
+    { entities: normalised.map((e) => scaleEntity(e, k)) },
+    construction,
+  );
 }

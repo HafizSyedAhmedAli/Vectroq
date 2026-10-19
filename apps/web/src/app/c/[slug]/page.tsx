@@ -7,6 +7,7 @@ import { PublicIntake } from "@/components/intake/PublicIntake";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { getOrgBySlug } from "@/lib/org";
 import { BrandHero } from "@/components/BrandHero";
+import { resolveOrgRules } from "@vectroq/shared-types";
 
 export const dynamic = "force-dynamic";
 
@@ -72,7 +73,10 @@ export default async function OrgIntakePage({ params }: Props) {
 
       <main className="flex-1 -mt-2 pb-16">
         <div className="max-w-6xl mx-auto px-4">
-          <PublicIntake orgSlug={org.slug} />
+          <PublicIntake
+            orgSlug={org.slug}
+            models={resolveOrgRules(org.rules).models}
+          />
         </div>
       </main>
 

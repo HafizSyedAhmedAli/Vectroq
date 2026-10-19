@@ -1,4 +1,5 @@
 // apps/web/src/app/office/[projectId]/page.tsx
+import { modelName, resolveOrgRules } from "@vectroq/shared-types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -12,12 +13,6 @@ import { hasRole } from "@/lib/auth/roles";
 import { BrandHero } from "@/components/BrandHero";
 
 export const dynamic = "force-dynamic";
-
-const MODEL_LABELS: Record<number, string> = {
-  1: "Model 1 — Land & Build, Then Sell",
-  2: "Model 2 — Construction on Client's Plot",
-  3: "Model 3 — Client's Plot & Client's Construction Cost",
-};
 
 const STATUS_STYLES: Record<string, string> = {
   NEW: "bg-stone-100 text-stone-600",
@@ -53,7 +48,7 @@ export default async function OfficeProjectPage({
     orderBy: { approvedAt: "desc" },
   });
 
-  const modelLabel = MODEL_LABELS[project.model] ?? `Model ${project.model}`;
+  const modelLabel = `Model ${project.model} — ${modelName(resolveOrgRules(org.rules), project.model)}`;
 
   return (
     <>

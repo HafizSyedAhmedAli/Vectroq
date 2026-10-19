@@ -1,5 +1,6 @@
 // packages/cad-parser/src/dxf-to-geometry.ts
 import type {
+  ConstructionDefaults,
   Geometry,
   Opening,
   Room,
@@ -33,6 +34,14 @@ export const WALL_THICKNESS_FT = 0.75; // 9 in exterior wall
 export const PARTITION_THICKNESS_FT = 0.375; // 4.5 in interior partition
 export const DOOR_HEIGHT_FT = 7;
 export const WINDOW_HEIGHT_FT = 4;
+
+export const DEFAULT_CONSTRUCTION: ConstructionDefaults = {
+  wallHeightFt: WALL_HEIGHT_FT,
+  exteriorWallThicknessFt: WALL_THICKNESS_FT,
+  partitionThicknessFt: PARTITION_THICKNESS_FT,
+  doorHeightFt: DOOR_HEIGHT_FT,
+  windowHeightFt: WINDOW_HEIGHT_FT,
+};
 
 interface RawVertex {
   x: number;
@@ -96,7 +105,10 @@ function layerKind(layer: string): "wall" | "door" | "window" | null {
   return null;
 }
 
-export function dxfToGeometry(dxf: RawDxfDocument): Geometry {
+export function dxfToGeometry(
+  dxf: RawDxfDocument,
+  d: ConstructionDefaults = DEFAULT_CONSTRUCTION,
+): Geometry {
   const roomPolylines = dxf.entities.filter(
     (e): e is RawPolylineEntity =>
       e.type === "LWPOLYLINE" && layerKind(e.layer) === "wall",
@@ -133,16 +145,16 @@ export function dxfToGeometry(dxf: RawDxfDocument): Geometry {
     );
     const walls = segmentsToWalls(
       segs,
-      WALL_HEIGHT_FT,
-      WALL_THICKNESS_FT,
-      PARTITION_THICKNESS_FT,
+      d.wallHeightFt,
+      d.exteriorWallThicknessFt,
+      d.partitionThicknessFt,
     );
     const openings: Opening[] = [
       ...doorLines.map((l, i) =>
-        toOpening(l, i, "door", DOOR_HEIGHT_FT, walls),
+        toOpening(l, i, "door", d.doorHeightFt, walls),
       ),
       ...windowLines.map((l, i) =>
-        toOpening(l, i, "window", WINDOW_HEIGHT_FT, walls),
+        toOpening(l, i, "window", d.windowHeightFt, walls),
       ),
     ];
     return {
@@ -183,8 +195,8 @@ export function dxfToGeometry(dxf: RawDxfDocument): Geometry {
         endX: end.x,
         endY: end.y,
         length: distance(start, end),
-        height: WALL_HEIGHT_FT,
-        thickness: WALL_THICKNESS_FT,
+        height: d.wallHeightFt,
+        thickness: d.exteriorWallThicknessFt,
       });
     }
 
@@ -212,10 +224,10 @@ export function dxfToGeometry(dxf: RawDxfDocument): Geometry {
 
   const openings: Opening[] = [
     ...doorLines.map((line, i) =>
-      toOpening(line, i, "door", DOOR_HEIGHT_FT, walls),
+      toOpening(line, i, "door", d.doorHeightFt, walls),
     ),
     ...windowLines.map((line, i) =>
-      toOpening(line, i, "window", WINDOW_HEIGHT_FT, walls),
+      toOpening(line, i, "window", d.windowHeightFt, walls),
     ),
   ];
 

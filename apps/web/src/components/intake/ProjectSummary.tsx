@@ -1,4 +1,6 @@
 // apps/web/src/components/intake/ProjectSummary.tsx
+import type { EngagementModel } from "@vectroq/shared-types";
+import type { CardOption } from "./OptionCards";
 import type { ReactNode } from "react";
 import {
   Building2,
@@ -9,7 +11,6 @@ import {
   Tag,
   Wallet,
 } from "lucide-react";
-import { MODEL_OPTIONS } from "./option-config";
 import type { IntakeFormValues } from "./types";
 
 function SummaryRow({
@@ -36,8 +37,14 @@ function SummaryRow({
   );
 }
 
-export function ProjectSummary({ values }: { values: IntakeFormValues }) {
-  const model = MODEL_OPTIONS.find((m) => m.value === values.model);
+export function ProjectSummary({
+  values,
+  modelOptions,
+}: {
+  values: IntakeFormValues;
+  modelOptions: CardOption<EngagementModel>[];
+}) {
+  const model = modelOptions.find((m) => m.value === values.model);
   const none = "Not selected";
   return (
     <aside className="bg-white border border-stone-200 rounded-2xl shadow-sm p-5 space-y-3 lg:sticky lg:top-6">

@@ -1,21 +1,23 @@
 import { fixedLabourItems } from "@vectroq/shared-types";
-import type { RateCard } from "@vectroq/shared-types";
+import type { OrgRules, RateCard } from "@vectroq/shared-types";
 
 /**
- * Overlays the fixed labour rates on a card. Fixed rates
- * always win over anything found by search or saved in an older rate set, and
- * they are identical for every city.
+ * Overlays the company's labour rates on a card (defaults when `rules` is
+ * omitted). Labour rates always win over anything found in a CSR or saved in
+ * an older rate set, and are identical for every city.
  */
-export function withFixedLabour(card: RateCard): RateCard;
-export function withFixedLabour(card: undefined): undefined;
+export function withFixedLabour(card: RateCard, rules?: OrgRules): RateCard;
+export function withFixedLabour(card: undefined, rules?: OrgRules): undefined;
 export function withFixedLabour(
   card: RateCard | undefined,
+  rules?: OrgRules,
 ): RateCard | undefined;
 export function withFixedLabour(
   card: RateCard | undefined,
+  rules?: OrgRules,
 ): RateCard | undefined {
   if (!card) return card;
-  const fixed = fixedLabourItems(card.category);
+  const fixed = fixedLabourItems(card.category, rules);
   const fixedTypes = new Set(fixed.map((f) => f.itemType));
   return {
     ...card,

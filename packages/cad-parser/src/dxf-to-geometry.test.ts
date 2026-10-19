@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
+import { DEFAULT_CONSTRUCTION, dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
 
 const entities: RawEntity[] = [
   {
@@ -126,5 +126,20 @@ describe("dxfToGeometry", () => {
       ],
     });
     expect(withNoise.openings).toHaveLength(2);
+  });
+
+  it("applies a company's wall, door and window defaults", () => {
+    const g = dxfToGeometry(
+      { entities },
+      {
+        ...DEFAULT_CONSTRUCTION,
+        wallHeightFt: 12,
+        doorHeightFt: 8,
+        windowHeightFt: 5,
+      },
+    );
+    expect(g.walls[0].height).toBe(12);
+    expect(g.openings.find((o) => o.type === "door")?.height).toBe(8);
+    expect(g.openings.find((o) => o.type === "window")?.height).toBe(5);
   });
 });

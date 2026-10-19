@@ -1,4 +1,5 @@
 // packages/boq-engine/src/calculate-boq.test.ts
+import { MATERIAL_ASSUMPTIONS } from "./material-quantities";
 import { describe, it, expect } from "vitest";
 import { calculateBoq } from "./calculate-boq";
 import type { Geometry, RateCard } from "@vectroq/shared-types";
@@ -218,4 +219,41 @@ it("prices material lines only when the rate card includes them", () => {
       (l) => l.itemType === "brick",
     ),
   ).toBe(false);
+});
+
+describe("calculateBoq — company rules", () => {
+  const geo: Geometry = {
+    walls: [],
+    rooms: [
+      { id: "r1", name: "Lounge", area: 400, type: "general" },
+      { id: "r2", name: "Bath", area: 100, type: "bathroom" },
+    ],
+    openings: [],
+  };
+  const card = (
+    itemType: "marbleFixing" | "steelMaterial",
+    unit: "sqft" | "ton",
+  ): RateCard => ({
+    city: "X",
+    category: "B",
+    taxPercent: 0,
+    items: [{ itemType, unit, unitRate: 1 }],
+  });
+
+  it("gives marble to the categories the company chose", () => {
+    const q = (cfg?: object) =>
+      calculateBoq(geo, card("marbleFixing", "sqft"), 0, cfg).lineItems[0]
+        ?.quantity;
+    expect(q()).toBeUndefined(); // default: only A gets marble
+    expect(q({ marbleCategories: ["B"] })).toBe(400);
+  });
+
+  it("uses the company's steel allowance", () => {
+    const tons = (kg: number) =>
+      calculateBoq(geo, card("steelMaterial", "ton"), 0, {
+        materials: { ...MATERIAL_ASSUMPTIONS, steelKgPerSqft: kg },
+      }).lineItems[0].quantity;
+    expect(tons(4)).toBe(2);
+    expect(tons(8)).toBe(4);
+  });
 });

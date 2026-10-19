@@ -1,16 +1,9 @@
-import type { Geometry } from "@vectroq/shared-types";
+import { DEFAULT_ORG_RULES } from "@vectroq/shared-types";
+import type { Geometry, MaterialAssumptions } from "@vectroq/shared-types";
 
-export const MATERIAL_ASSUMPTIONS = {
-  referenceThicknessFt: 0.75, // 9 in wall
-  bricksPerSqftFaceAtReference: 13.5,
-  cementBagsPer1000Bricks: 5,
-  sandCftPer1000Bricks: 30,
-  plasterCementBagsPerSqft: 0.04,
-  plasterSandCftPerSqft: 0.12,
-  steelKgPerSqft: 4, // rule of thumb: kg of reinforcement per sqft of covered area
-} as const;
-
-const A = MATERIAL_ASSUMPTIONS;
+/** Defaults. A company's own values come from OrgRules.materials. */
+export const MATERIAL_ASSUMPTIONS: MaterialAssumptions =
+  DEFAULT_ORG_RULES.materials;
 
 /** Gross wall face area (no openings deducted). */
 export function wallFaceArea(g: Geometry): number {
@@ -44,7 +37,10 @@ export function dryRoomArea(g: Geometry): number {
 
 // Bricks scale with wall thickness (4.5 in wall = half the bricks); openings
 // are deducted in proportion.
-export function brickCount(g: Geometry): number {
+export function brickCount(
+  g: Geometry,
+  a: MaterialAssumptions = MATERIAL_ASSUMPTIONS,
+): number {
   const gross = wallFaceArea(g);
   if (gross === 0) return 0;
   const bricks = g.walls.reduce(
@@ -52,8 +48,8 @@ export function brickCount(g: Geometry): number {
       s +
       w.length *
         w.height *
-        A.bricksPerSqftFaceAtReference *
-        (w.thickness / A.referenceThicknessFt),
+        a.bricksPerSqftFaceAtReference *
+        (w.thickness / a.referenceThicknessFt),
     0,
   );
   return Math.ceil(bricks * (netWallArea(g) / gross));
@@ -64,20 +60,29 @@ export function plasterArea(g: Geometry): number {
   return netWallArea(g) * 2;
 }
 
-export function cementBags(g: Geometry): number {
+export function cementBags(
+  g: Geometry,
+  a: MaterialAssumptions = MATERIAL_ASSUMPTIONS,
+): number {
   const raw =
-    (brickCount(g) / 1000) * A.cementBagsPer1000Bricks +
-    plasterArea(g) * A.plasterCementBagsPerSqft;
+    (brickCount(g, a) / 1000) * a.cementBagsPer1000Bricks +
+    plasterArea(g) * a.plasterCementBagsPerSqft;
   return Math.ceil(raw); // whole bags only
 }
 
-export function sandCft(g: Geometry): number {
+export function sandCft(
+  g: Geometry,
+  a: MaterialAssumptions = MATERIAL_ASSUMPTIONS,
+): number {
   const raw =
-    (brickCount(g) / 1000) * A.sandCftPer1000Bricks +
-    plasterArea(g) * A.plasterSandCftPerSqft;
+    (brickCount(g, a) / 1000) * a.sandCftPer1000Bricks +
+    plasterArea(g) * a.plasterSandCftPerSqft;
   return Math.round(raw * 100) / 100;
 }
 
-export function steelMaterialTons(g: Geometry): number {
-  return (floorArea(g) * A.steelKgPerSqft) / 1000;
+export function steelMaterialTons(
+  g: Geometry,
+  a: MaterialAssumptions = MATERIAL_ASSUMPTIONS,
+): number {
+  return (floorArea(g) * a.steelKgPerSqft) / 1000;
 }

@@ -131,6 +131,7 @@ model Organization {
   email        String?
   website      String?
   offices      Json      @default("[]") // [{ title, address }]
+  rules        Json?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   leads        Lead[]

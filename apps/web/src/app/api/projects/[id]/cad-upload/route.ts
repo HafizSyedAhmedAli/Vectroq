@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveOrgRules } from "@vectroq/shared-types";
 import { parseDxfToGeometry } from "@vectroq/cad-parser";
 import { Prisma, prisma } from "@vectroq/db";
 import { guard } from "@/lib/auth/guard";
@@ -42,7 +43,10 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
 
   let geometry;
   try {
-    geometry = parseDxfToGeometry(dxfText);
+    geometry = parseDxfToGeometry(
+      dxfText,
+      resolveOrgRules(g.auth.org.rules).construction,
+    );
   } catch (err) {
     return NextResponse.json(
       {

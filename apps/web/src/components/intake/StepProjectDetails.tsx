@@ -1,12 +1,18 @@
 // apps/web/src/components/intake/StepProjectDetails.tsx
+import type { EngagementModel } from "@vectroq/shared-types";
+import type { CardOption } from "./OptionCards";
 import { CITY_NAMES } from "@vectroq/shared-types";
 import { MapPin, Phone, User } from "lucide-react";
 import { SelectField, TextField } from "./fields";
-import { MODEL_OPTIONS } from "./option-config";
 import { OptionCards } from "./OptionCards";
 import type { StepProps } from "./types";
 
-export function StepProjectDetails({ values, errors, setField }: StepProps) {
+export function StepProjectDetails({
+  values,
+  errors,
+  setField,
+  modelOptions,
+}: StepProps & { modelOptions: CardOption<EngagementModel>[] }) {
   return (
     <section className="space-y-5">
       <h2 className="text-lg font-bold text-brand-black">
@@ -50,7 +56,7 @@ export function StepProjectDetails({ values, errors, setField }: StepProps) {
       <OptionCards
         legend="Engagement Model"
         required
-        options={MODEL_OPTIONS}
+        options={modelOptions}
         value={values.model}
         error={errors.model}
         onChange={(v) => setField("model", v)}

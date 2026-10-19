@@ -245,8 +245,8 @@ export function CsrImportForm() {
 
         <p className="text-xs text-stone-400">
           Columns: city, itemType, unit, unitRate. Every city needs brick,
-          cement, sand and steelMaterial. Labour rates are fixed in code, so
-          leave them out.
+          cement, sand and steelMaterial. Labour rates come from Business rules,
+          so leave them out.
         </p>
 
         {error && (

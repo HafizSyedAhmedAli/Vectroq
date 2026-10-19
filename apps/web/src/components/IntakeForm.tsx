@@ -10,16 +10,23 @@ import { StepRequirements } from "./intake/StepRequirements";
 import { ThankYou } from "./intake/ThankYou";
 import type { IntakeSubmitHandler } from "./intake/types";
 import { STEPS, useIntakeForm } from "./intake/useIntakeForm";
+import type { EngagementModel } from "@vectroq/shared-types";
+import type { CardOption } from "./intake/OptionCards";
+import { MODEL_OPTIONS } from "./intake/option-config";
 
 export type { IntakeSubmitResult } from "./intake/types";
 
 interface IntakeFormProps {
   onSubmit: IntakeSubmitHandler;
+  modelOptions?: CardOption<EngagementModel>[];
 }
 
 // Three-step wizard: Project Details -> Requirements -> Contact. Each step is
 // validated before the next one opens; the final step submits.
-export function IntakeForm({ onSubmit }: IntakeFormProps) {
+export function IntakeForm({
+  onSubmit,
+  modelOptions = MODEL_OPTIONS,
+}: IntakeFormProps) {
   const form = useIntakeForm(onSubmit);
 
   if (form.result) {
@@ -47,7 +54,9 @@ export function IntakeForm({ onSubmit }: IntakeFormProps) {
 
         <hr className="border-stone-100" />
 
-        {form.step === 0 && <StepProjectDetails {...stepProps} />}
+        {form.step === 0 && (
+          <StepProjectDetails {...stepProps} modelOptions={modelOptions} />
+        )}
         {form.step === 1 && (
           <StepRequirements
             {...stepProps}
@@ -68,7 +77,7 @@ export function IntakeForm({ onSubmit }: IntakeFormProps) {
         />
       </form>
 
-      <ProjectSummary values={form.values} />
+      <ProjectSummary values={form.values} modelOptions={modelOptions} />
     </div>
   );
 }

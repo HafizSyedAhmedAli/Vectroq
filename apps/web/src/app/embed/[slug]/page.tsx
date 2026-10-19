@@ -3,6 +3,7 @@ import { PublicIntake } from "@/components/intake/PublicIntake";
 import { EmbedResizer } from "@/components/EmbedResizer";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { getOrgBySlug } from "@/lib/org";
+import { resolveOrgRules } from "@vectroq/shared-types";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,10 @@ export default async function EmbedPage({
   return (
     <div style={brandStyle(brandFromOrg(org))} className="p-2">
       <style>{"body{background:transparent!important}"}</style>
-      <PublicIntake orgSlug={org.slug} />
+      <PublicIntake
+        orgSlug={org.slug}
+        models={resolveOrgRules(org.rules).models}
+      />
       <EmbedResizer />
     </div>
   );

@@ -4,7 +4,7 @@ import {
   validatePlanFile,
   type LeadIntakeInput,
 } from "@vectroq/lead-intake";
-import { canonicalCityName } from "@vectroq/shared-types";
+import { canonicalCityName, resolveOrgRules } from "@vectroq/shared-types";
 import { estimateLead } from "@vectroq/rate-cards";
 import { prisma } from "@vectroq/db";
 import { getLiveRateCard } from "@/lib/rate-sets";
@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
   }
 
   const city = canonicalCityName(input.city) ?? input.city!.trim();
+  const rules = resolveOrgRules(org.rules);
 
   let lead = await prisma.lead.create({
     data: pickLeadData({ ...(input as LeadIntakeInput), city }, org.id),
@@ -59,12 +60,17 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const rateCard = await getLiveRateCard(org.id, city, input.category!).catch(
-    () => null,
-  );
+  const rateCard = await getLiveRateCard(
+    org.id,
+    city,
+    input.category!,
+    rules,
+  ).catch(() => null);
+  
   const estimate = estimateLead({
     model: input.model!,
     rateCard: rateCard ?? undefined,
+    rules,
   });
 
   return NextResponse.json({ ...lead, estimate }, { status: 201 });

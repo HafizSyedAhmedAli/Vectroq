@@ -189,7 +189,12 @@ describe("POST /api/projects/:id/finalize", () => {
       where: { id: "p1" },
       data: { status: "FINALIZED" },
     });
-    expect(getRateCardWithBasis).toHaveBeenCalledWith("org_1", "Karachi", "B");
+    expect(getRateCardWithBasis).toHaveBeenCalledWith(
+      "org_1",
+      "Karachi",
+      "B",
+      expect.anything(),
+    );
   });
 
   it("flags the BOQ when another market's rates were used", async () => {

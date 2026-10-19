@@ -20,6 +20,7 @@ import {
   UserCog,
   X,
   type LucideIcon,
+  SlidersHorizontal,
 } from "lucide-react";
 import type { Brand } from "@/lib/brand";
 import { ROLE_LABEL, hasRole, type Role } from "@/lib/auth/roles";
@@ -40,6 +41,12 @@ const NAV: NavItem[] = [
   { href: "/office/leads", label: "Leads", icon: Inbox },
   { href: "/office/team", label: "Team", icon: Users, owner: true },
   { href: "/office/rates", label: "Rates", icon: Tag },
+  {
+    href: "/office/rules",
+    label: "Business Rules",
+    icon: SlidersHorizontal,
+    owner: true,
+  },
   { href: "/office/settings", label: "Settings", icon: Settings, owner: true },
   { href: "/office/account", label: "Account", icon: UserCog },
 ];

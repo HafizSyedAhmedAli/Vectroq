@@ -1,3 +1,4 @@
+import { DEFAULT_ORG_RULES, type OrgRules } from "./org-rules";
 export type Category = "A" | "B" | "C";
 export type EngagementModel = 1 | 2 | 3;
 
@@ -61,14 +62,17 @@ export interface RateCard {
   taxPercent?: number;
 }
 
+// Defaults only. A company's own values live in OrgRules.models (see org-rules.ts).
 export const MODEL_TAX_PERCENT: Record<EngagementModel, number> = {
-  1: 15, // Land & Build, Then Sell (company does everything)
-  2: 10, // Construction on Client's Plot
-  3: 5, // Client's Plot & Client's Construction Cost
+  1: DEFAULT_ORG_RULES.models[1].taxPercent,
+  2: DEFAULT_ORG_RULES.models[2].taxPercent,
+  3: DEFAULT_ORG_RULES.models[3].taxPercent,
 };
 
-export const taxPercentForModel = (model: EngagementModel): number =>
-  MODEL_TAX_PERCENT[model];
+export const taxPercentForModel = (
+  model: EngagementModel,
+  rules: Pick<OrgRules, "models"> = DEFAULT_ORG_RULES,
+): number => rules.models[model].taxPercent;
 
 export interface BOQLineItem {
   itemType: RateItemType;
@@ -153,28 +157,24 @@ export const FIXED_LABOUR_TYPES = [
 export const isFixedLabourType = (t: RateItemType): boolean =>
   (FIXED_LABOUR_TYPES as readonly string[]).includes(t);
 
-// The sheet gives false ceiling as a range (Rs 200-350 / sq ft). We map it to
-// the project category: A = 350, B = 275 (midpoint), C = 200. To be confirmed.
-const FALSE_CEILING_BY_CATEGORY: Record<Category, number> = {
-  A: 350,
-  B: 275,
-  C: 200,
-};
-
-export function fixedLabourItems(category: Category): RateCardItem[] {
+export function fixedLabourItems(
+  category: Category,
+  rules: Pick<OrgRules, "labour" | "categories"> = DEFAULT_ORG_RULES,
+): RateCardItem[] {
+  const l = rules.labour;
   return [
-    { itemType: "masonry", unit: "sqft", unitRate: 50 },
-    { itemType: "plaster", unit: "sqft", unitRate: 30 },
-    { itemType: "shuttering", unit: "sqft", unitRate: 45 },
-    { itemType: "steelFixing", unit: "ton", unitRate: 10_000 },
-    { itemType: "sanitary", unit: "bath", unitRate: 12_000 },
-    { itemType: "tileFixing", unit: "sqft", unitRate: 50 },
-    { itemType: "marbleFixing", unit: "sqft", unitRate: 40 },
-    { itemType: "woodwork", unit: "sqft", unitRate: 350 },
+    { itemType: "masonry", unit: "sqft", unitRate: l.masonry },
+    { itemType: "plaster", unit: "sqft", unitRate: l.plaster },
+    { itemType: "shuttering", unit: "sqft", unitRate: l.shuttering },
+    { itemType: "steelFixing", unit: "ton", unitRate: l.steelFixing },
+    { itemType: "sanitary", unit: "bath", unitRate: l.sanitary },
+    { itemType: "tileFixing", unit: "sqft", unitRate: l.tileFixing },
+    { itemType: "marbleFixing", unit: "sqft", unitRate: l.marbleFixing },
+    { itemType: "woodwork", unit: "sqft", unitRate: l.woodwork },
     {
       itemType: "falseCeiling",
       unit: "sqft",
-      unitRate: FALSE_CEILING_BY_CATEGORY[category],
+      unitRate: rules.categories[category].falseCeilingRate,
     },
   ];
 }
@@ -198,3 +198,4 @@ export interface Room {
 }
 
 export * from "./pakistan-cities";
+export * from "./org-rules";

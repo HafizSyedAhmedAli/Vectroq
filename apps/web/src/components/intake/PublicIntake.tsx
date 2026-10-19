@@ -1,10 +1,18 @@
 "use client";
 
+import type { EngagementModel } from "@vectroq/shared-types";
+import { modelOptionsFromRules } from "./option-config";
 import { IntakeForm, type IntakeSubmitResult } from "@/components/IntakeForm";
 import { buildLeadRequest } from "@/lib/build-lead-request";
 import type { LeadIntakeInput } from "@vectroq/lead-intake";
 
-export function PublicIntake({ orgSlug }: { orgSlug: string }) {
+export function PublicIntake({
+  orgSlug,
+  models,
+}: {
+  orgSlug: string;
+  models: Record<EngagementModel, { label: string; description: string }>;
+}) {
   async function handleSubmit(
     data: LeadIntakeInput,
     planFile: File | null,
@@ -24,5 +32,10 @@ export function PublicIntake({ orgSlug }: { orgSlug: string }) {
     return { estimate: body.estimate };
   }
 
-  return <IntakeForm onSubmit={handleSubmit} />;
+  return (
+    <IntakeForm
+      onSubmit={handleSubmit}
+      modelOptions={modelOptionsFromRules(models)}
+    />
+  );
 }

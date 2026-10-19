@@ -10,6 +10,7 @@ import type {
   Geometry,
 } from "@vectroq/shared-types";
 import { NextRequest, NextResponse } from "next/server";
+import { resolveOrgRules } from "@vectroq/shared-types";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -19,6 +20,7 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
   const g = await guard("ESTIMATOR");
   if (!g.ok) return g.res;
   const org = g.auth.org;
+  const rules = resolveOrgRules(org.rules);
   const { id: projectId } = await params;
 
   const project = await prisma.project.findFirst({
@@ -41,7 +43,12 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
   // project is not marked FINALIZED.
   let resolved;
   try {
-    resolved = await getRateCardWithBasis(org.id, project.city, category);
+    resolved = await getRateCardWithBasis(
+      org.id,
+      project.city,
+      category,
+      rules,
+    );
   } catch (err) {
     if (err instanceof RateUnavailableError) {
       return NextResponse.json(
@@ -58,6 +65,7 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
     geometry: cadFile.geometry as unknown as Geometry,
     model: project.model as EngagementModel,
     rateCard: resolved.card,
+    rules,
   });
 
   if (!priced) {

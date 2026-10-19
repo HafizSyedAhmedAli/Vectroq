@@ -5,6 +5,7 @@ import {
   CORE_MATERIAL_TYPES,
   searchPlacesFor,
   type Category,
+  type OrgRules,
   type RateCard,
   type RateCardItem,
 } from "@vectroq/shared-types";
@@ -61,6 +62,7 @@ export async function getRateCardWithBasis(
   organizationId: string,
   city: string,
   category: Category,
+  rules?: OrgRules,
 ): Promise<{ card: RateCard; basis: RateBasis }> {
   const cleanCity = canonicalCityName(city) ?? city.trim();
   const ladder = [...new Set(searchPlacesFor(cleanCity).map(placeName))].filter(
@@ -71,7 +73,10 @@ export async function getRateCardWithBasis(
     const hit = await findApproved(organizationId, place, category);
     if (!hit) continue;
     return {
-      card: withFixedLabour({ city: cleanCity, category, items: hit.items }),
+      card: withFixedLabour(
+        { city: cleanCity, category, items: hit.items },
+        rules,
+      ),
       basis: {
         place,
         isFallback: place.toLowerCase() !== cleanCity.toLowerCase(),
@@ -92,8 +97,10 @@ export async function getLiveRateCard(
   organizationId: string,
   city: string,
   category: Category,
+  rules?: OrgRules,
 ): Promise<RateCard> {
-  return (await getRateCardWithBasis(organizationId, city, category)).card;
+  return (await getRateCardWithBasis(organizationId, city, category, rules))
+    .card;
 }
 
 export async function approveRateSet(

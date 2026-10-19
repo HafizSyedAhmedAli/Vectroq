@@ -1,4 +1,9 @@
 import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import {
+  modelName,
+  resolveNotes,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import type { Prisma } from "@vectroq/db";
 import { renderBoqPdf } from "@/lib/boq-pdf";
 import { brandFromOrg } from "@/lib/brand";
@@ -6,12 +11,6 @@ import { brandFromOrg } from "@/lib/brand";
 export type ProjectForPdf = Prisma.ProjectGetPayload<{
   include: { lead: true; cadFile: true; organization: true };
 }>;
-
-const MODEL_LABELS: Record<number, string> = {
-  1: "Model 1 - Land & Build, Then Sell",
-  2: "Model 2 - Construction on Client's Plot",
-  3: "Model 3 - Client's Plot & Client's Construction Cost",
-};
 
 async function fetchLogo(url: string | null): Promise<Buffer | null> {
   if (!url) return null;
@@ -33,6 +32,8 @@ export async function projectPdfResponse(
     );
   }
   const brand = brandFromOrg(project.organization!);
+  const rules = resolveOrgRules(project.organization!.rules);
+  const notes = resolveNotes(rules);
   const boq = project.cadFile.boq as unknown as BOQResult;
   const geometry = project.cadFile.geometry as unknown as Geometry;
   const areaSqFt = Math.round(geometry.rooms.reduce((s, r) => s + r.area, 0));
@@ -45,7 +46,9 @@ export async function projectPdfResponse(
     contact: project.lead.contact,
     city: project.city,
     category: project.category,
-    engagement: MODEL_LABELS[project.model] ?? `Model ${project.model}`,
+    engagement: `Model ${project.model} - ${modelName(rules, project.model)}`,
+    assumptions: notes.assumptions,
+    exclusions: notes.exclusions,
     areaSqFt,
     dateLabel: new Date().toLocaleDateString("en-PK", { dateStyle: "long" }),
   });

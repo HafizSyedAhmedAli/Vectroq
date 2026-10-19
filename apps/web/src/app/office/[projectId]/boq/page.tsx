@@ -2,11 +2,16 @@
 import { BoqTable } from "@/components/BoqTable";
 import { BrandLogo } from "@/components/BrandLogo";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
-import { ASSUMPTIONS, EXCLUSIONS } from "@/lib/boq-format";
 import { brandFromOrg } from "@/lib/brand";
 import { getCurrentOrg } from "@/lib/org";
 import { prisma } from "@vectroq/db";
-import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import {
+    BOQResult,
+    Geometry,
+  modelName,
+  resolveNotes,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import {
   ArrowLeft,
   Building2,
@@ -16,18 +21,12 @@ import {
   Phone,
   Ruler,
   Tag,
-  User
+  User,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
-
-const MODEL_LABELS: Record<number, string> = {
-  1: "Model 1 — Land & Build, Then Sell",
-  2: "Model 2 — Construction on Client's Plot",
-  3: "Model 3 — Client's Plot & Client's Construction Cost",
-};
 
 type IconType = React.ComponentType<{ className?: string }>;
 
@@ -63,6 +62,8 @@ export default async function BoqPrintPage({
   const { projectId } = await params;
 
   const org = await getCurrentOrg();
+  const rules = resolveOrgRules(org.rules);
+  const notes = resolveNotes(rules);
   const brand = brandFromOrg(org);
   const project = await prisma.project.findFirst({
     where: { id: projectId, organizationId: org.id },
@@ -137,9 +138,7 @@ export default async function BoqPrintPage({
                 <Info
                   icon={Tag}
                   label="Engagement"
-                  value={
-                    MODEL_LABELS[project.model] ?? `Model ${project.model}`
-                  }
+                  value={`Model ${project.model} — ${modelName(rules, project.model)}`}
                 />
               </div>
               <div className="space-y-4 md:border-l md:border-stone-200 md:pl-6">
@@ -199,7 +198,7 @@ export default async function BoqPrintPage({
                 Basis of estimate
               </h3>
               <ul className="list-disc pl-4 space-y-1 text-[11px] text-stone-500">
-                {ASSUMPTIONS.map((a) => (
+                {notes.assumptions.map((a) => (
                   <li key={a}>{a}</li>
                 ))}
               </ul>
@@ -209,7 +208,7 @@ export default async function BoqPrintPage({
                 Not included
               </h3>
               <ul className="list-disc pl-4 space-y-1 text-[11px] text-stone-500">
-                {EXCLUSIONS.map((a) => (
+                {notes.exclusions.map((a) => (
                   <li key={a}>{a}</li>
                 ))}
               </ul>

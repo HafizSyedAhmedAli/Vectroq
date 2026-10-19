@@ -10,9 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import type { BOQResult } from "@vectroq/shared-types";
 import {
-  ASSUMPTIONS,
   BOQ_META,
-  EXCLUSIONS,
   formatPkr,
   formatQty,
   groupBoq,
@@ -33,6 +31,8 @@ export interface BoqPdfData {
   engagement: string;
   areaSqFt: number;
   dateLabel: string;
+  assumptions: string[];
+  exclusions: string[];
 }
 
 const BRAND = "#2563EB";
@@ -172,7 +172,10 @@ function BoqPdf({ d }: { d: BoqPdfData }) {
     <Document title={`BOQ - ${d.clientName}`} author={d.brand.name}>
       <Page size="A4" style={s.page}>
         {/* Letterhead: fixed on purpose, repeats on every page */}
-        <View style={[s.header, { borderBottomColor: d.brand.colors.primary }]} fixed>
+        <View
+          style={[s.header, { borderBottomColor: d.brand.colors.primary }]}
+          fixed
+        >
           {d.logo ? (
             // eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image has no alt
             <Image src={d.logo} style={s.logo} />
@@ -294,7 +297,7 @@ function BoqPdf({ d }: { d: BoqPdfData }) {
           <View style={s.notes}>
             <View style={s.notesCol}>
               <Text style={s.notesTitle}>Basis of estimate</Text>
-              {ASSUMPTIONS.map((a) => (
+              {d.assumptions.map((a) => (
                 <Text key={a} style={s.bullet}>
                   - {a}
                 </Text>
@@ -302,7 +305,7 @@ function BoqPdf({ d }: { d: BoqPdfData }) {
             </View>
             <View style={s.notesCol}>
               <Text style={s.notesTitle}>Not included</Text>
-              {EXCLUSIONS.map((a) => (
+              {d.exclusions.map((a) => (
                 <Text key={a} style={s.bullet}>
                   - {a}
                 </Text>

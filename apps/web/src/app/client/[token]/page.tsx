@@ -4,10 +4,16 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ViewerPanel } from "@/components/ViewerPanel";
-import { ASSUMPTIONS, EXCLUSIONS, formatPkr } from "@/lib/boq-format";
+import { formatPkr } from "@/lib/boq-format";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { prisma } from "@vectroq/db";
-import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import {
+  BOQResult,
+  Geometry,
+  modelName,
+  resolveNotes,
+  resolveOrgRules,
+} from "@vectroq/shared-types";
 import {
   Home,
   Info,
@@ -23,12 +29,6 @@ import {
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-
-const MODEL_LABELS: Record<number, string> = {
-  1: "Land & Build, Then Sell",
-  2: "Construction on Your Plot",
-  3: "Your Plot & Your Construction Cost",
-};
 
 // NOTE: this page shows the full BOQ line items, the client's phone number
 // and a PDF download. There is still no auth (access control isn't built),
@@ -94,7 +94,9 @@ export default async function ClientProjectPage({
     ? Math.round(geometry.rooms.reduce((s, r) => s + r.area, 0))
     : null;
 
-  const modelLabel = MODEL_LABELS[project.model] ?? `Model ${project.model}`;
+  const rules = resolveOrgRules(project.organization!.rules);
+  const notes = resolveNotes(rules);
+  const modelLabel = modelName(rules, project.model);
 
   return (
     <div style={brandStyle(brand)}>
@@ -236,7 +238,7 @@ export default async function ClientProjectPage({
                     Basis of estimate
                   </h3>
                   <ul className="list-disc space-y-1 pl-9 text-xs leading-relaxed text-stone-500">
-                    {ASSUMPTIONS.map((a) => (
+                    {notes.assumptions.map((a) => (
                       <li key={a}>{a}</li>
                     ))}
                   </ul>
@@ -247,7 +249,7 @@ export default async function ClientProjectPage({
                     Not included
                   </h3>
                   <ul className="list-disc space-y-1 pl-9 text-xs leading-relaxed text-stone-500">
-                    {EXCLUSIONS.map((a) => (
+                    {notes.exclusions.map((a) => (
                       <li key={a}>{a}</li>
                     ))}
                   </ul>
