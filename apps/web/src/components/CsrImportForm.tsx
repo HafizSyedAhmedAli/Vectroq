@@ -1,6 +1,7 @@
 // apps/web/src/components/CsrImportForm.tsx
 "use client";
 
+import { inputCls } from "./rates/field-styles";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -26,9 +27,6 @@ const TEMPLATE = [
   "Karachi,steelMaterial,ton,",
   "",
 ].join("\n");
-
-const inputCls =
-  "h-11 rounded-xl border-stone-200! bg-white! text-[15px] text-brand-black shadow-sm focus-visible:border-brand! focus-visible:ring-brand/20";
 
 function readText(file: File): Promise<string> {
   return new Promise((resolve, reject) => {

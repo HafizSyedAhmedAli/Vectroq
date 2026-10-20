@@ -1,5 +1,6 @@
 "use client";
 
+import { selectIconCls, inputIconCls } from "./rates/field-styles";
 import { ManualRateForm } from "./ManualRateForm";
 import { Fragment, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -56,11 +57,6 @@ const CATEGORY_META: Record<
 };
 
 const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 2 });
-
-const fieldWrap =
-  "w-full cursor-pointer [&_select]:h-11 [&_select]:rounded-xl [&_select]:border-stone-200 [&_select]:bg-white [&_select]:pl-10 [&_select]:text-[15px] [&_select]:text-brand-black [&_select]:shadow-sm [&_select:focus-visible]:border-brand [&_select:focus-visible]:ring-brand/20";
-const inputCls =
-  "h-11 rounded-xl border-stone-200! bg-white! pl-10 text-[15px] text-brand-black shadow-sm focus-visible:border-brand! focus-visible:ring-brand/20";
 
 function IconField({
   icon,
@@ -279,7 +275,7 @@ export function RateSetReviewPanel({
                 <IconField icon={<MapPin className="size-4" />}>
                   <NativeSelect
                     id="rs-city"
-                    className={fieldWrap}
+                    className={selectIconCls}
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                   >
@@ -297,11 +293,21 @@ export function RateSetReviewPanel({
                   Category
                 </Label>
                 <IconField icon={<Tag className="size-4" />}>
-                  {(["A", "B", "C"] as const).map((c) => (
-                    <NativeSelectOption key={c} value={c}>
-                      {c} ({labelOf(c)})
+                  <NativeSelect
+                    id="rs-cat"
+                    className={selectIconCls}
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <NativeSelectOption value="">
+                      All categories
                     </NativeSelectOption>
-                  ))}
+                    {(["A", "B", "C"] as const).map((c) => (
+                      <NativeSelectOption key={c} value={c}>
+                        {c} ({labelOf(c)})
+                      </NativeSelectOption>
+                    ))}
+                  </NativeSelect>
                 </IconField>
               </div>
               <div>
@@ -311,7 +317,7 @@ export function RateSetReviewPanel({
                 <IconField icon={<User className="size-4" />}>
                   <Input
                     id="rs-by"
-                    className={inputCls}
+                    className={inputIconCls}
                     value={approvedBy}
                     onChange={(e) => setApprovedBy(e.target.value)}
                     placeholder="Your name"

@@ -96,7 +96,7 @@ export function ConvertLeadForm({
           </Label>
           <NativeSelect
             id={`city-${leadId}`}
-            className={selectCls}
+            className={`mt-2 ${selectCls}`}
             value={city}
             onChange={(e) => setCity(e.target.value)}
           >
@@ -107,27 +107,43 @@ export function ConvertLeadForm({
             ))}
           </NativeSelect>
         </div>
+
         <div>
           <Label htmlFor={`model-${leadId}`} className={labelCls}>
             <FileText className="size-4 text-brand" />
             Model
           </Label>
-          {[1, 2, 3].map((m) => (
-            <NativeSelectOption key={m} value={m}>
-              {modelLabels?.[m] ? `${m} · ${modelLabels[m]}` : m}
-            </NativeSelectOption>
-          ))}
+          <NativeSelect
+            id={`model-${leadId}`}
+            className={`mt-2 ${selectCls}`}
+            value={model}
+            onChange={(e) => setModel(Number(e.target.value))}
+          >
+            {[1, 2, 3].map((m) => (
+              <NativeSelectOption key={m} value={m}>
+                {modelLabels?.[m] ? `${m} · ${modelLabels[m]}` : m}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </div>
+
         <div>
           <Label htmlFor={`category-${leadId}`} className={labelCls}>
             <LayoutGrid className="size-4 text-brand" />
             Category
           </Label>
-          {["A", "B", "C"].map((c) => (
-            <NativeSelectOption key={c} value={c}>
-              {categoryLabels?.[c] ? `${c} · ${categoryLabels[c]}` : c}
-            </NativeSelectOption>
-          ))}
+          <NativeSelect
+            id={`category-${leadId}`}
+            className={`mt-2 ${selectCls}`}
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {["A", "B", "C"].map((c) => (
+              <NativeSelectOption key={c} value={c}>
+                {categoryLabels?.[c] ? `${c} · ${categoryLabels[c]}` : c}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </div>
       </div>
 

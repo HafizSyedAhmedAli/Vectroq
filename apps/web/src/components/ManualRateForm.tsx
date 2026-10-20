@@ -1,5 +1,6 @@
 "use client";
 
+import { inputCls, selectCls } from "./rates/field-styles";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { CircleCheck, Loader2, Plus } from "lucide-react";
@@ -141,7 +142,7 @@ export function ManualRateForm({
             </Label>
             <NativeSelect
               id="mr-city"
-              className="mt-1.5 w-full cursor-pointer"
+              className={`mt-1.5 ${selectCls}`}
               value={city}
               onChange={(e) => setCity(e.target.value)}
             >
@@ -159,7 +160,7 @@ export function ManualRateForm({
             </Label>
             <NativeSelect
               id="mr-cat"
-              className="mt-1.5 w-full cursor-pointer"
+              className={`mt-1.5 ${selectCls}`}
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
@@ -187,7 +188,7 @@ export function ManualRateForm({
                   type="number"
                   min={0}
                   step="any"
-                  className="pr-24"
+                  className={`${inputCls} pr-24`}
                   value={values[it.type] ?? ""}
                   onChange={(e) =>
                     setValues((p) => ({ ...p, [it.type]: e.target.value }))
@@ -222,7 +223,7 @@ export function ManualRateForm({
         <Button
           type="submit"
           disabled={busy}
-          className="h-11 cursor-pointer gap-2 rounded-xl bg-brand px-6 text-white hover:bg-brand-dark"
+          className="h-11 cursor-pointer gap-2 rounded-xl bg-brand px-6 text-[15px] font-semibold text-white hover:bg-brand-dark disabled:cursor-not-allowed"
         >
           {busy ? (
             <Loader2 className="size-4 animate-spin" />
