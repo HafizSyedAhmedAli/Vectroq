@@ -1,5 +1,9 @@
 // apps/web/src/lib/boq-format.ts
-import type { BOQLineItem, BOQResult, RateItemType } from "@vectroq/shared-types";
+import type {
+  BOQLineItem,
+  BOQResult,
+  RateItemType,
+} from "@vectroq/shared-types";
 
 export const GROUPS = [
   "Structure",
@@ -54,6 +58,16 @@ const UNIT_LABEL: Record<string, string> = {
   cft: "cft",
 };
 export const unitLabel = (u: string) => UNIT_LABEL[u] ?? u;
+
+const UNIT_SINGULAR: Record<string, string> = {
+  sqft: "sq ft",
+  ton: "ton",
+  bath: "bathroom",
+  "1000nos": "1,000 nos",
+  bag: "bag",
+  cft: "cft",
+};
+export const unitSingular = (u: string) => UNIT_SINGULAR[u] ?? u;
 
 const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 export const formatPkr = (n: number) => `Rs ${pkr.format(Math.round(n))}`;

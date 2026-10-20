@@ -1,38 +1,38 @@
 "use client";
 
-import { selectIconCls, inputIconCls } from "./rates/field-styles";
-import { ManualRateForm } from "./ManualRateForm";
-import { Fragment, useState, type FormEvent, type ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  ChevronDown,
-  CircleCheck,
-  FileText,
-  Info,
-  Layers,
-  Loader2,
-  MapPin,
-  RefreshCw,
-  Search,
-  Tag,
-  User,
-} from "lucide-react";
-import { CITY_NAMES, type RateCardItem } from "@vectroq/shared-types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  NativeSelect,
-  NativeSelectOption,
+    NativeSelect,
+    NativeSelectOption,
 } from "@/components/ui/native-select";
-import { BOQ_META, unitLabel } from "@/lib/boq-format";
+import { BOQ_META, unitLabel, unitSingular } from "@/lib/boq-format";
 import type {
-  ApprovedRateSet,
-  DraftRateSet,
-  RateSources,
+    ApprovedRateSet,
+    DraftRateSet,
+    RateSources,
 } from "@/lib/rate-set-types";
+import { CITY_NAMES } from "@vectroq/shared-types";
+import {
+    ArrowRight,
+    ChevronDown,
+    CircleCheck,
+    FileText,
+    Info,
+    Layers,
+    Loader2,
+    MapPin,
+    RefreshCw,
+    Search,
+    Tag,
+    User,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Fragment, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { CsrImportForm } from "./CsrImportForm";
+import { ManualRateForm } from "./ManualRateForm";
+import { inputIconCls, selectIconCls } from "./rates/field-styles";
 
 // Category is a material grade tier: A = Premium, B = Standard, C = Economy.
 const CATEGORY_META: Record<
@@ -85,16 +85,16 @@ function CategoryBadge({
   const meta = CATEGORY_META[category];
   const name = label ?? meta?.label ?? "Custom";
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="inline-flex items-center gap-2 whitespace-nowrap">
       <span
-        className={`grid size-7 place-items-center rounded-full text-xs font-bold ${meta?.badge ?? "bg-stone-100 text-stone-600"}`}
+        className={`grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold ${meta?.badge ?? "bg-stone-100 text-stone-600"}`}
       >
         {category}
       </span>
       <span
         className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${meta?.chip ?? "bg-stone-50 text-stone-600"}`}
       >
-        {category} ({name})
+        {name}
       </span>
     </span>
   );
@@ -161,11 +161,14 @@ export function RateSetReviewPanel({
   const router = useRouter();
   const [drafts, setDrafts] = useState(initialDrafts);
 
-  // Form values vs. the filter that is actually applied (button / Enter).
+  const PAGE_SIZE = 10;
+
+  // Filters apply live; the Search button just jumps to the results.
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
-  const [applied, setApplied] = useState({ city: "", category: "" });
+  const [limit, setLimit] = useState(PAGE_SIZE);
   const [approvedBy, setApprovedBy] = useState("");
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   const [edits, setEdits] = useState<Record<string, Record<string, string>>>(
     {},
@@ -177,10 +180,13 @@ export function RateSetReviewPanel({
 
   const rows = approved.filter(
     (a) =>
-      (!applied.city || a.city.toLowerCase() === applied.city.toLowerCase()) &&
-      (!applied.category || a.category === applied.category),
+      (!city || a.city.toLowerCase() === city.toLowerCase()) &&
+      (!category || a.category === category),
   );
+  const visibleRows = rows.slice(0, limit);
   const latest = rows[0];
+  const hasFilters = !!(city || category);
+
   // Every known city, plus any city that already has approved rates.
   const cityOptions = [
     ...new Set([...CITY_NAMES, ...approved.map((a) => a.city)]),
@@ -199,7 +205,14 @@ export function RateSetReviewPanel({
 
   function search(e: FormEvent) {
     e.preventDefault();
-    setApplied({ city: city.trim(), category });
+    setLimit(PAGE_SIZE);
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function resetFilters() {
+    setCity("");
+    setCategory("");
+    setLimit(PAGE_SIZE);
   }
 
   async function approve(d: DraftRateSet) {
@@ -297,7 +310,10 @@ export function RateSetReviewPanel({
                     id="rs-cat"
                     className={selectIconCls}
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    onChange={(e) => {
+                      setCategory(e.target.value);
+                      setLimit(PAGE_SIZE);
+                    }}
                   >
                     <NativeSelectOption value="">
                       All categories
@@ -324,14 +340,25 @@ export function RateSetReviewPanel({
                   />
                 </IconField>
               </div>
-              <Button
-                type="submit"
-                className="h-11 cursor-pointer gap-2 rounded-xl bg-brand px-6 text-[15px] font-semibold text-white shadow-md shadow-brand/25 hover:bg-brand-dark md:col-span-2 lg:col-span-1"
-              >
-                <Search className="size-4" />
-                Search Rates
-                <ArrowRight className="size-4" />
-              </Button>
+              <div className="flex items-center gap-3 md:col-span-2 lg:col-span-1">
+                <Button
+                  type="submit"
+                  className="h-11 cursor-pointer gap-2 whitespace-nowrap rounded-xl bg-brand px-6 text-[15px] font-semibold text-white shadow-md shadow-brand/25 hover:bg-brand-dark"
+                >
+                  <Search className="size-4" />
+                  Search Rates
+                  <ArrowRight className="size-4" />
+                </Button>
+                {hasFilters && (
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                    className="cursor-pointer whitespace-nowrap text-sm font-medium text-stone-500 underline hover:text-brand-black"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
             </div>
 
             <p className="mt-4 border-t border-red-100/70 pt-4 text-xs text-stone-500">
@@ -359,31 +386,31 @@ export function RateSetReviewPanel({
         </div>
 
         {/* Available rates */}
-        <div className="px-5 pb-6 pt-2 sm:px-7">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-stone-100 pt-6">
-            <div className="flex items-center gap-4">
+        {/* Available rates */}
+        <div ref={resultsRef} className="scroll-mt-24 px-5 pb-6 pt-2 sm:px-7">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-stone-100 pt-6">
+            <div className="flex min-w-0 items-center gap-4">
               <span className="grid size-12 shrink-0 place-items-center rounded-full bg-brand text-white shadow-md shadow-brand/30">
                 <Layers className="size-5" />
               </span>
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-lg font-bold text-brand-black">
                   Available Rates
                 </h2>
                 <p className="text-sm text-stone-500">
-                  Showing approved rates for {applied.city || "all cities"} ·{" "}
-                  {applied.category
-                    ? `Category ${applied.category}`
-                    : "all categories"}
+                  {rows.length} set{rows.length === 1 ? "" : "s"} ·{" "}
+                  {city || "all cities"} ·{" "}
+                  {category ? `Category ${category}` : "all categories"}
                 </p>
               </div>
             </div>
             {latest && (
               <div className="flex flex-wrap items-center gap-3 text-xs text-stone-500">
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
                   <RefreshCw className="size-3.5" /> Last updated:{" "}
                   {latest.approvedLabel}
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 font-medium text-green-700">
+                <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-green-200 bg-green-50 px-3 py-1 font-medium text-green-700">
                   <CircleCheck className="size-3.5" /> Approved by{" "}
                   {latest.approvedBy}
                 </span>
@@ -392,7 +419,15 @@ export function RateSetReviewPanel({
           </div>
 
           <div className="mt-5 overflow-x-auto rounded-2xl border border-stone-200 bg-white">
-            <table className="w-full min-w-[820px] text-sm">
+            <table className="w-full min-w-[980px] table-fixed text-sm">
+              <colgroup>
+                <col className="w-[17%]" />
+                <col className="w-[19%]" />
+                <col className="w-[18%]" />
+                <col className="w-[17%]" />
+                <col className="w-[13%]" />
+                <col className="w-[16%]" />
+              </colgroup>
               <thead className="bg-stone-50 text-xs font-semibold text-stone-500">
                 <tr>
                   <th className="px-5 py-3 text-left">City</th>
@@ -415,15 +450,16 @@ export function RateSetReviewPanel({
                     </td>
                   </tr>
                 )}
-                {rows.map((a) => {
+                {visibleRows.map((a) => {
                   const open = openId === a.id;
                   const cement = a.items.find((i) => i.itemType === "cement");
                   return (
                     <Fragment key={a.id}>
-                      <tr className="border-t border-stone-100">
+                      <tr className="border-t border-stone-100 align-middle">
                         <td className="px-5 py-4">
                           <span className="flex items-center gap-2 font-medium text-brand-black">
-                            <MapPin className="size-4 text-brand" /> {a.city}
+                            <MapPin className="size-4 shrink-0 text-brand" />
+                            <span className="truncate">{a.city}</span>
                           </span>
                         </td>
                         <td className="px-3 py-4">
@@ -433,23 +469,23 @@ export function RateSetReviewPanel({
                           />
                         </td>
                         <td className="px-3 py-4">
-                          <p className="font-semibold text-brand-black">
+                          <p className="whitespace-nowrap font-semibold text-brand-black">
                             {a.items.length} rates
                           </p>
-                          <p className="text-xs text-stone-400">
+                          <p className="whitespace-nowrap text-xs text-stone-400">
                             {cement
-                              ? `Cement Rs ${pkr.format(cement.unitRate)} / ${unitLabel(cement.unit)}`
+                              ? `Cement Rs ${pkr.format(cement.unitRate)} / ${unitSingular(cement.unit)}`
                               : "per BOQ line item"}
                           </p>
                         </td>
                         <td className="px-3 py-4">
                           <span className="flex items-center gap-2">
-                            <User className="size-4 text-brand-black" />
-                            <span>
-                              <span className="block font-medium text-brand-black">
+                            <User className="size-4 shrink-0 text-brand-black" />
+                            <span className="min-w-0">
+                              <span className="block truncate font-medium text-brand-black">
                                 {a.approvedBy}
                               </span>
-                              <span className="block text-xs text-stone-400">
+                              <span className="block whitespace-nowrap text-xs text-stone-400">
                                 {a.approvedLabel}
                               </span>
                             </span>
@@ -470,7 +506,7 @@ export function RateSetReviewPanel({
                             type="button"
                             aria-expanded={open}
                             onClick={() => setOpenId(open ? null : a.id)}
-                            className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-stone-300 bg-white px-4 text-sm font-semibold text-brand-black hover:bg-stone-50"
+                            className="inline-flex h-10 cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-stone-300 bg-white px-4 text-sm font-semibold text-brand-black hover:bg-stone-50"
                           >
                             {open ? "Hide Details" : "View Details"}
                             {open ? (
@@ -497,7 +533,7 @@ export function RateSetReviewPanel({
                                     Rs {pkr.format(i.unitRate)}
                                   </span>
                                   <span className="text-xs text-stone-400">
-                                    per {unitLabel(i.unit)}
+                                    per {unitSingular(i.unit)}
                                   </span>
                                   <span className="ml-auto">
                                     <SourceCell
@@ -517,6 +553,18 @@ export function RateSetReviewPanel({
               </tbody>
             </table>
           </div>
+
+          {rows.length > visibleRows.length && (
+            <div className="mt-4 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setLimit((l) => l + PAGE_SIZE)}
+                className="h-10 cursor-pointer rounded-xl border border-stone-300 bg-white px-5 text-sm font-semibold text-brand-black hover:bg-stone-50"
+              >
+                Show more ({rows.length - visibleRows.length} left)
+              </button>
+            </div>
+          )}
 
           <p className="mt-4 flex items-center gap-2 rounded-xl border border-stone-100 bg-stone-50 px-4 py-3 text-xs text-stone-500">
             <Info className="size-4 shrink-0 text-blue-600" />
