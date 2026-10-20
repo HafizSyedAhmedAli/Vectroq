@@ -1,5 +1,6 @@
 "use client";
 
+import { ManualRateForm } from "./ManualRateForm";
 import { Fragment, useState, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -449,7 +450,14 @@ export function RateSetReviewPanel({
                           </span>
                         </td>
                         <td className="px-3 py-4">
-                          <ApprovedPill />
+                          <span className="flex flex-wrap items-center gap-1.5">
+                            <ApprovedPill />
+                            {a.isDefault && (
+                              <span className="rounded-full bg-stone-100 px-2.5 py-1 text-[11px] font-semibold text-stone-600">
+                                Default
+                              </span>
+                            )}
+                          </span>
                         </td>
                         <td className="px-5 py-4">
                           <button
@@ -506,13 +514,15 @@ export function RateSetReviewPanel({
 
           <p className="mt-4 flex items-center gap-2 rounded-xl border border-stone-100 bg-stone-50 px-4 py-3 text-xs text-stone-500">
             <Info className="size-4 shrink-0 text-blue-600" />
-            Rates are subject to change. Please contact us for the latest
-            updates and site-specific details.
+            Default rates apply wherever you haven&apos;t added your own. Import
+            a CSV or add rates manually for a city and category to override
+            them. Rates are subject to change.
           </p>
         </div>
       </div>
 
       <CsrImportForm />
+      <ManualRateForm categoryLabels={categoryLabels} />
 
       {/* Drafts */}
       <section>

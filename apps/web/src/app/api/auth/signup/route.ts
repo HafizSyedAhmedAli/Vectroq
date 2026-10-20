@@ -8,7 +8,6 @@ import {
 } from "@/lib/auth/credentials";
 import { createSession } from "@/lib/auth/session";
 import { sendVerificationEmail } from "@/lib/auth/email-verification";
-import { insertSampleRates, loadSampleRates } from "@/lib/sample-rates";
 import { slugify, validateSlug } from "@/lib/org-slug";
 import { appUrl } from "@/lib/app-url";
 
@@ -34,7 +33,6 @@ export async function POST(req: NextRequest) {
   if (slugError) return fail(slugError);
 
   const passwordHash = await hashPassword(b.password);
-  const samples = await loadSampleRates();
   const base = appUrl(req);
 
   try {
@@ -48,7 +46,6 @@ export async function POST(req: NextRequest) {
       await tx.membership.create({
         data: { userId: user.id, organizationId: org.id, role: "OWNER" },
       });
-      await insertSampleRates(tx, org.id, samples);
       return { user, org };
     });
     await createSession(user.id, org.id);

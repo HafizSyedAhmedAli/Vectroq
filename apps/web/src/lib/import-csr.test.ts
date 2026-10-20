@@ -107,4 +107,15 @@ describe("importCsr", () => {
       ).ok,
     ).toBe(false);
   });
+
+  it("imports into the shared library when organizationId is null", async () => {
+    const r = await importCsr({
+      ...base,
+      organizationId: null,
+      csv: csvOf(...rows("Karachi")),
+    });
+    expect(r.ok).toBe(true);
+    const { data } = (prisma.rateSet.createMany as any).mock.calls[0][0];
+    expect(data[0].organizationId).toBeNull();
+  });
 });

@@ -115,7 +115,10 @@ export default async function DashboardPage() {
       where: { organizationId: org.id, projects: { none: {} } },
     }),
     prisma.rateSet.count({
-      where: { organizationId: org.id, status: "APPROVED" },
+      where: {
+        OR: [{ organizationId: org.id }, { organizationId: null }],
+        status: "APPROVED",
+      },
     }),
   ]);
 

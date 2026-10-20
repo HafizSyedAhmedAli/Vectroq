@@ -44,12 +44,15 @@ export default async function OfficeProjectPage({
 
   const approvedRates = await prisma.rateSet.findFirst({
     where: {
-      organizationId: org.id,
+      OR: [{ organizationId: org.id }, { organizationId: null }],
       city: project.city,
       category: project.category,
       status: "APPROVED",
     },
-    orderBy: { approvedAt: "desc" },
+    orderBy: [
+      { organizationId: { sort: "asc", nulls: "last" } },
+      { approvedAt: "desc" },
+    ],
   });
 
   const rules = resolveOrgRules(org.rules);
@@ -106,7 +109,7 @@ export default async function OfficeProjectPage({
               </span>
               {approvedRates
                 ? `market rates approved ${approvedRates.approvedAt?.toISOString().slice(0, 10)} by ${approvedRates.approvedBy}`
-                : "live market rates are searched when the first BOQ is calculated"}
+                : "no rates loaded for this city yet"}
             </p>
             <Link
               href="/office/rates"

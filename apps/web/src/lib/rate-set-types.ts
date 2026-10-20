@@ -41,6 +41,7 @@ export interface ApprovedRateSet {
   approvedAt: string | null;
   items: RateCardItem[];
   sources: RateSources | null;
+    isDefault?: boolean; // from the shared default library, not the org's own
 }
 
 export const CSR_CSV_MAX_BYTES = 1024 * 1024; // 1 MB is far more than any city list needs

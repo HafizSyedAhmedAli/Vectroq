@@ -42,21 +42,27 @@ async function findApproved(
   place: string,
   category: Category,
 ) {
-  const row = await prisma.rateSet.findFirst({
+  // The org's own sets sort first (NULL = shared library sorts last),
+  // newest first within each group.
+  const rows = await prisma.rateSet.findMany({
     where: {
-      organizationId,
+      OR: [{ organizationId }, { organizationId: null }],
       city: { equals: place, mode: "insensitive" },
       category,
       status: "APPROVED",
       origin: { in: ["csr", "manual"] },
     },
-    orderBy: { approvedAt: "desc" },
+    orderBy: [
+      { organizationId: { sort: "asc", nulls: "last" } },
+      { approvedAt: "desc" },
+    ],
   });
-  if (!row) return null;
-  const items = row.items as unknown as RateCardItem[];
-  const have = new Set(items.map((i) => i.itemType));
-  if (!CORE_MATERIAL_TYPES.every((t) => have.has(t))) return null;
-  return { row, items };
+  for (const row of rows) {
+    const items = row.items as unknown as RateCardItem[];
+    const have = new Set(items.map((i) => i.itemType));
+    if (CORE_MATERIAL_TYPES.every((t) => have.has(t))) return { row, items };
+  }
+  return null;
 }
 
 export async function getRateCardWithBasis(

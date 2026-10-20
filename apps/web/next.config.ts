@@ -12,10 +12,6 @@ const nextConfig: NextConfig = {
     "@vectroq/db",
   ],
 
-  outputFileTracingIncludes: {
-    "/api/auth/signup": ["./data/pakistan-2026.csv"],
-  },
-
   async headers() {
     return [
       {

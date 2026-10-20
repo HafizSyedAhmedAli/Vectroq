@@ -18,17 +18,29 @@ export default async function OfficeRatesPage() {
   const org = await getCurrentOrg();
   const categoryLabels = categoryLabelMap(resolveOrgRules(org.rules));
 
-  const [drafts, approved] = await Promise.all([
+  const [drafts, own, shared] = await Promise.all([
     prisma.rateSet.findMany({
       where: { organizationId: org.id, status: "DRAFT" },
       orderBy: { createdAt: "desc" },
     }),
-
     prisma.rateSet.findMany({
       where: { organizationId: org.id, status: "APPROVED" },
       orderBy: { approvedAt: "desc" },
     }),
+    prisma.rateSet.findMany({
+      where: { organizationId: null, status: "APPROVED" },
+      orderBy: { approvedAt: "desc" },
+    }),
   ]);
+
+  // A default set is hidden once the org has its own for that city + category.
+  const key = (city: string, category: string) =>
+    `${city.toLowerCase()}|${category}`;
+  const ownKeys = new Set(own.map((a) => key(a.city, a.category)));
+  const approved = [
+    ...own,
+    ...shared.filter((s) => !ownKeys.has(key(s.city, s.category))),
+  ];
 
   // Dates are formatted here, on the server, so the client component only
   // receives plain strings (no locale/timezone hydration mismatch).
@@ -56,6 +68,7 @@ export default async function OfficeRatesPage() {
     approvedAt: a.approvedAt?.toISOString() ?? null,
     items: a.items as unknown as RateCardItem[],
     sources: a.sources as unknown as RateSources | null,
+    isDefault: a.organizationId === null,
   }));
 
   return (
@@ -72,9 +85,9 @@ export default async function OfficeRatesPage() {
             Approved <span className="text-brand">Rates</span>
           </h1>
           <p className="mt-4 max-w-md text-base text-stone-500">
-            A BOQ only uses approved rates. Rates come from an imported
-            Composite Schedule of Rates (CSR) or from drafts entered and
-            approved by office.
+            A BOQ only uses approved rates. Default rates apply out of the box.
+            Import a schedule (CSV) or add rates manually to override them for
+            your company.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-stone-600">
             <span className="flex items-center gap-1.5">

@@ -10,7 +10,7 @@ import { prisma } from "@vectroq/db";
 import { CSR_CSV_MAX_BYTES } from "./rate-set-types";
 
 export interface ImportCsrInput {
-  organizationId: string; // new
+  organizationId: string | null; // null = the shared default library
   csv: string;
   document: string; // e.g. "Sindh CSR"
   year: number;

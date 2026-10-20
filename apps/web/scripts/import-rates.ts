@@ -1,7 +1,10 @@
 // apps/web/scripts/import-rates.ts
 // Usage (from repo root):
-//   DATABASE_URL=... pnpm --filter @vectroq/web exec tsx scripts/import-rates.ts \
-//     data/rates/sindh-2026.csv --document "Sindh CSR" --year 2026 --by "Office" [--categories A,B,C]
+//   Shared default library:
+//     pnpm --filter @vectroq/web exec tsx scripts/import-rates.ts data/pakistan-2026.csv \
+//       --document "Vectroq default rates" --year 2026 --by "Vectroq" --shared
+//   One company's own rates:
+//     ... --org <slug> --document "Regional CSR" --year 2026 --by "Office"
 import { readFileSync } from "node:fs";
 import { prisma } from "@vectroq/db";
 import type { Category } from "@vectroq/shared-types";
@@ -24,23 +27,28 @@ async function main() {
 
   if (!file || !document || !Number.isInteger(year) || !approvedBy) {
     console.error(
-      'Usage: import-rates.ts <file.csv> --document "<name>" --year <yyyy> --by "<name>" [--categories A,B,C]',
+      'Usage: import-rates.ts <file.csv> --document "<name>" --year <yyyy> --by "<name>" [--shared | --org <slug>] [--categories A,B,C]',
     );
     process.exit(1);
   }
 
-  const orgSlug = arg("org") ?? "demo";
-  const org = await prisma.organization.findUnique({
-    where: { slug: orgSlug },
-  });
-  
-  if (!org) {
-    console.error(`Organization "${orgSlug}" not found.`);
-    process.exit(1);
+  const shared = process.argv.includes("--shared");
+  let organizationId: string | null = null;
+
+  if (!shared) {
+    const orgSlug = arg("org") ?? "demo";
+    const org = await prisma.organization.findUnique({
+      where: { slug: orgSlug },
+    });
+    if (!org) {
+      console.error(`Organization "${orgSlug}" not found.`);
+      process.exit(1);
+    }
+    organizationId = org.id;
   }
 
   const result = await importCsr({
-    organizationId: org.id,
+    organizationId,
     csv: readFileSync(file, "utf8"),
     document,
     year,
@@ -53,7 +61,7 @@ async function main() {
     process.exit(1);
   }
   console.log(
-    `Imported ${result.imported} rate sets for: ${result.cities.join(", ")}`,
+    `Imported ${result.imported} rate sets${shared ? " (shared library)" : ""} for: ${result.cities.join(", ")}`,
   );
 }
 
