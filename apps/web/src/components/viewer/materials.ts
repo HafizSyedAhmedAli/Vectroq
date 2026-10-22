@@ -125,7 +125,7 @@ function marbleTexture() {
   return toTexture(c, 2);
 }
 
-export function createHouseMaterials(): HouseMaterials {
+export function createHouseMaterials(doorColor = "#8b5a2b"): HouseMaterials {
   const textures: THREE.Texture[] = [];
   const tex = (t: THREE.Texture) => (textures.push(t), t);
   const plaster = tex(plasterTexture());
@@ -137,7 +137,7 @@ export function createHouseMaterials(): HouseMaterials {
     plasterInner: std({ color: "#f6f3ec", map: plaster, roughness: 0.92 }),
     concrete: std({ color: "#cfcac0", roughness: 1 }),
     frame: std({ color: "#5b3a1e", roughness: 0.6 }),
-    door: std({ color: "#8b5a2b", roughness: 0.55 }),
+    door: std({ color: doorColor, roughness: 0.55 }),
     brass: std({ color: "#c9a14a", roughness: 0.35, metalness: 0.8 }),
     glass: std({
       color: "#9cc8e8",

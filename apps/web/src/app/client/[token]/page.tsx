@@ -143,6 +143,7 @@ export default async function ClientProjectPage({
                   geometry={geometry}
                   bare
                   livingFloor={livingFloor}
+                  category={project.category as Category}
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element

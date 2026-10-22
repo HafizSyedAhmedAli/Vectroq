@@ -17,13 +17,23 @@ import {
   ToneMapping,
 } from "@react-three/postprocessing";
 import { Download, Maximize2, Minimize2 } from "lucide-react";
-import type { Geometry, Room } from "@vectroq/shared-types";
+import type { Category, Geometry, Room } from "@vectroq/shared-types";
 import {
   createHouseMaterials,
   type HouseMaterials,
   type LivingFloor,
 } from "./viewer/materials";
 import { planWalls, type WallCut, type WallPlan } from "./viewer/wall-cuts";
+import {
+  CATEGORY_FINISH,
+  CategoryFinish,
+  finishSummary,
+} from "./viewer/finishes";
+import {
+  Ceilings,
+  createFurnitureMaterials,
+  Furniture,
+} from "./viewer/furniture";
 
 type RoofMode = "off" | "on" | "lift";
 
@@ -370,6 +380,9 @@ function Scene({
   labels,
   ao,
   livingFloor,
+  furniture,
+  ceilings,
+  finish,
 }: {
   geometry: Geometry;
   b: Bounds;
@@ -377,9 +390,17 @@ function Scene({
   labels: boolean;
   ao: boolean;
   livingFloor: LivingFloor;
+  furniture: boolean;
+  ceilings: boolean;
+  finish: CategoryFinish;
 }) {
-  const m = useMemo(() => createHouseMaterials(), []);
+  const m = useMemo(
+    () => createHouseMaterials(finish.doorColor),
+    [finish.doorColor],
+  );
   useEffect(() => () => m.dispose(), [m]);
+  const fm = useMemo(() => createFurnitureMaterials(finish), [finish]);
+  useEffect(() => () => fm.dispose(), [fm]);
   const plans = useMemo(() => planWalls(geometry), [geometry]);
   const size = Math.max(b.w, b.d, 20);
   const toX = (x: number) => x - b.cx;
@@ -489,6 +510,20 @@ function Scene({
               ),
             )}
 
+          {furniture && (
+            <Furniture geometry={geometry} cx={b.cx} cy={b.cy} mats={fm} />
+          )}
+          {ceilings && (
+            <Ceilings
+              geometry={geometry}
+              cx={b.cx}
+              cy={b.cy}
+              height={b.h}
+              finish={finish}
+              mats={fm}
+            />
+          )}
+
           <Roof mode={roof} b={b} m={m} />
         </group>
       )}
@@ -520,15 +555,22 @@ const ROOF_LABEL: Record<RoofMode, string> = {
 export function HouseViewer({
   geometry,
   livingFloor = "tile",
+  category = "B",
 }: {
   geometry: Geometry;
   livingFloor?: LivingFloor;
+  category?: Category;
 }) {
   const [roof, setRoof] = useState<RoofMode>("off");
   const [labels, setLabels] = useState(true);
-  const [ao, setAo] = useState(true);
+  const [ao, setAo] = useState(false);
+  const [furniture, setFurniture] = useState(true);
+  const [ceilings, setCeilings] = useState(false);
   const [isFull, setIsFull] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+
+  const finish = CATEGORY_FINISH[category] ?? CATEGORY_FINISH.B;
+  const summary = finishSummary(category, livingFloor);
 
   const b = useMemo(() => boundsOf(geometry), [geometry]);
   const size = Math.max(b.w, b.d, 20);
@@ -584,6 +626,9 @@ export function HouseViewer({
           labels={labels}
           ao={ao}
           livingFloor={livingFloor}
+          furniture={furniture}
+          ceilings={ceilings}
+          finish={finish}
         />
       </Canvas>
 
@@ -618,6 +663,22 @@ export function HouseViewer({
           />{" "}
           Soft shadows
         </label>
+        <label className="cursor-pointer rounded-lg bg-white/90 px-2.5 py-1.5 shadow-sm">
+          <input
+            type="checkbox"
+            checked={furniture}
+            onChange={(e) => setFurniture(e.target.checked)}
+          />{" "}
+          Furniture
+        </label>
+        <label className="cursor-pointer rounded-lg bg-white/90 px-2.5 py-1.5 shadow-sm">
+          <input
+            type="checkbox"
+            checked={ceilings}
+            onChange={(e) => setCeilings(e.target.checked)}
+          />{" "}
+          Ceilings
+        </label>
         <button type="button" onClick={toggleFullscreen} className={btn}>
           {isFull ? (
             <Minimize2 className="size-3.5" />
@@ -629,6 +690,20 @@ export function HouseViewer({
         <button type="button" onClick={download} className={btn}>
           <Download className="size-3.5" /> Download
         </button>
+      </div>
+      <div className="pointer-events-none absolute bottom-3 left-3 max-w-[270px] rounded-lg bg-white/90 p-2.5 text-[11px] leading-snug text-stone-600 shadow-sm">
+        <p className="font-semibold text-brand-black">
+          Category {category} finishes
+        </p>
+        <ul className="mt-1 list-disc space-y-0.5 pl-4">
+          {summary.map((s) => (
+            <li key={s}>{s}</li>
+          ))}
+        </ul>
+        <p className="mt-1.5 text-[10px] text-stone-400">
+          Furniture and finishes are illustrative. Only flooring and false
+          ceilings are priced in the BOQ.
+        </p>
       </div>
     </div>
   );

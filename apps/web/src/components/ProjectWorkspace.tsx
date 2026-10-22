@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Box, CircleCheck, FileText, Ruler } from "lucide-react";
-import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import type { BOQResult, Category, Geometry } from "@vectroq/shared-types";
 import { CadReviewPanel } from "@/components/CardReviewPanel";
 import { BoqTable } from "@/components/BoqTable";
 import { ViewerPanel } from "@/components/ViewerPanel";
@@ -16,7 +16,8 @@ interface ProjectWorkspaceProps {
   initialBoq: BOQResult | null;
   initialFileName?: string | null;
   updatedLabel?: string | null;
-    livingFloor?: LivingFloor;
+  livingFloor?: LivingFloor;
+  category?: Category;
 }
 
 const card =
@@ -50,7 +51,8 @@ export function ProjectWorkspace({
   initialBoq,
   initialFileName = null,
   updatedLabel = null,
-  livingFloor = "tile"
+  livingFloor = "tile",
+  category,
 }: ProjectWorkspaceProps) {
   const [geometry, setGeometry] = useState<Geometry | null>(initialGeometry);
   const [boq, setBoq] = useState<BOQResult | null>(initialBoq);
@@ -110,7 +112,12 @@ export function ProjectWorkspace({
 
       <section className={card}>
         <CardHeader icon={<Box className="size-4" />} title="3D Model" />
-        <ViewerPanel geometry={geometry} bare livingFloor={livingFloor} />
+        <ViewerPanel
+          geometry={geometry}
+          bare
+          livingFloor={livingFloor}
+          category={category}
+        />
       </section>
     </div>
   );

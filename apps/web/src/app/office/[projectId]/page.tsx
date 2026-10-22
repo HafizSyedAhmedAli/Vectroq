@@ -189,6 +189,7 @@ export default async function OfficeProjectPage({
                   : null
               }
               livingFloor={livingFloor}
+              category={project.category as Category}
             />
           </div>
         </div>
