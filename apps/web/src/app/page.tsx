@@ -171,10 +171,10 @@ export default function LandingPage() {
             ))}
           </nav>
           <Link
-            href="/signup"
+            href="/demo"
             className="group inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand/25 transition hover:-translate-y-0.5 hover:bg-brand-dark"
           >
-            Try the demo
+            Open the live demo
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
@@ -222,10 +222,10 @@ export default function LandingPage() {
               style={fadeUp(360)}
             >
               <Link
-                href="/office"
+                href="/demo"
                 className="group inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-brand/30 transition hover:-translate-y-0.5 hover:bg-brand-dark"
               >
-                Try the demo
+                View 3D model
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
@@ -529,10 +529,10 @@ export default function LandingPage() {
               smarter.
             </p>
             <Link
-              href="/office"
+              href="/demo"
               className="group mt-7 inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-semibold text-white shadow-xl shadow-brand/40 transition hover:-translate-y-0.5 hover:bg-brand-dark"
             >
-              Try the demo
+              final CTA
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </Reveal>

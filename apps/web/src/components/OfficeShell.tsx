@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  categoryName,
-  modelName,
-  resolveOrgRules,
-} from "@vectroq/shared-types";
-import { useEffect, useState, type ReactNode } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ROLE_LABEL, hasRole, type Role } from "@/lib/auth/roles";
+import type { Brand } from "@/lib/brand";
 import {
   ChevronDown,
   ExternalLink,
@@ -19,16 +14,17 @@ import {
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
+  Search,
   Settings,
-  Users,
+  SlidersHorizontal,
   Tag,
   UserCog,
+  Users,
   X,
   type LucideIcon,
-  SlidersHorizontal,
 } from "lucide-react";
-import type { Brand } from "@/lib/brand";
-import { ROLE_LABEL, hasRole, type Role } from "@/lib/auth/roles";
+import Link from "next/link";
+import { useEffect, useState, type ReactNode } from "react";
 import { BrandLogo } from "./BrandLogo";
 import { VerifyEmailBanner } from "./VerifyEmailBanner";
 
@@ -62,8 +58,10 @@ const STATIC_PAGES = [
   "/office/leads",
   "/office/rates",
   "/office/team",
+  "/office/rules",
   "/office/settings",
   "/office/account",
+  "/office/search",
 ];
 
 const COLLAPSE_KEY = "vq_sidebar_collapsed";
@@ -86,6 +84,7 @@ export function OfficeShell({
   userName,
   userEmail,
   emailVerified,
+  demoExpiresLabel,
   children,
 }: {
   brand: Brand;
@@ -94,6 +93,7 @@ export function OfficeShell({
   userName: string;
   userEmail: string;
   emailVerified: boolean;
+  demoExpiresLabel?: string | null;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -101,6 +101,13 @@ export function OfficeShell({
   const [drawer, setDrawer] = useState(false); // mobile slide-out
   const [menu, setMenu] = useState(false);
   const [collapsed, setCollapsed] = useState(false); // desktop icon rail
+  const searchParams = useSearchParams();
+  const [q, setQ] = useState(searchParams.get("q") ?? "");
+
+  // keep the box in sync with the URL (back button, cleared search, etc.)
+  useEffect(() => {
+    setQ(searchParams.get("q") ?? "");
+  }, [searchParams]);
 
   // Restore the saved choice after mount (storage can be unavailable).
   useEffect(() => {
@@ -150,7 +157,7 @@ export function OfficeShell({
   const brandInitial = brand.name.trim().charAt(0).toUpperCase() || "?";
 
   // Collapsed styles only apply from lg up; the mobile drawer is always full.
-  const hideWhenCollapsed = collapsed ? "lg:hidden" : "";
+  const hideWhenCollapsed = collapsed ? "hidden sm:block lg:hidden" : "";
   const centerWhenCollapsed = collapsed ? "lg:justify-center lg:px-0" : "";
 
   return (
@@ -165,7 +172,7 @@ export function OfficeShell({
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-stone-200/70 bg-white transition-all duration-200 lg:translate-x-0 print:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[color-mix(in_srgb,var(--color-brand)_32%,black)] text-white transition-all duration-200 lg:translate-x-0 print:hidden ${
           collapsed ? "lg:w-[76px]" : "lg:w-64"
         } ${drawer ? "translate-x-0" : "-translate-x-full"}`}
       >
@@ -176,7 +183,9 @@ export function OfficeShell({
         >
           <Link href="/office/dashboard" className="flex items-center">
             <span className={hideWhenCollapsed}>
-              <BrandLogo brand={brand} className="h-9 w-auto" />
+              <span className="inline-block rounded-lg bg-white px-2 py-1">
+                <BrandLogo brand={brand} className="h-8 w-auto" />
+              </span>
             </span>
             {collapsed && (
               <span
@@ -193,7 +202,7 @@ export function OfficeShell({
             type="button"
             aria-label="Close menu"
             onClick={() => setDrawer(false)}
-            className="grid size-9 cursor-pointer place-items-center rounded-lg text-stone-500 hover:bg-stone-100 lg:hidden"
+            className="grid size-9 cursor-pointer place-items-center rounded-lg text-white/70 hover:bg-white/10 lg:hidden"
           >
             <X className="size-5" />
           </button>
@@ -206,7 +215,7 @@ export function OfficeShell({
               aria-expanded
               title="Collapse sidebar"
               onClick={toggleCollapsed}
-              className="hidden size-9 cursor-pointer place-items-center rounded-lg text-stone-500 hover:bg-stone-100 lg:grid"
+              className="hidden size-9 cursor-pointer place-items-center rounded-lg text-white/70 hover:bg-white/10 lg:grid"
             >
               <PanelLeftClose className="size-5" />
             </button>
@@ -226,8 +235,8 @@ export function OfficeShell({
                 aria-current={active ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition ${centerWhenCollapsed} ${
                   active
-                    ? "bg-brand/10 text-brand"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-brand-black"
+                    ? "bg-brand text-white shadow-md"
+                    : "text-white/75 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <Icon className="size-5 shrink-0" />
@@ -239,13 +248,13 @@ export function OfficeShell({
           })}
         </nav>
 
-        <div className="border-t border-stone-100 p-3">
+        <div className="border-t border-white/10 p-3">
           <Link
             href={`/c/${orgSlug}`}
             target="_blank"
             title={collapsed ? "Client Form" : undefined}
             aria-label="Client Form"
-            className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-brand-black ${centerWhenCollapsed}`}
+            className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-white/75 transition hover:bg-white/10 hover:text-white ${centerWhenCollapsed}`}
           >
             <FileText className="size-5 shrink-0" />
             <span className={`flex-1 truncate ${hideWhenCollapsed}`}>
@@ -294,7 +303,27 @@ export function OfficeShell({
             <BrandLogo brand={brand} className="h-8 w-auto" />
           </Link>
 
-          <div className="relative ml-auto" data-user-menu>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const v = q.trim();
+              router.push(
+                v ? `/office/search?q=${encodeURIComponent(v)}` : "/office",
+              );
+            }}
+            className="relative mr-auto min-w-0 max-w-md flex-1"
+          >
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search projects or clients…"
+              aria-label="Search projects"
+              className="h-10 w-full rounded-xl border border-stone-200 bg-stone-50 pl-10 pr-3 text-sm outline-none focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/15"
+            />
+          </form>
+
+          <div className="relative ml-3" data-user-menu>
             <button
               type="button"
               aria-haspopup="menu"
@@ -355,6 +384,18 @@ export function OfficeShell({
             )}
           </div>
         </header>
+
+        {demoExpiresLabel && (
+          <div className="print:hidden flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-blue-200 bg-blue-50 px-4 py-2.5 text-sm text-blue-900 sm:px-6">
+            <span className="flex-1">
+              You are in a <b>demo company</b>. Everything here is deleted on{" "}
+              {demoExpiresLabel}.
+            </span>
+            <Link href="/signup" className="font-semibold underline">
+              Create your real account
+            </Link>
+          </div>
+        )}
 
         {!emailVerified && <VerifyEmailBanner email={userEmail} />}
 

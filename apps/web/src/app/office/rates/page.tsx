@@ -14,7 +14,12 @@ import { BrandHero } from "@/components/BrandHero";
 
 export const dynamic = "force-dynamic";
 
-export default async function OfficeRatesPage() {
+export default async function OfficeRatesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ city?: string }>;
+}) {
+  const { city } = await searchParams;
   const org = await getCurrentOrg();
   const categoryLabels = categoryLabelMap(resolveOrgRules(org.rules));
 
@@ -106,6 +111,7 @@ export default async function OfficeRatesPage() {
 
           <div className="mt-10">
             <RateSetReviewPanel
+              initialCity={city ?? ""}
               initialDrafts={initialDrafts}
               approved={approvedSets}
               categoryLabels={categoryLabels}

@@ -150,16 +150,31 @@ export function roomsFromWallSegments(segs: Seg[], labels: Label[]): Room[] {
       if (j === 0 && !blockedH[0][i]) uf.u(cell(i, 0), OUT);
     }
 
-  const acc = new Map<number, { area: number; cx: number; cy: number }>();
+  // replace the `acc` declaration and the loop body
+  const acc = new Map<
+    number,
+    {
+      area: number;
+      cx: number;
+      cy: number;
+      shapes: { x: number; y: number }[][];
+    }
+  >();
   for (let j = 0; j < ny; j++)
     for (let i = 0; i < nx; i++) {
       const r = uf.f(cell(i, j));
       if (r === uf.f(OUT)) continue;
       const a = (xs[i + 1] - xs[i]) * (ys[j + 1] - ys[j]);
-      const m = acc.get(r) ?? { area: 0, cx: 0, cy: 0 };
+      const m = acc.get(r) ?? { area: 0, cx: 0, cy: 0, shapes: [] };
       m.area += a;
       m.cx += (a * (xs[i] + xs[i + 1])) / 2;
       m.cy += (a * (ys[j] + ys[j + 1])) / 2;
+      m.shapes.push([
+        { x: xs[i], y: ys[j] },
+        { x: xs[i + 1], y: ys[j] },
+        { x: xs[i + 1], y: ys[j + 1] },
+        { x: xs[i], y: ys[j + 1] },
+      ]);
       acc.set(r, m);
     }
 
@@ -186,6 +201,7 @@ export function roomsFromWallSegments(segs: Seg[], labels: Label[]): Room[] {
         name: nameByRoot.get(root) ?? `Room ${n + 1}`,
         labelX: pos.x,
         labelY: pos.y,
+        shapes: m.shapes,
       };
     });
   const count = new Map<string, number>();
@@ -205,6 +221,7 @@ export function roomsFromWallSegments(segs: Seg[], labels: Label[]): Room[] {
       type: detectRoomType(name),
       labelX: r.labelX,
       labelY: r.labelY,
+      shapes: r.shapes,
     };
   });
 }

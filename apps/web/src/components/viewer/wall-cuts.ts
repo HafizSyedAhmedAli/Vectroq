@@ -1,0 +1,82 @@
+import type { Geometry, Wall } from "@vectroq/shared-types";
+
+export const SILL_FT = 3;
+
+/** A solid block of wall. u = distance along the wall from its start, y = height. */
+export interface WallPiece {
+  u0: number;
+  u1: number;
+  y0: number;
+  y1: number;
+}
+
+export interface WallCut {
+  openingId: string;
+  type: "door" | "window";
+  u0: number;
+  u1: number;
+  y0: number;
+  y1: number;
+}
+
+export interface WallPlan {
+  wall: Wall;
+  pieces: WallPiece[];
+  cuts: WallCut[];
+}
+
+export function planWalls(g: Geometry): WallPlan[] {
+  const plans: WallPlan[] = [];
+
+  for (const wall of g.walls) {
+    const dx = wall.endX - wall.startX;
+    const dy = wall.endY - wall.startY;
+    const len = Math.hypot(dx, dy);
+    if (len < 0.01) continue;
+    const ux = dx / len;
+    const uy = dy / len;
+    const wallAngle = Math.atan2(dy, dx);
+    const H = wall.height;
+    const th = wall.thickness;
+
+    const cuts: WallCut[] = [];
+    for (const o of g.openings) {
+      if (o.x === undefined || o.y === undefined || o.angle === undefined)
+        continue;
+      const rx = o.x - wall.startX;
+      const ry = o.y - wall.startY;
+      const along = rx * ux + ry * uy;
+      const across = Math.abs(-rx * uy + ry * ux);
+      // On this wall? Shared walls drawn twice get the same hole in both copies.
+      if (across > th / 2 + 0.25) continue;
+      if (Math.abs(Math.sin(o.angle - wallAngle)) > 0.2) continue;
+
+      const u0 = Math.max(0, along - o.width / 2);
+      const u1 = Math.min(len, along + o.width / 2);
+      if (u1 - u0 < 0.5) continue;
+
+      const y0 = o.type === "door" ? 0 : Math.min(SILL_FT, H - 1);
+      const y1 = Math.min(y0 + o.height, H - 0.5);
+      cuts.push({ openingId: o.id, type: o.type, u0, u1, y0, y1 });
+    }
+    cuts.sort((a, b) => a.u0 - b.u0);
+
+    // Solid wall = everything outside the cuts, plus the bits above/below each cut.
+    const pieces: WallPiece[] = [];
+    let cursor = -th / 2; // walls overshoot by half a thickness to close corners
+    for (const c of cuts) {
+      const s = Math.max(c.u0, cursor);
+      if (s - cursor > 0.01) pieces.push({ u0: cursor, u1: s, y0: 0, y1: H });
+      if (c.u1 - s > 0.01) {
+        if (c.y0 > 0.01) pieces.push({ u0: s, u1: c.u1, y0: 0, y1: c.y0 });
+        if (H - c.y1 > 0.01) pieces.push({ u0: s, u1: c.u1, y0: c.y1, y1: H });
+      }
+      cursor = Math.max(cursor, c.u1);
+    }
+    if (len + th / 2 - cursor > 0.01)
+      pieces.push({ u0: cursor, u1: len + th / 2, y0: 0, y1: H });
+
+    plans.push({ wall, pieces, cuts });
+  }
+  return plans;
+}

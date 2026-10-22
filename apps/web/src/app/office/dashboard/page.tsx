@@ -12,6 +12,9 @@ import {
 import { prisma } from "@vectroq/db";
 import { requirePage } from "@/lib/org";
 import { formatShort } from "@/lib/boq-format";
+import { getOnboardingSteps } from "@/lib/onboarding";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
+import { hasRole } from "@/lib/auth/roles";
 
 export const dynamic = "force-dynamic";
 
@@ -103,7 +106,8 @@ function Action({
 }
 
 export default async function DashboardPage() {
-  const { org, user } = await requirePage();
+  const { org, user, role } = await requirePage();
+  const steps = await getOnboardingSteps(org);
 
   const [projects, pendingLeads, approvedSets] = await Promise.all([
     prisma.project.findMany({
@@ -147,6 +151,12 @@ export default async function DashboardPage() {
         <p className="mt-2 text-sm text-stone-500">
           Here&apos;s what is happening at {org.name}.
         </p>
+        {steps.some((s) => !s.done) && (
+          <OnboardingChecklist
+            steps={steps}
+            canLoadSample={hasRole(role, "ESTIMATOR")}
+          />
+        )}
 
         {/* Stats */}
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

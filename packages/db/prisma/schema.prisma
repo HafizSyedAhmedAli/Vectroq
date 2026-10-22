@@ -132,6 +132,8 @@ model Organization {
   website      String?
   offices      Json      @default("[]") // [{ title, address }]
   rules        Json?
+  isDemo        Boolean   @default(false)
+  demoExpiresAt DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   leads        Lead[]

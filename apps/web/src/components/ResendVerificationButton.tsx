@@ -45,7 +45,7 @@ export function ResendVerificationButton() {
         type="button"
         onClick={send}
         disabled={busy}
-        className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-amber-300 bg-white px-3 text-xs font-semibold text-amber-900 hover:bg-amber-100 disabled:cursor-wait disabled:opacity-70"
+        className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-brand/30 bg-white px-3 text-xs font-semibold text-brand hover:bg-brand/5 disabled:cursor-wait disabled:opacity-70"
       >
         {busy ? (
           <Loader2 className="size-3.5 animate-spin" />

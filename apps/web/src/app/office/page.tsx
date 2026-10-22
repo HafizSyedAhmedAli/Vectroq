@@ -15,7 +15,12 @@ export const dynamic = "force-dynamic";
 
 const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });
 
-export default async function OfficeProjectsPage() {
+export default async function OfficeProjectsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
   const org = await getCurrentOrg();
   const rules = resolveOrgRules(org.rules);
 
@@ -96,7 +101,7 @@ export default async function OfficeProjectsPage() {
 
           {/* Search, filters and cards */}
           <div className="mt-10">
-            <ProjectsList projects={cards} />
+            <ProjectsList key={q ?? ""} projects={cards} initialQuery={q ?? ""} />
           </div>
         </div>
       </main>

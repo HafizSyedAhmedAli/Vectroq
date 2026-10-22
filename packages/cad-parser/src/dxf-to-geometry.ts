@@ -219,6 +219,7 @@ export function dxfToGeometry(
       type: label ? detectRoomType(label.text) : "general",
       labelX: label ? label.startPoint.x : mean.x,
       labelY: label ? label.startPoint.y : mean.y,
+      shapes: [vertices],
     });
   });
 

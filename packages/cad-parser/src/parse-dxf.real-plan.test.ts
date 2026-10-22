@@ -20,6 +20,7 @@ describe("whole_house_simple_plan.dxf (LINE walls, mm units)", () => {
       3.5 * 5.5 * 10.7639,
       0,
     );
+    expect(g.rooms.every((r) => (r.shapes?.length ?? 0) > 0)).toBe(true);
   });
 
   it("reads 79.5 m of wall, thinner partitions inside", () => {

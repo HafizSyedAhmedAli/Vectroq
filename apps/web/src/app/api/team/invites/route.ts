@@ -15,6 +15,16 @@ export async function POST(req: NextRequest) {
   if (!g.ok) return g.res;
   const org = g.auth.org;
 
+  if (org.isDemo) {
+    return NextResponse.json(
+      {
+        error:
+          "Team invitations are disabled in the demo. Create a company to invite people.",
+      },
+      { status: 403 },
+    );
+  }
+
   if (!g.auth.user.emailVerified) {
     return NextResponse.json(
       { error: "Confirm your email address before inviting teammates." },

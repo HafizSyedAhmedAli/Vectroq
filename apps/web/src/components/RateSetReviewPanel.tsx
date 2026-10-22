@@ -4,32 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    NativeSelect,
-    NativeSelectOption,
+  NativeSelect,
+  NativeSelectOption,
 } from "@/components/ui/native-select";
 import { BOQ_META, unitLabel, unitSingular } from "@/lib/boq-format";
 import type {
-    ApprovedRateSet,
-    DraftRateSet,
-    RateSources,
+  ApprovedRateSet,
+  DraftRateSet,
+  RateSources,
 } from "@/lib/rate-set-types";
 import { CITY_NAMES } from "@vectroq/shared-types";
 import {
-    ArrowRight,
-    ChevronDown,
-    CircleCheck,
-    FileText,
-    Info,
-    Layers,
-    Loader2,
-    MapPin,
-    RefreshCw,
-    Search,
-    Tag,
-    User,
+  ArrowRight,
+  ChevronDown,
+  CircleCheck,
+  FileText,
+  Info,
+  Layers,
+  Loader2,
+  MapPin,
+  RefreshCw,
+  Search,
+  Tag,
+  User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Fragment, useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  Fragment,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { CsrImportForm } from "./CsrImportForm";
 import { ManualRateForm } from "./ManualRateForm";
 import { inputIconCls, selectIconCls } from "./rates/field-styles";
@@ -151,10 +157,12 @@ export function RateSetReviewPanel({
   initialDrafts,
   approved,
   categoryLabels,
+  initialCity = "",
 }: {
   initialDrafts: DraftRateSet[];
   approved: ApprovedRateSet[];
   categoryLabels?: Record<string, string>;
+  initialCity?: string;
 }) {
   const labelOf = (c: string) =>
     categoryLabels?.[c] ?? CATEGORY_META[c]?.label ?? "Custom";
@@ -164,7 +172,7 @@ export function RateSetReviewPanel({
   const PAGE_SIZE = 10;
 
   // Filters apply live; the Search button just jumps to the results.
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(initialCity);
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [approvedBy, setApprovedBy] = useState("");

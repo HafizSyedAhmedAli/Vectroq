@@ -57,7 +57,7 @@ export function ShareLinkPanel({
   }
 
   return (
-    <section className="rounded-2xl border border-stone-200/70 bg-white/95 p-5 shadow-sm">
+    <section className="rounded-2xl border border-brand/20 bg-brand/5 p-5 shadow-sm">
       <h2 className="flex items-center gap-2 font-semibold text-brand-black">
         <Link2 className="size-4" /> Client share link
       </h2>

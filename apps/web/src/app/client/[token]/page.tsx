@@ -9,6 +9,7 @@ import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { prisma } from "@vectroq/db";
 import {
   BOQResult,
+  Category,
   categoryName,
   Geometry,
   modelName,
@@ -96,6 +97,10 @@ export default async function ClientProjectPage({
     : null;
 
   const rules = resolveOrgRules(project.organization!.rules);
+  const livingFloor = rules.categories[project.category as Category]
+    ?.marbleInLiving
+    ? "marble"
+    : "tile";
   const notes = resolveNotes(rules);
   const modelLabel = modelName(rules, project.model);
 
@@ -134,7 +139,11 @@ export default async function ClientProjectPage({
           <div className="grid items-start gap-6 lg:grid-cols-[1fr_340px]">
             <section className={`${card} p-4 sm:p-5`}>
               {geometry ? (
-                <ViewerPanel geometry={geometry} bare />
+                <ViewerPanel
+                  geometry={geometry}
+                  bare
+                  livingFloor={livingFloor}
+                />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img

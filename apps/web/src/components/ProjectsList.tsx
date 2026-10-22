@@ -75,8 +75,14 @@ function Stat({
   );
 }
 
-export function ProjectsList({ projects }: { projects: ProjectCardData[] }) {
-  const [query, setQuery] = useState("");
+export function ProjectsList({
+  projects,
+  initialQuery = "",
+}: {
+  projects: ProjectCardData[];
+  initialQuery?: string;
+}) {
+  const [query, setQuery] = useState(initialQuery);
   const [status, setStatus] = useState("");
   const [category, setCategory] = useState("");
 
@@ -86,7 +92,10 @@ export function ProjectsList({ projects }: { projects: ProjectCardData[] }) {
       (p) =>
         (!q ||
           p.name.toLowerCase().includes(q) ||
-          p.city.toLowerCase().includes(q)) &&
+          p.city.toLowerCase().includes(q) ||
+          p.modelLabel.toLowerCase().includes(q) ||
+          p.categoryLabel.toLowerCase().includes(q) ||
+          p.status.toLowerCase().replace("_", " ").includes(q)) &&
         (!status || p.status === status) &&
         (!category || p.category === category),
     );

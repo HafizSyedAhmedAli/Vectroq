@@ -15,13 +15,6 @@ export interface Wall {
 
 export type RoomType = "bathroom" | "kitchen" | "general";
 
-export interface Room {
-  id: string;
-  name: string;
-  area: number;
-  type: RoomType; // needed for sanitary pricing (bathroom count)
-}
-
 export interface Opening {
   id: string;
   type: "door" | "window";
@@ -195,6 +188,8 @@ export interface Room {
   type: RoomType;
   labelX?: number;
   labelY?: number;
+  /** Floor outline(s) in feet: one polygon per piece of the room. */
+  shapes?: { x: number; y: number }[][];
 }
 
 export * from "./pakistan-cities";

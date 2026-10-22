@@ -19,6 +19,14 @@ export default async function OfficeLayout({
         role={auth.role}
         userName={auth.user.name}
         userEmail={auth.user.email}
+        demoExpiresLabel={
+          auth.org.isDemo && auth.org.demoExpiresAt
+            ? auth.org.demoExpiresAt.toLocaleString("en-PK", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })
+            : null
+        }
         emailVerified={auth.user.emailVerified}
       >
         {children}

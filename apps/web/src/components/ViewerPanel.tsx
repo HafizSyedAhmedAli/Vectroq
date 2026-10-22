@@ -2,6 +2,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import type { Geometry } from "@vectroq/shared-types";
+import { LivingFloor } from "./viewer/materials";
 
 const HouseViewer = dynamic(
   () => import("./HouseViewer").then((m) => m.HouseViewer),
@@ -14,9 +15,11 @@ const HouseViewer = dynamic(
 export function ViewerPanel({
   geometry,
   bare = false,
+  livingFloor,
 }: {
   geometry: Geometry | null;
   bare?: boolean;
+  livingFloor?: LivingFloor;
 }) {
   return (
     <section className={bare ? "" : "border-t border-stone-200 pt-5"}>
@@ -26,7 +29,7 @@ export function ViewerPanel({
         </h3>
       )}
       {geometry ? (
-        <HouseViewer geometry={geometry} />
+        <HouseViewer geometry={geometry} livingFloor={livingFloor} />
       ) : (
         <p className="text-sm text-stone-400">Upload a CAD file above first.</p>
       )}

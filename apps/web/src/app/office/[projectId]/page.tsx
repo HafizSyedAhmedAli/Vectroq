@@ -6,8 +6,8 @@ import {
 } from "@vectroq/shared-types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import type { BOQResult, Geometry } from "@vectroq/shared-types";
+import { ArrowLeft, ArrowRight, Box, Tag } from "lucide-react";
+import type { BOQResult, Category, Geometry } from "@vectroq/shared-types";
 import { prisma } from "@vectroq/db";
 import { ProjectWorkspace } from "@/components/ProjectWorkspace";
 import { ProjectDetailsCard } from "@/components/ProjectDetailsCard";
@@ -56,6 +56,10 @@ export default async function OfficeProjectPage({
   });
 
   const rules = resolveOrgRules(org.rules);
+  const livingFloor = rules.categories[project.category as Category]
+    ?.marbleInLiving
+    ? "marble"
+    : "tile";
   const modelLabel = `Model ${project.model} — ${modelName(rules, project.model)}`;
 
   return (
@@ -72,48 +76,63 @@ export default async function OfficeProjectPage({
             Back to Projects
           </Link>
 
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-brand-black sm:text-5xl">
-            {project.lead.name}
-          </h1>
-          <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-stone-500">
-            <span>
-              Project: <span className="font-mono">{project.id}</span>
-            </span>
-            <span>·</span>
-            <span>{project.city}</span>
-            <span>·</span>
-            <span>{modelLabel}</span>
-            <span>·</span>
-            <span>Category {project.category}</span>
-            <span>·</span>
-            <span className="flex items-center gap-1.5">
-              Status:
+          <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-4xl font-extrabold tracking-tight text-brand-black sm:text-5xl">
+                {project.lead.name}
+              </h1>
+              <p className="mt-2 text-sm text-stone-500">
+                {project.city} · {modelLabel} · Category {project.category}
+              </p>
+              <p className="mt-1 font-mono text-xs text-stone-400">
+                Project ID: {project.id}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {project.cadFile && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-brand-black">
+                  <Box className="size-3.5 text-brand" /> 3D model
+                </span>
+              )}
               <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                className={`rounded-full px-3 py-1.5 text-xs font-bold ${
                   STATUS_STYLES[project.status] ?? "bg-stone-100 text-stone-600"
                 }`}
               >
                 {project.status.replace("_", " ")}
               </span>
-            </span>
-          </p>
+              {project.cadFile?.boq && (
+                <a
+                  href="#boq-section"
+                  className="inline-flex h-10 items-center rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-md shadow-brand/25 hover:bg-brand-dark"
+                >
+                  Jump to BOQ
+                </a>
+              )}
+            </div>
+          </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-200/70 bg-white/95 px-5 py-3.5 text-sm shadow-[0_10px_40px_-12px_rgba(35,31,30,0.12)] backdrop-blur">
-            <p className="text-stone-600">
-              <span className="font-semibold text-brand-black">
-                Rates applied:
-              </span>{" "}
-              <span>
+          {/* Rates applied */}
+          <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-stone-200/70 bg-white px-5 py-4 shadow-sm">
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand text-white">
+              <Tag className="size-5" />
+            </span>
+            <div className="min-w-0 flex-1 basis-60">
+              <p className="text-sm font-semibold text-brand-black">
+                Rates applied
+              </p>
+              <p className="text-xs text-stone-500">
                 Category {project.category} ·{" "}
-                {categoryName(rules, project.category)}
-              </span>
-              {approvedRates
-                ? `market rates approved ${approvedRates.approvedAt?.toISOString().slice(0, 10)} by ${approvedRates.approvedBy}`
-                : "no rates loaded for this city yet"}
-            </p>
+                {categoryName(rules, project.category)} ·{" "}
+                {approvedRates
+                  ? `market rates approved ${approvedRates.approvedAt?.toISOString().slice(0, 10)} by ${approvedRates.approvedBy}`
+                  : "no rates loaded for this city yet"}
+              </p>
+            </div>
             <Link
               href="/office/rates"
-              className="inline-flex items-center gap-2 rounded-xl border border-brand/30 bg-white px-4 py-2 text-sm font-semibold text-brand transition hover:border-brand"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-brand/40 bg-white px-4 text-sm font-semibold text-brand hover:bg-brand/5"
             >
               Manage rates <ArrowRight className="size-4" />
             </Link>
@@ -130,7 +149,9 @@ export default async function OfficeProjectPage({
                         expiresAt: project.shareExpiresAt.toISOString(),
                         label: project.shareExpiresAt.toLocaleDateString(
                           "en-PK",
-                          { dateStyle: "medium" },
+                          {
+                            dateStyle: "medium",
+                          },
                         ),
                       }
                     : null
@@ -159,6 +180,15 @@ export default async function OfficeProjectPage({
                   ? (project.cadFile.boq as unknown as BOQResult)
                   : null
               }
+              initialFileName={project.cadFile?.fileName ?? null}
+              updatedLabel={
+                project.cadFile
+                  ? project.cadFile.updatedAt.toLocaleDateString("en-PK", {
+                      dateStyle: "medium",
+                    })
+                  : null
+              }
+              livingFloor={livingFloor}
             />
           </div>
         </div>
