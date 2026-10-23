@@ -18,8 +18,17 @@ export type RoomType = "bathroom" | "kitchen" | "general";
 export interface Opening {
   id: string;
   type: "door" | "window";
-  width: number; // ft — needed for woodwork area
-  height: number; // ft — needed for woodwork area
+  width: number;
+  height: number;
+  x?: number;
+  y?: number;
+  angle?: number; // midpoint + wall angle, ft
+  /** Doors drawn as a swung leaf: hinge position (ft) and the open leaf's direction (radians, CAD space). */
+  hingeX?: number;
+  hingeY?: number;
+  openAngle?: number;
+  /** Viewer-only passage added to link rooms the drawing does not connect. */
+  archway?: boolean;
 }
 
 export interface Geometry {

@@ -17,6 +17,12 @@ export interface WallCut {
   u1: number;
   y0: number;
   y1: number;
+  /** Swung doors: hinge is on the u0 jamb (true) or the u1 jamb (false). */
+  hingeAtStart?: boolean;
+  /** Swung doors: the leaf opens toward the wall's local +z (1) or -z (-1). */
+  swingZ?: 1 | -1;
+  /** An open passage: frame only, no door leaf. */
+  archway?: boolean;
 }
 
 export interface WallPlan {
@@ -57,7 +63,32 @@ export function planWalls(g: Geometry): WallPlan[] {
 
       const y0 = o.type === "door" ? 0 : Math.min(SILL_FT, H - 1);
       const y1 = Math.min(y0 + o.height, H - 0.5);
-      cuts.push({ openingId: o.id, type: o.type, u0, u1, y0, y1 });
+
+      const cut: WallCut = {
+        openingId: o.id,
+        type: o.type,
+        u0,
+        u1,
+        y0,
+        y1,
+      };
+
+      if (o.archway) cut.archway = true;
+
+      if (
+        o.type === "door" &&
+        o.hingeX !== undefined &&
+        o.hingeY !== undefined &&
+        o.openAngle !== undefined
+      ) {
+        const hingeU =
+          (o.hingeX - wall.startX) * ux + (o.hingeY - wall.startY) * uy;
+        cut.hingeAtStart = hingeU < along;
+        // the wall group's local +z points along CAD (uy, -ux)
+        cut.swingZ =
+          Math.cos(o.openAngle) * uy - Math.sin(o.openAngle) * ux >= 0 ? 1 : -1;
+      }
+      cuts.push(cut);
     }
     cuts.sort((a, b) => a.u0 - b.u0);
 

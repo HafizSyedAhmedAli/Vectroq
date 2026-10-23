@@ -6,6 +6,10 @@ export interface Placement {
   x?: number;
   y?: number;
   angle?: number;
+  /** Set for doors drawn as a swung leaf. */
+  hingeX?: number;
+  hingeY?: number;
+  openAngle?: number;
 }
 
 function nearestOnWalls(p: Point2D, walls: Wall[]) {
@@ -27,14 +31,49 @@ function nearestOnWalls(p: Point2D, walls: Wall[]) {
   return best;
 }
 
+function pointSegDist(p: Point2D, a: Point2D, b: Point2D): number {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const l2 = dx * dx + dy * dy;
+  if (!l2) return Math.hypot(p.x - a.x, p.y - a.y);
+  const t = Math.max(
+    0,
+    Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2),
+  );
+  return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
+}
+
+/** True when a wall starts or ends in the middle of the span (a junction). */
+function spanBlocked(from: Point2D, to: Point2D, walls: Wall[]): boolean {
+  const EDGE = 0.25; // ft
+  for (const w of walls) {
+    for (const p of [
+      { x: w.startX, y: w.startY },
+      { x: w.endX, y: w.endY },
+    ]) {
+      if (Math.hypot(p.x - from.x, p.y - from.y) < EDGE) continue;
+      if (Math.hypot(p.x - to.x, p.y - to.y) < EDGE) continue;
+      if (pointSegDist(p, from, to) < EDGE) return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Places an opening drawn as a LINE onto the closest wall.
  * - Window / flat door line lying on the wall: centre = its midpoint on the wall.
  * - Door drawn as a swung leaf (hinge on the wall, line sticking out):
- *   the endpoint touching the wall is the hinge, so centre the door
- *   half a width along the wall from it.
+ *   the endpoint touching the wall is the hinge. The door runs half a width
+ *   along the wall from it: along the wall's direction by default, or the way
+ *   the door's arc says (`closedAngle`) when that does not cross a wall junction.
+ *   The hinge and the leaf's open direction are returned for the 3D view.
  */
-export function snapToWall(a: Point2D, b: Point2D, walls: Wall[]): Placement {
+export function snapToWall(
+  a: Point2D,
+  b: Point2D,
+  walls: Wall[],
+  closedAngle?: number,
+): Placement {
   const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
   const width = Math.hypot(b.x - a.x, b.y - a.y);
 
@@ -52,9 +91,25 @@ export function snapToWall(a: Point2D, b: Point2D, walls: Wall[]): Placement {
   const angle = Math.atan2(wall.endY - wall.startY, wall.endX - wall.startX);
 
   if (best.i === 0) return { x: px, y: py, angle };
+
+  const hinge = best.i === 1 ? a : b;
+  const tip = best.i === 1 ? b : a;
+  const ux = Math.cos(angle);
+  const uy = Math.sin(angle);
+
+  let s = 1;
+  if (closedAngle !== undefined) {
+    const want = Math.cos(closedAngle - angle) >= 0 ? 1 : -1;
+    const end = { x: px + want * ux * width, y: py + want * uy * width };
+    if (!spanBlocked({ x: px, y: py }, end, walls)) s = want;
+  }
+
   return {
-    x: px + (Math.cos(angle) * width) / 2,
-    y: py + (Math.sin(angle) * width) / 2,
+    x: px + (s * ux * width) / 2,
+    y: py + (s * uy * width) / 2,
     angle,
+    hingeX: px,
+    hingeY: py,
+    openAngle: Math.atan2(tip.y - hinge.y, tip.x - hinge.x),
   };
 }

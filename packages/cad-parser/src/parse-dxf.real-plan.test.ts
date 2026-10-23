@@ -35,4 +35,18 @@ describe("whole_house_simple_plan.dxf (LINE walls, mm units)", () => {
     expect(g.openings.filter((o) => o.type === "door")).toHaveLength(7);
     expect(g.openings.filter((o) => o.type === "window")).toHaveLength(8);
   });
+
+  it("uses the door arcs: the kitchen door runs the way its arc says", () => {
+    const k = 0.00328084; // mm -> ft
+    const door = g.openings.find(
+      (o) =>
+        o.type === "door" &&
+        o.hingeX !== undefined &&
+        Math.abs(o.hingeX - 8500 * k) < 0.05 &&
+        Math.abs((o.hingeY ?? 0) - 2500 * k) < 0.05,
+    );
+    expect(door).toBeDefined();
+    expect(door!.y).toBeCloseTo(2000 * k, 1);
+    expect(door!.openAngle).toBeCloseTo(0, 1);
+  });
 });

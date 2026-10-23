@@ -1,4 +1,4 @@
-import type { Opening, Room } from "@vectroq/shared-types";
+import type { Geometry, Opening, Room } from "@vectroq/shared-types";
 
 export type FurnitureKind =
   | "bed"
@@ -10,7 +10,9 @@ export type FurnitureKind =
   | "chair"
   | "counter"
   | "toilet"
-  | "basin";
+  | "basin"
+  | "desk"
+  | "bookshelf";
 
 export type Side = "S" | "N" | "W" | "E"; // S = smallest CAD y
 
@@ -265,6 +267,12 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
   const ALL_T = [0.5, 0.15, 0.85];
   const name = room.name.toLowerCase();
 
+  // Study is checked before bedroom so "Study" and "Bedroom Study" both get a desk.
+  const isStudy = /study|office|library|workspace|\bwork\b/.test(name);
+  const isBedroom = /bed|master|guest|kids?|nursery/.test(name);
+  const isLiving = /living|lounge|drawing|sitting|family|\btv\b/.test(name);
+  const isDining = /dining/.test(name);
+
   if (room.type === "bathroom") {
     add(tryWall(c, "toilet", 1.5, 2.3, longWallsFirst, ALL_T));
     add(tryWall(c, "basin", 1.8, 1.4, [...longWallsFirst].reverse(), ALL_T));
@@ -279,7 +287,41 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
       )
         break;
     }
-  } else if (/bed/.test(name)) {
+  } else if (isStudy) {
+    const desk = add(
+      tryWall(c, "desk", 5, 2.3, longWallsFirst, [0.5, 0.2, 0.8], {
+        minFree: 5,
+      }),
+    );
+    if (desk) {
+      const [fx, fy] = desk.facing;
+      const off = desk.d / 2 + 0.75;
+      // chair sits in front of the desk, facing it
+      add(
+        tryAt(
+          c,
+          "chair",
+          desk.x + fx * off,
+          desk.y + fy * off,
+          [-fx, -fy],
+          1.4,
+          1.4,
+          { margin: 0 },
+        ),
+      );
+    }
+    add(
+      tryWall(
+        c,
+        "bookshelf",
+        4,
+        1,
+        [...longWallsFirst].reverse(),
+        [0.5, 0, 1, 0.25, 0.75],
+        { windows: true },
+      ),
+    );
+  } else if (isBedroom) {
     const small = room.area < 110;
     add(
       tryWall(c, "bed", small ? 3.5 : 5.5, 6.5, shortWallsFirst, ALL_T, {
@@ -294,12 +336,10 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
         2,
         [...longWallsFirst],
         [0.5, 0, 1, 0.25, 0.75],
-        {
-          windows: true,
-        },
+        { windows: true },
       ),
     );
-  } else if (/living|lounge|drawing|sitting|\btv\b/.test(name)) {
+  } else if (isLiving) {
     const sw = room.area < 130 ? 5 : 6.5;
     const sofa = add(
       tryWall(c, "sofa", sw, 2.8, longWallsFirst, [0.5, 0.2, 0.8], {
@@ -317,9 +357,7 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
           sofa.facing,
           3,
           1.6,
-          {
-            margin: 0.2,
-          },
+          { margin: 0.2 },
         ),
       );
       add(
@@ -328,7 +366,7 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
         }),
       );
     }
-  } else if (/dining/.test(name)) {
+  } else if (isDining) {
     let ctr: Pt = { x: (bb.minX + bb.maxX) / 2, y: (bb.minY + bb.maxY) / 2 };
     if (
       !inRoom(ctr, room) &&
@@ -376,4 +414,11 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
     }
   }
   return out;
+}
+
+/** Footprints of every piece in the house (CAD feet), for walk-mode collisions. */
+export function furnitureRects(g: Geometry): Rect[] {
+  return g.rooms
+    .flatMap((r) => layoutFurniture(r, g.openings))
+    .map((p) => footprintOf(p.x, p.y, p.facing, p.w, p.d));
 }

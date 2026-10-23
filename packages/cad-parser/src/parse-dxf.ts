@@ -26,6 +26,8 @@ function scaleEntity(e: any, k: number): RawEntity {
     ...e,
     vertices: e.vertices?.map(pt),
     startPoint: pt(e.startPoint),
+    center: pt(e.center),
+    radius: typeof e.radius === "number" ? e.radius * k : e.radius,
   } as RawEntity;
 }
 

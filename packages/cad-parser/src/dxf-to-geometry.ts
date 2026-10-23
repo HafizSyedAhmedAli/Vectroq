@@ -15,6 +15,7 @@ import {
 } from "./line-plan";
 import { Point2D, distance, pointInPolygon, polygonArea } from "./polygon";
 import { snapToWall } from "./place-openings";
+import { RawArc, swingFromArc } from "./door-swing";
 
 // --- Layer conventions this parser expects the CAD file to follow ---
 // A client's actual drawings may use different layer names; treat these
@@ -77,7 +78,17 @@ export type RawEntity =
   | RawPolylineEntity
   | RawLineEntity
   | RawTextEntity
+  | RawArcEntity
   | RawOtherEntity;
+
+interface RawArcEntity {
+  type: "ARC";
+  layer: string;
+  center: RawVertex;
+  radius: number;
+  startAngle: number;
+  endAngle: number;
+}
 
 export interface RawDxfDocument {
   entities: RawEntity[];
@@ -127,6 +138,19 @@ export function dxfToGeometry(
     (e): e is RawLineEntity =>
       e.type === "LINE" && layerKind(e.layer) === "window",
   );
+
+  const doorArcs: RawArc[] = dxf.entities
+    .filter(
+      (e): e is RawArcEntity =>
+        e.type === "ARC" && layerKind(e.layer) === "door",
+    )
+    .map((e) => ({
+      center: e.center,
+      radius: e.radius,
+      startAngle: e.startAngle,
+      endAngle: e.endAngle,
+    }));
+
   const wallLines = dxf.entities.filter(
     (e): e is RawLineEntity =>
       e.type === "LINE" && layerKind(e.layer) === "wall",
@@ -151,10 +175,10 @@ export function dxfToGeometry(
     );
     const openings: Opening[] = [
       ...doorLines.map((l, i) =>
-        toOpening(l, i, "door", d.doorHeightFt, walls),
+        toOpening(l, i, "door", d.doorHeightFt, walls, doorArcs),
       ),
       ...windowLines.map((l, i) =>
-        toOpening(l, i, "window", d.windowHeightFt, walls),
+        toOpening(l, i, "window", d.windowHeightFt, walls, doorArcs),
       ),
     ];
     return {
@@ -241,13 +265,29 @@ function toOpening(
   type: Opening["type"],
   height: number,
   walls: Wall[],
+  arcs: RawArc[] = [],
 ): Opening {
   const [start, end] = line.vertices;
+  const closed =
+    type === "door" ? swingFromArc(start, end, arcs)?.closed : undefined;
+  const placed = snapToWall(start, end, walls, closed);
+
+  // Only doors swing; a window never carries hinge data.
+  if (type === "window") {
+    const { hingeX: _hx, hingeY: _hy, openAngle: _oa, ...rest } = placed;
+    return {
+      id: `${type}-${index}`,
+      type,
+      width: distance(start, end),
+      height,
+      ...rest,
+    };
+  }
   return {
     id: `${type}-${index}`,
     type,
     width: distance(start, end),
     height,
-    ...snapToWall(start, end, walls),
+    ...placed,
   };
 }

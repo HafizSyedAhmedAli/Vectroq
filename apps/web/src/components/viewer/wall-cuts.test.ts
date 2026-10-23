@@ -72,4 +72,15 @@ describe("planWalls", () => {
     expect(p.cuts).toHaveLength(0);
     expect(p.pieces).toHaveLength(1);
   });
+
+  it("tells which jamb a swung door hinges on and which way it opens", () => {
+    const [p] = plan({
+      ...door,
+      hingeX: 3.5,
+      hingeY: 0,
+      openAngle: Math.PI / 2,
+    });
+    expect(p.cuts[0].hingeAtStart).toBe(true);
+    expect(p.cuts[0].swingZ).toBe(-1);
+  });
 });

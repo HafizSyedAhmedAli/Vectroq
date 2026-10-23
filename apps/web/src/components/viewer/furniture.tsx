@@ -313,6 +313,57 @@ function Basin({ w, d, m }: { w: number; d: number; m: FurnitureMaterials }) {
   );
 }
 
+function Desk({ w, d, m }: { w: number; d: number; m: FurnitureMaterials }) {
+  const legs: [number, number][] = [
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ];
+  return (
+    <>
+      <P s={[w, 0.15, d]} p={[0, 2.35, 0]} m={m.wood} />
+      {legs.map(([a, b], i) => (
+        <P
+          key={i}
+          s={[0.2, 2.35, 0.2]}
+          p={[a * (w / 2 - 0.2), 0, b * (d / 2 - 0.2)]}
+          m={m.wood}
+        />
+      ))}
+      {/* drawer unit */}
+      <P s={[1.6, 1.6, d - 0.3]} p={[w / 2 - 0.95, 0.7, 0]} m={m.cabinet} />
+      {/* monitor and keyboard */}
+      <P s={[1.6, 1, 0.08]} p={[-0.6, 2.5, -d / 2 + 0.3]} m={m.black} />
+      <P s={[1, 0.05, 0.35]} p={[-0.6, 2.5, 0.2]} m={m.black} />
+    </>
+  );
+}
+
+function Bookshelf({
+  w,
+  d,
+  m,
+}: {
+  w: number;
+  d: number;
+  m: FurnitureMaterials;
+}) {
+  return (
+    <>
+      <P s={[w, 6.5, d]} p={[0, 0, 0]} m={m.wood} />
+      {[1, 2, 3, 4, 5].map((i) => (
+        <P
+          key={i}
+          s={[w - 0.15, 0.05, 0.06]}
+          p={[0, i * 1.08, d / 2]}
+          m={m.black}
+        />
+      ))}
+    </>
+  );
+}
+
 function Piece({ it, m }: { it: Placed; m: FurnitureMaterials }) {
   switch (it.kind) {
     case "bed":
@@ -335,6 +386,10 @@ function Piece({ it, m }: { it: Placed; m: FurnitureMaterials }) {
       return <Toilet w={it.w} d={it.d} m={m} />;
     case "basin":
       return <Basin w={it.w} d={it.d} m={m} />;
+    case "desk":
+      return <Desk w={it.w} d={it.d} m={m} />;
+    case "bookshelf":
+      return <Bookshelf w={it.w} d={it.d} m={m} />;
   }
 }
 
@@ -492,6 +547,11 @@ function RoomCeiling({
 }
 
 /** False ceilings in dry rooms only, matching how the BOQ prices them. */
+/**
+ * Every room gets a ceiling so the whole house is covered. Dry rooms get the
+ * category's false-ceiling style (the only ones priced in the BOQ); kitchens
+ * and bathrooms get a plain flat ceiling.
+ */
 export function Ceilings({
   geometry,
   cx,
@@ -508,10 +568,11 @@ export function Ceilings({
   mats: FurnitureMaterials;
 }) {
   const y = height - 0.5;
+  const plain: CategoryFinish = { ...finish, ceiling: "plain" };
   return (
     <group>
       {geometry.rooms
-        .filter((r) => r.type === "general" && r.shapes?.length)
+        .filter((r) => r.shapes?.length)
         .map((r) => (
           <RoomCeiling
             key={r.id}
@@ -519,7 +580,7 @@ export function Ceilings({
             cx={cx}
             cy={cy}
             y={y}
-            finish={finish}
+            finish={r.type === "general" ? finish : plain}
             m={mats}
           />
         ))}

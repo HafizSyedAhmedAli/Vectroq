@@ -111,4 +111,16 @@ describe("layoutFurniture", () => {
       ),
     ).toEqual([]);
   });
+
+  it("furnishes a study with a desk, a chair and a bookshelf", () => {
+    const ps = layoutFurniture(room("Study", "general", 14, 12), []);
+    expect(kinds(ps)).toEqual(
+      expect.arrayContaining(["desk", "chair", "bookshelf"]),
+    );
+  });
+
+  it("still treats Bedroom Study as a study", () => {
+    const ps = layoutFurniture(room("Bedroom Study", "general", 14, 12), []);
+    expect(kinds(ps)).toContain("desk");
+  });
 });
