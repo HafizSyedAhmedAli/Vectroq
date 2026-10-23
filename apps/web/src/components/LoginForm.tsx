@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CircleAlert, Eye, EyeOff, Lock, Mail } from "lucide-react";
@@ -8,6 +8,7 @@ import { AuthField } from "@/components/auth/AuthField";
 import { AuthSubmit } from "@/components/auth/AuthSubmit";
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
+const EMAIL_KEY = "vq_remember_email";
 
 export function LoginForm({ next }: { next: string }) {
   const router = useRouter();
@@ -24,6 +25,15 @@ export function LoginForm({ next }: { next: string }) {
     {},
   );
   const [formError, setFormError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(EMAIL_KEY);
+      if (saved) setEmail(saved);
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -54,6 +64,12 @@ export function LoginForm({ next }: { next: string }) {
         setBusy(false);
         return passwordRef.current?.focus();
       }
+      try {
+        if (remember) localStorage.setItem(EMAIL_KEY, trimmed);
+        else localStorage.removeItem(EMAIL_KEY);
+      } catch {
+        /* ignore */
+      }
       router.push(next);
       router.refresh(); // keep the spinner until the page changes
     } catch {
@@ -68,6 +84,7 @@ export function LoginForm({ next }: { next: string }) {
     <form onSubmit={submit} noValidate className="space-y-5">
       <AuthField
         id="li-email"
+        name="email"
         ref={emailRef}
         label="Email"
         type="email"
@@ -86,6 +103,7 @@ export function LoginForm({ next }: { next: string }) {
 
       <AuthField
         id="li-pw"
+        name="password"
         ref={passwordRef}
         label="Password"
         type={show ? "text" : "password"}

@@ -257,7 +257,7 @@ export function layoutFurniture(room: Room, openings: Opening[]): Placed[] {
 
   const W = bb.maxX - bb.minX;
   const H = bb.maxY - bb.minY;
-  const wide = W >= H;
+  const wide = W >= H - 0.5;
   const shortWallsFirst: Side[] = wide
     ? ["W", "E", "S", "N"]
     : ["S", "N", "W", "E"];

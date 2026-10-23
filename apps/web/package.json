@@ -23,6 +23,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "resend": "^6.34.1",
+    "stripe": "^23.0.1",
     "three": "^0.186.1"
   },
   "devDependencies": {

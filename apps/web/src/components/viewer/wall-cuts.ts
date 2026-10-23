@@ -31,6 +31,28 @@ export interface WallPlan {
   cuts: WallCut[];
 }
 
+/** How far (ft) to pull a wall end back so it doesn't poke into an opening on a crossing wall. */
+function endClearance(
+  px: number,
+  py: number,
+  wallAngle: number,
+  g: Geometry,
+): number {
+  for (const o of g.openings) {
+    if (o.x === undefined || o.y === undefined || o.angle === undefined)
+      continue;
+    // only walls that cross the opening's own wall
+    if (Math.abs(Math.sin(wallAngle - o.angle)) < 0.8) continue;
+    const rx = px - o.x;
+    const ry = py - o.y;
+    const along = rx * Math.cos(o.angle) + ry * Math.sin(o.angle);
+    const across = -rx * Math.sin(o.angle) + ry * Math.cos(o.angle);
+    if (Math.abs(along) <= o.width / 2 + 0.1 && Math.abs(across) <= 0.6)
+      return 0.6;
+  }
+  return 0;
+}
+
 export function planWalls(g: Geometry): WallPlan[] {
   const plans: WallPlan[] = [];
 
@@ -92,9 +114,14 @@ export function planWalls(g: Geometry): WallPlan[] {
     }
     cuts.sort((a, b) => a.u0 - b.u0);
 
+    const startClear = endClearance(wall.startX, wall.startY, wallAngle, g);
+    const endClear = endClearance(wall.endX, wall.endY, wallAngle, g);
+    const endU = endClear > 0 ? len - endClear : len + th / 2;
+
     // Solid wall = everything outside the cuts, plus the bits above/below each cut.
     const pieces: WallPiece[] = [];
-    let cursor = -th / 2; // walls overshoot by half a thickness to close corners
+    // walls overshoot by half a thickness to close corners, unless they end in a door
+    let cursor = startClear > 0 ? startClear : -th / 2;
     for (const c of cuts) {
       const s = Math.max(c.u0, cursor);
       if (s - cursor > 0.01) pieces.push({ u0: cursor, u1: s, y0: 0, y1: H });
@@ -104,8 +131,8 @@ export function planWalls(g: Geometry): WallPlan[] {
       }
       cursor = Math.max(cursor, c.u1);
     }
-    if (len + th / 2 - cursor > 0.01)
-      pieces.push({ u0: cursor, u1: len + th / 2, y0: 0, y1: H });
+    if (endU - cursor > 0.01)
+      pieces.push({ u0: cursor, u1: endU, y0: 0, y1: H });
 
     plans.push({ wall, pieces, cuts });
   }

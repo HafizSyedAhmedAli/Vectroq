@@ -5,6 +5,7 @@ import { ROLE_LABEL, hasRole, type Role } from "@/lib/auth/roles";
 import type { Brand } from "@/lib/brand";
 import {
   ChevronDown,
+  CreditCard,
   ExternalLink,
   FileText,
   FolderOpen,
@@ -49,6 +50,7 @@ const NAV: NavItem[] = [
     owner: true,
   },
   { href: "/office/settings", label: "Settings", icon: Settings, owner: true },
+    { href: "/office/billing", label: "Billing", icon: CreditCard, owner: true },
   { href: "/office/account", label: "Account", icon: UserCog },
 ];
 

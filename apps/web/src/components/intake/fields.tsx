@@ -79,7 +79,9 @@ export function TextField({
   return (
     <div>
       <Label htmlFor={id}>
-        {label} {required && <RequiredMark />}
+        <span>
+          {label} {required && <RequiredMark />}
+        </span>
       </Label>
       <IconInput icon={icon}>
         <Input
@@ -118,7 +120,9 @@ export function SelectField({
   return (
     <div>
       <Label htmlFor={id}>
-        {label} {required && <RequiredMark />}
+        <span>
+          {label} {required && <RequiredMark />}
+        </span>
       </Label>
       <IconInput icon={icon}>
         <NativeSelect

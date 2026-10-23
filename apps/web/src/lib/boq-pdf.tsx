@@ -33,6 +33,8 @@ export interface BoqPdfData {
   dateLabel: string;
   assumptions: string[];
   exclusions: string[];
+    /** Free plan: show "Prepared with Vectroq" in the footer. */
+  platformBranding: boolean;
 }
 
 const BRAND = "#2563EB";
@@ -320,13 +322,16 @@ function BoqPdf({ d }: { d: BoqPdfData }) {
         </View>
 
         <View style={s.footer} fixed>
-          <Text>{d.brand.name} - Bill of Quantities &amp; Cost Estimate</Text>
-          <Text
-            render={({ pageNumber, totalPages }) =>
-              `Page ${pageNumber} of ${totalPages}`
-            }
-          />
-        </View>
+  <Text>
+    {d.brand.name} - Bill of Quantities &amp; Cost Estimate
+    {d.platformBranding ? "  |  Prepared with Vectroq" : ""}
+  </Text>
+  <Text
+    render={({ pageNumber, totalPages }) =>
+      `Page ${pageNumber} of ${totalPages}`
+    }
+  />
+</View>
       </Page>
     </Document>
   );

@@ -588,15 +588,21 @@ function Surroundings({
 
   return (
     <group>
-      {/* driveway */}
-      <mesh position={[0, GROUND + 0.04, b.d / 2 + 1 + len / 2]} receiveShadow>
-        <boxGeometry args={[9, 0.08, len]} />
-        <meshStandardMaterial color="#8a8d91" roughness={1} />
-      </mesh>
-      {/* entrance path border */}
-      <mesh position={[0, GROUND + 0.05, b.d / 2 + 1 + len / 2]} receiveShadow>
-        <boxGeometry args={[9.4, 0.06, len + 0.4]} />
+      {/* border sits below the driveway surface, so no two faces share a plane */}
+      <mesh
+        position={[0, GROUND + 0.03, b.d / 2 + 0.9 + (len + 0.1) / 2]}
+        receiveShadow
+      >
+        <boxGeometry args={[9.6, 0.06, len + 0.5]} />
         <meshStandardMaterial color="#b9b4aa" roughness={1} />
+      </mesh>
+      {/* driveway starts inside the slab so its end face is hidden */}
+      <mesh
+        position={[0, GROUND + 0.06, b.d / 2 + 0.9 + (len + 0.1) / 2]}
+        receiveShadow
+      >
+        <boxGeometry args={[9, 0.12, len + 0.1]} />
+        <meshStandardMaterial color="#8a8d91" roughness={1} />
       </mesh>
 
       {trees &&
@@ -1271,7 +1277,7 @@ export function HouseViewer({
         camera={{
           position: [size * 0.9, size * 0.8, size * 0.9],
           fov: 45,
-          near: 0.5,
+          near: 1,
           far: 3000,
         }}
       >

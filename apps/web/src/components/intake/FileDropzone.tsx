@@ -63,7 +63,7 @@ export function FileDropzone({
           }}
           onDragLeave={() => setDragging(false)}
           onDrop={handleDrop}
-          className={`flex cursor-pointer flex-col items-center gap-1 rounded-xl border border-dashed px-4 py-6 text-center transition-colors ${
+          className={`flex cursor-pointer flex-col items-center gap-1 rounded-xl border border-dashed px-4 py-6 mt-5 text-center transition-colors ${
             dragging
               ? "border-brand bg-red-50/40"
               : "border-stone-300 hover:border-stone-400"

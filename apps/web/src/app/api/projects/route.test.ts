@@ -10,6 +10,10 @@ vi.mock("@vectroq/db", () => ({
   },
 }));
 
+vi.mock("@/lib/billing/usage", () => ({
+  getUsage: vi.fn().mockResolvedValue({ projectsThisMonth: 0, seatsUsed: 1 }),
+}));
+
 vi.mock("@/lib/auth/guard", () => ({
   guard: vi.fn().mockResolvedValue({
     ok: true,
@@ -23,6 +27,7 @@ vi.mock("@/lib/auth/guard", () => ({
 import { guard } from "@/lib/auth/guard";
 
 import { prisma } from "@vectroq/db";
+import { getUsage } from "@/lib/billing/usage";
 
 function req(body: unknown) {
   return new Request("http://localhost/api/projects", {
@@ -110,4 +115,12 @@ describe("GET /api/projects", () => {
     expect(res.status).toBe(403);
     expect(prisma.project.create).not.toHaveBeenCalled();
   });
+
+  it("402s when the Free plan's monthly project limit is reached", async () => {
+  (prisma.lead.findFirst as any).mockResolvedValue({ id: "lead_1" });
+  (getUsage as any).mockResolvedValueOnce({ projectsThisMonth: 3, seatsUsed: 1 });
+  const res = await POST(req(validBody) as any);
+  expect(res.status).toBe(402);
+  expect(prisma.project.create).not.toHaveBeenCalled();
+});
 });

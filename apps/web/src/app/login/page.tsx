@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { LoginForm } from "@/components/LoginForm";
+import { redirect } from "next/navigation";
+import { getAuth } from "@/lib/auth/session";
 
 export const metadata: Metadata = { title: "Log in · Vectroq" };
 
@@ -17,6 +19,8 @@ export default async function LoginPage({
     next && next.startsWith("/") && !next.startsWith("//")
       ? next
       : "/office/dashboard";
+
+  if (await getAuth()) redirect(safeNext);
 
   return (
     <AuthShell

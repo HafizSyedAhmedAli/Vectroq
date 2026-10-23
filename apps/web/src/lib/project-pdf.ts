@@ -8,6 +8,7 @@ import {
 import type { Prisma } from "@vectroq/db";
 import { renderBoqPdf } from "@/lib/boq-pdf";
 import { brandFromOrg } from "@/lib/brand";
+import { planOf } from "./billing/plans";
 
 export type ProjectForPdf = Prisma.ProjectGetPayload<{
   include: { lead: true; cadFile: true; organization: true };
@@ -41,6 +42,7 @@ export async function projectPdfResponse(
 
   const pdf = await renderBoqPdf({
     brand,
+    platformBranding: !planOf(project.organization!).removeBranding,
     boq,
     logo: await fetchLogo(brand.logoUrl),
     clientName: project.lead.name,

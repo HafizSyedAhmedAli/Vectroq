@@ -7,6 +7,9 @@ import { newToken, sha256 } from "@/lib/auth/tokens";
 import { sendEmail } from "@/lib/email";
 import { inviteEmail } from "@/lib/email-templates";
 import { appUrl } from "@/lib/app-url";
+import { seatLimitError } from "@/lib/billing/limits";
+import { planOf } from "@/lib/billing/plans";
+import { getUsage } from "@/lib/billing/usage";
 
 const INVITE_DAYS = 7;
 
@@ -39,6 +42,14 @@ export async function POST(req: NextRequest) {
       { error: "Enter a valid email." },
       { status: 400 },
     );
+
+  const seatError = seatLimitError(planOf(org), await getUsage(org.id));
+  if (seatError) {
+    return NextResponse.json(
+      { error: seatError, code: "PLAN_LIMIT" },
+      { status: 402 },
+    );
+  }
   if (!isRole(b?.role))
     return NextResponse.json({ error: "Choose a role." }, { status: 400 });
 

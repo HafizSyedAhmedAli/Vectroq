@@ -18,7 +18,7 @@ export function StepActions({
   isSubmitting,
   onBack,
 }: StepActionsProps) {
-  const big = "h-12! rounded-xl! text-[15px] font-semibold cursor-pointer";
+  const big = "h-12! rounded-xl! text-[15px] font-semibold cursor-pointer border border-stone-200! shadow-sm hover:border-stone-300!";
   return (
     <div className="flex gap-3">
       {!isFirst && (

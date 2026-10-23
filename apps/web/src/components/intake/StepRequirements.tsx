@@ -64,13 +64,13 @@ export function StepRequirements({
         onChange={(v) => setField("houseType", v)}
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid items-start gap-4 sm:grid-cols-3">
         <SelectField
           id="floors"
           label="Number of Floors"
           required
           icon={<Layers className="size-4" />}
-          placeholder="Select number of floors"
+          placeholder="Select floors"
           options={floorOptions}
           value={values.floors}
           error={errors.floors}
@@ -81,7 +81,7 @@ export function StepRequirements({
           label="Bedrooms"
           required
           icon={<BedDouble className="size-4" />}
-          placeholder="Select number of bedrooms"
+          placeholder="Select bedrooms"
           options={bedroomOptions}
           value={values.bedrooms}
           error={errors.bedrooms}
@@ -92,7 +92,7 @@ export function StepRequirements({
           label="Budget Range"
           required
           icon={<Wallet className="size-4" />}
-          placeholder="Select budget range"
+          placeholder="Select budget"
           options={asOptions(BUDGET_RANGES)}
           value={values.budgetRange}
           error={errors.budgetRange}
@@ -100,7 +100,7 @@ export function StepRequirements({
         />
         <TextField
           id="plot-size"
-          label="Approx. Plot Size (Sq. Yards)"
+          label="Plot Size (Sq. Yd.)"
           required
           type="number"
           min={0}
@@ -113,7 +113,7 @@ export function StepRequirements({
         />
         <TextField
           id="covered-area"
-          label="Estimated Covered Area (Sq. Ft.)"
+          label="Covered Area (Sq. Ft.)"
           required
           type="number"
           min={0}
@@ -126,7 +126,7 @@ export function StepRequirements({
         />
         <SelectField
           id="timeline"
-          label="Preferred Construction Timeline"
+          label="Construction Timeline"
           required
           icon={<Calendar className="size-4" />}
           placeholder="Select timeline"

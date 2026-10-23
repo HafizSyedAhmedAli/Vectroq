@@ -83,4 +83,24 @@ describe("planWalls", () => {
     expect(p.cuts[0].hingeAtStart).toBe(true);
     expect(p.cuts[0].swingZ).toBe(-1);
   });
+
+  it("pulls a crossing wall back so it does not poke into a door", () => {
+    const partition: Wall = {
+      id: "p",
+      startX: 5,
+      startY: 0,
+      endX: 5,
+      endY: 10,
+      length: 10,
+      height: 10,
+      thickness: 0.375,
+    };
+    const plans = planWalls({
+      walls: [wall, partition],
+      rooms: [],
+      openings: [door],
+    });
+    const p = plans.find((x) => x.wall.id === "p")!;
+    expect(Math.min(...p.pieces.map((x) => x.u0))).toBeGreaterThanOrEqual(0.5);
+  });
 });

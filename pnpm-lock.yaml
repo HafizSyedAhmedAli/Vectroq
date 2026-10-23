@@ -80,6 +80,9 @@ importers:
       resend:
         specifier: ^6.34.1
         version: 6.34.1
+      stripe:
+        specifier: ^23.0.1
+        version: 23.0.1(@types/node@20.17.6)
       three:
         specifier: ^0.186.1
         version: 0.186.1
@@ -2196,6 +2199,15 @@ packages:
   strip-indent@3.0.0:
     resolution: {integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==}
     engines: {node: '>=8'}
+
+  stripe@23.0.1:
+    resolution: {integrity: sha512-VFLs9IAzSZ8GIm6/vqhjqOL0fbYrSNYCpgZ3LS3YkSi/i5RnyMpu/Hf9YxPTOCYwc3mZKU3IJvuvKffQH2NLMg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/node': '>=20'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   styled-jsx@5.1.6:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
@@ -4333,6 +4345,10 @@ snapshots:
   strip-indent@3.0.0:
     dependencies:
       min-indent: 1.0.1
+
+  stripe@23.0.1(@types/node@20.17.6):
+    optionalDependencies:
+      '@types/node': 20.17.6
 
   styled-jsx@5.1.6(react@19.3.0):
     dependencies:
