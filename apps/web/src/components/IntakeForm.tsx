@@ -42,11 +42,11 @@ export function IntakeForm({
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_290px] items-start">
+    <div className="grid items-start gap-6 lg:grid-cols-[1fr_320px]">
       <form
         onSubmit={form.handleSubmit}
         noValidate
-        className="bg-white border border-stone-200 rounded-2xl shadow-sm p-6 sm:p-8 space-y-8"
+        className="space-y-6 rounded-3xl border border-stone-200/70 bg-white p-6 shadow-xl shadow-stone-900/5 sm:p-8"
       >
         <IntakeStepper
           steps={STEPS}

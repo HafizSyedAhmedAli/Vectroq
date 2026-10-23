@@ -9,14 +9,22 @@ import type {
   Wall,
 } from "@vectroq/shared-types";
 import {
+  BedDouble,
+  Bath,
   BrickWall,
   Calculator,
   CircleCheck,
+  CookingPot,
   DoorOpen,
   FileText,
   GripVertical,
   Loader2,
+  Ruler,
+  Sofa,
+  Square,
   Trash2,
+  UtensilsCrossed,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +66,44 @@ function reorder<T>(items: T[], from: number, to: number): T[] {
   const [moved] = next.splice(from, 1);
   next.splice(to, 0, moved);
   return next;
+}
+
+function roomIcon(room: Room): LucideIcon {
+  if (room.type === "bathroom") return Bath;
+  if (room.type === "kitchen") return CookingPot;
+  const n = room.name.toLowerCase();
+  if (/bed|master|guest|kids?/.test(n)) return BedDouble;
+  if (/dining/.test(n)) return UtensilsCrossed;
+  if (/living|lounge|drawing|sitting/.test(n)) return Sofa;
+  return DoorOpen;
+}
+
+// Exterior walls are 9 in (0.75 ft), partitions 4.5 in.
+const wallKind = (w: Wall) => (w.thickness >= 0.6 ? "External" : "Internal");
+
+function StatTile({
+  icon: Icon,
+  label,
+  value,
+  hint,
+  tone,
+}: {
+  icon: LucideIcon;
+  label: string;
+  value: string | number;
+  hint: string;
+  tone: string;
+}) {
+  return (
+    <div className="flex flex-col rounded-2xl border border-stone-200 bg-white p-4">
+      <span className={`grid size-10 place-items-center rounded-xl ${tone}`}>
+        <Icon className="size-5" />
+      </span>
+      <p className="mt-3 text-xs font-medium text-stone-500">{label}</p>
+      <p className="mt-0.5 text-2xl font-extrabold text-brand-black">{value}</p>
+      <p className="mt-1 text-[11px] leading-snug text-stone-400">{hint}</p>
+    </div>
+  );
 }
 
 // Upload a DXF, let the team correct what the parser
@@ -276,8 +322,6 @@ export function CadReviewPanel({
     }
   }
 
-  const sectionTitle =
-    "mb-3 flex items-center gap-2.5 text-sm font-semibold text-brand-black";
   const sectionIcon =
     "grid size-7 place-items-center rounded-md border border-stone-200 bg-white text-brand-black";
   const tableWrap =
@@ -296,19 +340,19 @@ export function CadReviewPanel({
   return (
     <div className="space-y-6">
       {/* Upload tile + summary tiles */}
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,240px)_1fr]">
-        <div className="rounded-2xl bg-brand p-4 text-white shadow-md shadow-brand/25">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,250px)_1fr]">
+        <div className="rounded-2xl bg-gradient-to-b from-brand to-[color-mix(in_srgb,var(--color-brand)_70%,black)] p-4 text-white shadow-md shadow-brand/25">
           <div className="flex items-center gap-3">
             <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/15">
               <FileText className="size-5" />
             </span>
             <div className="min-w-0">
-              <p className="text-xs text-white/80">
-                {fileName ? "Uploaded" : "No drawing yet"}
+              <p className="text-sm font-bold">
+                {fileName ? "Drawing uploaded" : "No drawing yet"}
               </p>
               <Label
                 htmlFor="cad-file"
-                className="text-[13px] font-semibold text-white"
+                className="text-[12px] font-medium text-white/85"
               >
                 Upload AutoCAD file (.dxf)
               </Label>
@@ -329,7 +373,7 @@ export function CadReviewPanel({
             htmlFor="cad-file"
             className="mt-3 inline-flex w-full cursor-pointer items-center justify-center rounded-lg bg-white px-4 py-2 text-sm font-semibold text-brand hover:bg-white/90 peer-disabled:opacity-50 peer-focus-visible:ring-3 peer-focus-visible:ring-white/60"
           >
-            Choose File
+            {fileName ? "Replace drawing" : "Choose file"}
           </label>
           {status === "uploading" && (
             <p className="mt-2 text-xs text-white/80">Parsing drawing…</p>
@@ -337,38 +381,42 @@ export function CadReviewPanel({
         </div>
 
         {geometry ? (
-          <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-5">
-            {[
-              ["Rooms", geometry.rooms.length],
-              [
-                "Bathrooms",
-                geometry.rooms.filter((r) => r.type === "bathroom").length,
-              ],
-              [
-                "Covered area",
-                `${Math.round(geometry.rooms.reduce((s, r) => s + r.area, 0)).toLocaleString("en-PK")} sq ft`,
-              ],
-              [
-                "Wall length",
-                `${Math.round(geometry.walls.reduce((s, w) => s + w.length, 0)).toLocaleString("en-PK")} ft`,
-              ],
-              [
-                "Doors / windows",
-                `${geometry.openings.filter((o) => o.type === "door").length} / ${geometry.openings.filter((o) => o.type === "window").length}`,
-              ],
-            ].map(([label, value]) => (
-              <div
-                key={label as string}
-                className="flex flex-col justify-center rounded-2xl border border-stone-200 bg-white px-2 py-4"
-              >
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-stone-400">
-                  {label}
-                </p>
-                <p className="mt-1 text-lg font-extrabold text-brand-black">
-                  {value}
-                </p>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+            <StatTile
+              icon={DoorOpen}
+              label="Rooms"
+              value={geometry.rooms.length}
+              hint="Total rooms in your project"
+              tone="bg-blue-50 text-blue-600"
+            />
+            <StatTile
+              icon={Bath}
+              label="Bathrooms"
+              value={geometry.rooms.filter((r) => r.type === "bathroom").length}
+              hint="Sets the sanitary count in the BOQ"
+              tone="bg-emerald-50 text-emerald-600"
+            />
+            <StatTile
+              icon={Square}
+              label="Covered area"
+              value={`${Math.round(geometry.rooms.reduce((s, r) => s + r.area, 0)).toLocaleString("en-PK")} sq ft`}
+              hint="Total covered area of the house"
+              tone="bg-amber-50 text-amber-600"
+            />
+            <StatTile
+              icon={Ruler}
+              label="Wall length"
+              value={`${Math.round(geometry.walls.reduce((s, w) => s + w.length, 0)).toLocaleString("en-PK")} ft`}
+              hint="Total length of walls"
+              tone="bg-violet-50 text-violet-600"
+            />
+            <StatTile
+              icon={BrickWall}
+              label="Doors / windows"
+              value={`${geometry.openings.filter((o) => o.type === "door").length} / ${geometry.openings.filter((o) => o.type === "window").length}`}
+              hint="Openings deducted from walls"
+              tone="bg-rose-50 text-rose-600"
+            />
           </div>
         ) : (
           <p className="self-center text-sm text-stone-500">
@@ -438,14 +486,18 @@ export function CadReviewPanel({
           )}
 
           {/* Rooms */}
-          {/* Rooms */}
           <section>
-            <h3 className={sectionTitle}>
-              <span className={sectionIcon}>
-                <DoorOpen className="size-4" />
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h3 className="flex items-center gap-2.5 text-sm font-semibold text-brand-black">
+                <span className={sectionIcon}>
+                  <DoorOpen className="size-4" />
+                </span>
+                Rooms ({geometry.rooms.length})
+              </h3>
+              <span className="text-xs text-stone-400">
+                Check names and types. Bathrooms set the sanitary count.
               </span>
-              Rooms ({geometry.rooms.length})
-            </h3>
+            </div>
             <div className={tableWrap}>
               <table className="w-full text-sm">
                 <thead className="bg-stone-50 text-[11px] uppercase tracking-wide text-stone-500">
@@ -458,83 +510,95 @@ export function CadReviewPanel({
                   </tr>
                 </thead>
                 <tbody>
-                  {geometry.rooms.map((room, i) => (
-                    <tr
-                      key={room.id}
-                      onDragOver={(e) => {
-                        if (drag?.kind === "room") e.preventDefault();
-                      }}
-                      onDrop={() => dropOn("room", i)}
-                      className={`border-t border-stone-100 ${
-                        drag?.kind === "room" && drag.from === i
-                          ? "opacity-40"
-                          : ""
-                      }`}
-                    >
-                      <td className="pl-2 pr-0">
-                        <span
-                          draggable
-                          onDragStart={() => setDrag({ kind: "room", from: i })}
-                          onDragEnd={() => setDrag(null)}
-                          title="Drag to reorder"
-                          className={grip}
-                        >
-                          <GripVertical className="size-4" />
-                        </span>
-                      </td>
-                      <td className="px-3 py-2">
-                        <Input
-                          aria-label={`Room ${i + 1} name`}
-                          className={fieldCls}
-                          value={room.name}
-                          onChange={(e) =>
-                            updateRoom(i, { name: e.target.value })
-                          }
-                        />
-                      </td>
-                      <td className="px-3 py-2">
-                        <NativeSelect
-                          aria-label={`Room ${i + 1} type`}
-                          className={selectCls}
-                          value={room.type}
-                          onChange={(e) =>
-                            updateRoom(i, { type: e.target.value as RoomType })
-                          }
-                        >
-                          <NativeSelectOption value="general">
-                            General
-                          </NativeSelectOption>
-                          <NativeSelectOption value="kitchen">
-                            Kitchen
-                          </NativeSelectOption>
-                          <NativeSelectOption value="bathroom">
-                            Bathroom
-                          </NativeSelectOption>
-                        </NativeSelect>
-                      </td>
-                      <td className="px-3 py-2">
-                        <Input
-                          aria-label={`Room ${i + 1} area`}
-                          type="number"
-                          className={fieldCls}
-                          value={room.area}
-                          onChange={(e) =>
-                            updateRoom(i, { area: Number(e.target.value) })
-                          }
-                        />
-                      </td>
-                      <td className="px-2 py-1.5 text-right">
-                        <button
-                          type="button"
-                          aria-label={`Remove room ${i + 1}`}
-                          onClick={() => removeRoom(i)}
-                          className={deleteBtn}
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {geometry.rooms.map((room, i) => {
+                    const Icon = roomIcon(room);
+                    return (
+                      <tr
+                        key={room.id}
+                        onDragOver={(e) => {
+                          if (drag?.kind === "room") e.preventDefault();
+                        }}
+                        onDrop={() => dropOn("room", i)}
+                        className={`border-t border-stone-100 ${
+                          drag?.kind === "room" && drag.from === i
+                            ? "opacity-40"
+                            : ""
+                        }`}
+                      >
+                        <td className="pl-2 pr-0">
+                          <span
+                            draggable
+                            onDragStart={() =>
+                              setDrag({ kind: "room", from: i })
+                            }
+                            onDragEnd={() => setDrag(null)}
+                            title="Drag to reorder"
+                            className={grip}
+                          >
+                            <GripVertical className="size-4" />
+                          </span>
+                        </td>
+                        <td className="px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand">
+                              <Icon className="size-4" />
+                            </span>
+                            <Input
+                              aria-label={`Room ${i + 1} name`}
+                              className={fieldCls}
+                              value={room.name}
+                              onChange={(e) =>
+                                updateRoom(i, { name: e.target.value })
+                              }
+                            />
+                          </div>
+                        </td>
+                        <td className="px-3 py-2">
+                          <NativeSelect
+                            aria-label={`Room ${i + 1} type`}
+                            className={selectCls}
+                            value={room.type}
+                            onChange={(e) =>
+                              updateRoom(i, {
+                                type: e.target.value as RoomType,
+                              })
+                            }
+                          >
+                            <NativeSelectOption value="general">
+                              General
+                            </NativeSelectOption>
+                            <NativeSelectOption value="kitchen">
+                              Kitchen
+                            </NativeSelectOption>
+                            <NativeSelectOption value="bathroom">
+                              Bathroom
+                            </NativeSelectOption>
+                          </NativeSelect>
+                        </td>
+                        <td className="px-3 py-2">
+                          <Input
+                            aria-label={`Room ${i + 1} area`}
+                            type="number"
+                            className={fieldCls}
+                            value={room.area}
+                            onChange={(e) =>
+                              updateRoom(i, { area: Number(e.target.value) })
+                            }
+                          />
+                        </td>
+                        <td className="px-2 py-1.5 text-right">
+                          <button
+                            type="button"
+                            aria-label={`Remove room ${i + 1}`}
+                            onClick={() => removeRoom(i)}
+                            className={deleteBtn}
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -542,12 +606,23 @@ export function CadReviewPanel({
 
           {/* Walls */}
           <section>
-            <h3 className={sectionTitle}>
-              <span className={sectionIcon}>
-                <BrickWall className="size-4" />
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h3 className="flex items-center gap-2.5 text-sm font-semibold text-brand-black">
+                <span className={sectionIcon}>
+                  <BrickWall className="size-4" />
+                </span>
+                Walls ({geometry.walls.length})
+              </h3>
+              <span className="text-xs text-stone-400">
+                Total wall length:{" "}
+                <b className="text-brand-black">
+                  {Math.round(
+                    geometry.walls.reduce((s, w) => s + w.length, 0),
+                  ).toLocaleString("en-PK")}{" "}
+                  ft
+                </b>
               </span>
-              Walls ({geometry.walls.length})
-            </h3>
+            </div>
             <div className={`${tableWrap} max-h-96 overflow-y-auto`}>
               <table className="w-full text-sm">
                 <thead className="sticky top-0 z-10 bg-stone-50 text-[11px] uppercase tracking-wide text-stone-500">
@@ -556,6 +631,7 @@ export function CadReviewPanel({
                     <th className={th}>Wall</th>
                     <th className={th}>Length (ft)</th>
                     <th className={th}>Height (ft)</th>
+                    <th className={th}>Type</th>
                     <th className="w-12" />
                   </tr>
                 </thead>
@@ -584,10 +660,8 @@ export function CadReviewPanel({
                           <GripVertical className="size-4" />
                         </span>
                       </td>
-                      <td className="px-3 py-2">
-                        <div className="flex h-11 items-center rounded-xl border border-stone-200 bg-white px-4 text-[15px] text-brand-black shadow-sm">
-                          Wall {i + 1}
-                        </div>
+                      <td className="px-3 py-2 text-sm font-medium text-brand-black">
+                        Wall {i + 1}
                       </td>
                       <td className="px-3 py-2">
                         <Input
@@ -610,6 +684,17 @@ export function CadReviewPanel({
                             updateWall(i, { height: Number(e.target.value) })
                           }
                         />
+                      </td>
+                      <td className="px-3 py-2">
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            wallKind(wall) === "External"
+                              ? "bg-brand/10 text-brand"
+                              : "bg-stone-100 text-stone-600"
+                          }`}
+                        >
+                          {wallKind(wall)}
+                        </span>
                       </td>
                       <td className="px-2 py-1.5 text-right">
                         <button

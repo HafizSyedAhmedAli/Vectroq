@@ -18,7 +18,7 @@ import {
   TIMELINES,
 } from "@vectroq/lead-intake";
 import { FileDropzone } from "./FileDropzone";
-import { SelectField, TextField } from "./fields";
+import { SelectField, StepHeading, TextField } from "./fields";
 import { NotesField } from "./NotesField";
 import { CATEGORY_OPTIONS } from "./option-config";
 import type { StepProps } from "./types";
@@ -53,9 +53,7 @@ export function StepRequirements({
 }: StepRequirementsProps) {
   return (
     <section className="space-y-5">
-      <h2 className="text-lg font-bold text-brand-black">
-        2. House Requirements
-      </h2>
+      <StepHeading>2. House Requirements</StepHeading>
 
       <OptionCards
         legend="House Type"

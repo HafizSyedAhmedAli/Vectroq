@@ -3,7 +3,7 @@ import type { EngagementModel } from "@vectroq/shared-types";
 import type { CardOption } from "./OptionCards";
 import { CITY_NAMES } from "@vectroq/shared-types";
 import { MapPin, Phone, User } from "lucide-react";
-import { SelectField, TextField } from "./fields";
+import { SelectField, StepHeading, TextField } from "./fields";
 import { OptionCards } from "./OptionCards";
 import type { StepProps } from "./types";
 
@@ -15,9 +15,7 @@ export function StepProjectDetails({
 }: StepProps & { modelOptions: CardOption<EngagementModel>[] }) {
   return (
     <section className="space-y-5">
-      <h2 className="text-lg font-bold text-brand-black">
-        1. Tell us about your project
-      </h2>
+      <StepHeading>1. Tell us about your project</StepHeading>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <TextField

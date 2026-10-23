@@ -1,5 +1,6 @@
 // apps/web/src/components/intake/fields.tsx
 import type { ComponentProps, ReactNode } from "react";
+import { Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -22,15 +23,23 @@ export function FieldError({ message }: { message?: string }) {
   );
 }
 
-export function Radio({ on }: { on: boolean }) {
+/** Section title with the accent bar from the design. */
+export function StepHeading({ children }: { children: ReactNode }) {
   return (
-    <span
-      className={`size-4 shrink-0 rounded-full border-2 grid place-items-center ${
-        on ? "border-brand" : "border-stone-300"
-      }`}
-    >
-      {on && <span className="size-2 rounded-full bg-brand" />}
+    <h2 className="border-l-4 border-brand pl-3 text-lg font-bold text-brand-black">
+      {children}
+    </h2>
+  );
+}
+
+/** Filled check when chosen, empty ring when not. */
+export function Radio({ on }: { on: boolean }) {
+  return on ? (
+    <span className="grid size-5 shrink-0 place-items-center rounded-full bg-brand text-white">
+      <Check className="size-3" strokeWidth={3} />
     </span>
+  ) : (
+    <span className="size-5 shrink-0 rounded-full border-2 border-stone-300" />
   );
 }
 
@@ -43,7 +52,7 @@ export function IconInput({
 }) {
   return (
     <div className="relative mt-1.5">
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 z-10">
+      <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500 z-10">
         {icon}
       </span>
       {children}
@@ -75,7 +84,7 @@ export function TextField({
       <IconInput icon={icon}>
         <Input
           id={id}
-          className="pl-9 h-10"
+          className="h-11! rounded-xl! border-stone-200! pl-10 shadow-sm hover:border-stone-300!"
           aria-invalid={!!error}
           {...inputProps}
         />
@@ -114,7 +123,7 @@ export function SelectField({
       <IconInput icon={icon}>
         <NativeSelect
           id={id}
-          className="w-full cursor-pointer [&_select]:h-10 [&_select]:pl-9"
+          className="w-full cursor-pointer [&_select]:h-11 [&_select]:rounded-xl [&_select]:border-stone-200 [&_select]:pl-10 [&_select]:shadow-sm [&_select:hover]:border-stone-300"
           value={value}
           aria-invalid={!!error}
           onChange={(e) => onChange(e.target.value)}

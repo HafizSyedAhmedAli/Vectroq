@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Box, CircleCheck, FileText, Ruler } from "lucide-react";
+import { Box, Check, CircleCheck, FileText, Receipt, Ruler } from "lucide-react";
 import type { BOQResult, Category, Geometry } from "@vectroq/shared-types";
 import { CadReviewPanel } from "@/components/CardReviewPanel";
 import { BoqTable } from "@/components/BoqTable";
@@ -103,10 +103,17 @@ export function ProjectWorkspace({
         {boq ? (
           <BoqTable boq={boq} />
         ) : (
-          <p className="rounded-xl border border-dashed border-stone-300 px-4 py-10 text-center text-sm text-stone-400">
-            No BOQ yet. Upload a drawing, check the rooms, then press “Calculate
-            BOQ”.
-          </p>
+          <div className="rounded-xl border border-dashed border-stone-300 bg-stone-50/60 px-4 py-10 text-center">
+            <span className="mx-auto grid size-12 place-items-center rounded-full bg-brand/10 text-brand">
+              <Receipt className="size-6" />
+            </span>
+            <p className="mt-3 text-sm font-semibold text-brand-black">
+              No BOQ yet
+            </p>
+            <p className="mt-1 text-xs text-stone-500">
+              Upload a drawing, check the rooms, then press “Calculate BOQ”.
+            </p>
+          </div>
         )}
       </section>
 
@@ -118,6 +125,22 @@ export function ProjectWorkspace({
           livingFloor={livingFloor}
           category={category}
         />
+        <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-stone-600">
+          {[
+            "3D floor plan",
+            "Walkthrough view",
+            "Roof and top view",
+            "Night view",
+            "Surroundings",
+          ].map((f) => (
+            <li key={f} className="flex items-center gap-2">
+              <span className="grid size-4 place-items-center rounded-full bg-brand text-white">
+                <Check className="size-3" />
+              </span>
+              {f}
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );

@@ -12,8 +12,8 @@ export function ThankYou({
   onReset: () => void;
 }) {
   return (
-    <div className="max-w-xl mx-auto bg-white border border-stone-200 rounded-2xl shadow-sm p-8 text-center">
-      <span className="mx-auto grid size-20 place-items-center rounded-full bg-red-100">
+    <div className="mx-auto max-w-xl rounded-3xl border border-stone-200/70 bg-white p-8 text-center shadow-xl shadow-stone-900/5">
+      <span className="mx-auto grid size-20 place-items-center rounded-full bg-brand/15">
         <span className="grid size-12 place-items-center rounded-full bg-brand text-white">
           <Check className="size-7" />
         </span>
@@ -29,7 +29,7 @@ export function ThankYou({
         personalized response.
       </p>
 
-      <div className="mt-5 flex items-center gap-3 rounded-xl border border-red-100 bg-red-50/50 px-4 py-3 text-left text-sm text-stone-700">
+      <div className="mt-5 flex items-center gap-3 rounded-xl border border-brand/20 bg-brand/5 px-4 py-3 text-left text-sm text-stone-700">
         <Mail className="size-5 shrink-0 text-brand" />
         Our team will review your information and get back to you as soon as
         possible.
@@ -37,19 +37,19 @@ export function ThankYou({
 
       {result.estimate ? (
         <div className="mt-5 border-t border-stone-200 pt-5">
-          <p className="text-sm text-stone-500 mb-1">
+          <p className="mb-1 text-sm text-stone-500">
             Rough starting range for your area and category
           </p>
           <p className="text-2xl font-bold text-brand-black">
             {estimateRange(result.estimate.total)}
           </p>
-          <p className="text-xs text-stone-400 mt-2">
+          <p className="mt-2 text-xs text-stone-400">
             A ballpark for a typical house of this size — not a quote. Your
             exact BOQ will follow once we have reviewed your plot and drawings.
           </p>
         </div>
       ) : (
-        <p className="text-xs text-stone-400 mt-4">
+        <p className="mt-4 text-xs text-stone-400">
           We don&apos;t have pricing set up for your area yet — a representative
           will follow up with a custom quote.
         </p>
@@ -58,7 +58,7 @@ export function ThankYou({
       <Button
         type="button"
         onClick={onReset}
-        className="mt-6 h-11 bg-brand hover:bg-brand-dark text-white cursor-pointer"
+        className="mt-6 h-11! cursor-pointer rounded-xl! bg-brand text-white hover:bg-brand-dark"
       >
         <Home className="size-4" />
         Back to Homepage

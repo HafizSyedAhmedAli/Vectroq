@@ -18,6 +18,7 @@ export function StepActions({
   isSubmitting,
   onBack,
 }: StepActionsProps) {
+  const big = "h-12! rounded-xl! text-[15px] font-semibold cursor-pointer";
   return (
     <div className="flex gap-3">
       {!isFirst && (
@@ -27,7 +28,7 @@ export function StepActions({
           variant="outline"
           onClick={onBack}
           disabled={isSubmitting}
-          className="h-11 cursor-pointer"
+          className={big}
         >
           <ArrowLeft className="size-4" />
           Back
@@ -38,7 +39,7 @@ export function StepActions({
           key="submit"
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 h-11 text-sm font-semibold bg-brand hover:bg-brand-dark text-white cursor-pointer disabled:cursor-not-allowed"
+          className={`${big} flex-1 bg-brand text-white shadow-md shadow-brand/25 hover:bg-brand-dark disabled:cursor-not-allowed`}
         >
           <Send className="size-4" />
           {isSubmitting ? "Submitting…" : "Submit Project Request →"}
@@ -47,7 +48,7 @@ export function StepActions({
         <Button
           key="next"
           type="submit"
-          className="flex-1 h-11 text-sm font-semibold bg-brand hover:bg-brand-dark text-white cursor-pointer"
+          className={`${big} flex-1 bg-brand text-white shadow-md shadow-brand/25 hover:bg-brand-dark`}
         >
           Continue →
         </Button>

@@ -23,13 +23,13 @@ function SummaryRow({
   children: ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-stone-100 px-3 py-2.5">
-      <span className="size-8 rounded-full bg-stone-100 grid place-items-center text-brand-black shrink-0">
+    <div className="flex items-center gap-4 border-b border-stone-100 py-3.5 last:border-0">
+      <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand/10 text-brand">
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="text-[11px] text-stone-500">{label}</p>
-        <p className="text-xs font-medium text-brand-black truncate">
+        <p className="text-xs text-stone-500">{label}</p>
+        <p className="truncate text-sm font-bold text-brand-black">
           {children}
         </p>
       </div>
@@ -49,36 +49,38 @@ export function ProjectSummary({
   const model = modelOptions.find((m) => m.value === values.model);
   const none = "Not selected";
   return (
-    <aside className="bg-white border border-stone-200 rounded-2xl shadow-sm p-5 space-y-3 lg:sticky lg:top-6">
-      <div className="flex items-center gap-3 pb-3 border-b border-stone-100">
-        <span className="size-9 rounded-lg bg-stone-100 grid place-items-center">
-          <FileText className="size-4 text-brand-black" />
+    <aside className="rounded-3xl border border-stone-200/70 bg-white p-6 shadow-xl shadow-stone-900/5 lg:sticky lg:top-6">
+      <div className="mb-2 flex items-center gap-3 border-b border-stone-100 pb-4">
+        <span className="grid size-10 place-items-center rounded-xl bg-brand/10 text-brand">
+          <FileText className="size-5" />
         </span>
-        <h3 className="font-semibold text-brand-black">Your Project</h3>
+        <h3 className="text-lg font-bold text-brand-black">Your Project</h3>
       </div>
 
       <SummaryRow
-        icon={<Building2 className="size-4" />}
+        icon={<Building2 className="size-5" />}
         label="Engagement Model"
       >
         {model?.label ?? none}
       </SummaryRow>
-      <SummaryRow icon={<MapPin className="size-4" />} label="City">
+      <SummaryRow icon={<MapPin className="size-5" />} label="City">
         {values.city || none}
       </SummaryRow>
-      <SummaryRow icon={<Home className="size-4" />} label="House Type">
+      <SummaryRow icon={<Home className="size-5" />} label="House Type">
         {values.houseType ?? none}
       </SummaryRow>
-      <SummaryRow icon={<Tag className="size-4" />} label="Material Category">
+      <SummaryRow icon={<Tag className="size-5" />} label="Material Category">
         {categoryOptions.find((c) => c.value === values.category)?.label ??
           none}
       </SummaryRow>
-      <SummaryRow icon={<Wallet className="size-4" />} label="Budget Range">
+      <SummaryRow icon={<Wallet className="size-5" />} label="Budget Range">
         {values.budgetRange || none}
       </SummaryRow>
 
-      <div className="flex items-center gap-3 rounded-lg bg-red-50 px-3 py-3 text-sm text-brand">
-        <Headset className="size-5 shrink-0" />
+      <div className="mt-4 flex items-center gap-3 rounded-2xl bg-brand/10 px-4 py-4 text-sm font-medium leading-snug text-brand-black">
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-brand shadow-sm">
+          <Headset className="size-5" />
+        </span>
         Our representative will contact you shortly.
       </div>
     </aside>

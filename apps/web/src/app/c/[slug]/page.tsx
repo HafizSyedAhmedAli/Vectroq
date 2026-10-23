@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MapPin, Phone, ShieldCheck } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { BuildAnimation } from "@/components/BuildAnimation";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PublicIntake } from "@/components/intake/PublicIntake";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { getOrgBySlug } from "@/lib/org";
-import { BrandHero } from "@/components/BrandHero";
 import { resolveOrgRules } from "@vectroq/shared-types";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +18,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: org ? `Request a quote · ${org.name}` : "Not found" };
 }
 
+function Chip({
+  icon,
+  children,
+}: {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <span className="flex items-center gap-2.5 text-sm text-stone-700">
+      <span className="grid size-9 place-items-center rounded-full bg-brand/10 text-brand [&_svg]:size-4">
+        {icon}
+      </span>
+      {children}
+    </span>
+  );
+}
+
 export default async function OrgIntakePage({ params }: Props) {
   const org = await getOrgBySlug((await params).slug);
   if (!org) notFound();
@@ -27,10 +44,10 @@ export default async function OrgIntakePage({ params }: Props) {
   return (
     <div
       style={brandStyle(brand)}
-      className="min-h-screen flex flex-col bg-white"
+      className="flex min-h-screen flex-col bg-white"
     >
-      <header className="relative z-10 bg-white/90 backdrop-blur border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-4 h-[72px] flex items-center justify-between">
+      <header className="relative z-20 border-b border-stone-100 bg-white/90 backdrop-blur">
+        <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4">
           <BrandLogo brand={brand} />
           {brand.contact.phone && (
             <a
@@ -44,36 +61,34 @@ export default async function OrgIntakePage({ params }: Props) {
         </div>
       </header>
 
-      <section className="relative overflow-hidden bg-gradient-to-b from-stone-50 to-white">
-        <BrandHero />
-        <div className="relative max-w-6xl mx-auto px-4 pt-10 pb-8">
-          <div className="flex items-center gap-3 text-xs font-semibold tracking-wide uppercase mb-4">
-            <span className="h-0.5 w-8 bg-brand" />
-            <span className="text-brand-black">
-              Project <span className="text-brand">Request</span>
+      <section className="relative overflow-hidden bg-gradient-to-b from-brand/10 to-white">
+        <div className="bg-blueprint pointer-events-none absolute inset-0 opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-4 pb-6 pt-4 lg:grid-cols-[1fr_1.15fr] lg:pb-10">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-brand/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-black">
+              <span className="size-2 rounded-full bg-brand" />
+              Project request
             </span>
+            <h1 className="mt-5 text-5xl font-extrabold tracking-tight text-brand-black sm:text-6xl">
+              Request a <span className="text-brand">Quote</span>
+            </h1>
+            <p className="mt-4 max-w-md text-lg leading-relaxed text-stone-600">
+              Tell {brand.name} about your project and we&apos;ll get back to
+              you with the next steps.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Chip icon={<ShieldCheck />}>Free, no obligation</Chip>
+              <span className="hidden h-6 w-px bg-stone-300 sm:block" />
+              <Chip icon={<MapPin />}>Cities across Pakistan</Chip>
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-black tracking-tight">
-            Request a <span className="text-brand">Quote</span>
-          </h1>
-          <p className="mt-4 max-w-md text-stone-500">
-            Tell {brand.name} about your project and we&apos;ll get back to you
-            with the next steps.
-          </p>
-          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-stone-600">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="size-4" /> Free, no obligation
-            </span>
-            <span className="h-4 w-px bg-stone-300" />
-            <span className="flex items-center gap-1.5">
-              <MapPin className="size-4" /> Cities across Pakistan
-            </span>
-          </div>
+
+          <BuildAnimation className="mx-auto w-full mb-8 max-w-[640px]" />
         </div>
       </section>
 
-      <main className="flex-1 -mt-2 pb-16">
-        <div className="max-w-6xl mx-auto px-4">
+      <main className="relative z-10 flex-1 pb-16 lg:-mt-14">
+        <div className="mx-auto max-w-6xl px-4">
           <PublicIntake
             orgSlug={org.slug}
             models={rules.models}

@@ -1,5 +1,5 @@
 // apps/web/src/components/intake/StepConfirm.tsx
-import { FieldError } from "./fields";
+import { FieldError, StepHeading } from "./fields";
 import type { StepProps } from "./types";
 
 export function StepConfirm({
@@ -10,9 +10,7 @@ export function StepConfirm({
 }: StepProps & { submitError: string | null }) {
   return (
     <section className="space-y-4">
-      <h2 className="text-lg font-bold text-brand-black">
-        3. Contact Confirmation
-      </h2>
+      <StepHeading>3. Contact Confirmation</StepHeading>
 
       <div>
         <label
