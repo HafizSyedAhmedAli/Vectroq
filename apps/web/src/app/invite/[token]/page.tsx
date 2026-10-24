@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   referrer: "no-referrer",
 };
 
+const linkCls =
+  "font-semibold text-brand hover:text-brand-dark dark:text-blue-400 dark:hover:text-blue-300";
+
 export default async function InvitePage({
   params,
 }: {
@@ -29,18 +32,16 @@ export default async function InvitePage({
   if (!inv || inv.acceptedAt || inv.expiresAt < new Date()) {
     return (
       <AuthShell
+        themeToggle
         title="Invitation not valid"
         subtitle="This link has expired or was already used."
         footer={
-          <Link
-            href="/login"
-            className="font-semibold text-brand hover:text-brand-dark"
-          >
+          <Link href="/login" className={linkCls}>
             Back to log in
           </Link>
         }
       >
-        <p className="text-sm leading-relaxed text-stone-600">
+        <p className="text-sm leading-relaxed text-stone-600 dark:text-slate-300">
           Ask the owner of the company account to send you a new invitation.
         </p>
       </AuthShell>
@@ -54,15 +55,13 @@ export default async function InvitePage({
 
   return (
     <AuthShell
+      themeToggle
       title={`Join ${inv.organization.name}`}
       subtitle={`You've been invited as ${roleLabel} (${inv.email}).`}
       footer={
         <>
           Not you?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-brand hover:text-brand-dark"
-          >
+          <Link href="/login" className={linkCls}>
             Log in
           </Link>
         </>

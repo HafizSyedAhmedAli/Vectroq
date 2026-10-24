@@ -10,12 +10,13 @@ export default async function ForgotPasswordPage({
   const { email } = await searchParams;
   return (
     <AuthShell
+      themeToggle
       title="Forgot your password?"
       subtitle="Enter your email and we'll send you a link to reset it."
       footer={
         <Link
           href="/login"
-          className="font-semibold text-brand hover:text-brand-dark"
+          className="font-semibold text-brand hover:text-brand-dark dark:text-blue-400 dark:hover:text-blue-300"
         >
           Back to log in
         </Link>

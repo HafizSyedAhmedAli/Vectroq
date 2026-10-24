@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   referrer: "no-referrer",
 };
 
+const linkCls =
+  "font-semibold text-brand dark:text-blue-400 dark:hover:text-blue-300";
+
 export default async function VerifyEmailPage({
   params,
 }: {
@@ -29,15 +32,16 @@ export default async function VerifyEmailPage({
   if (!valid) {
     return (
       <AuthShell
+        themeToggle
         title="Link expired"
         subtitle="This confirmation link is invalid, already used, or older than 24 hours."
         footer={
-          <Link href="/login" className="font-semibold text-brand">
+          <Link href="/login" className={linkCls}>
             Log in
           </Link>
         }
       >
-        <p className="text-sm leading-relaxed text-stone-600">
+        <p className="text-sm leading-relaxed text-stone-600 dark:text-slate-300">
           Log in and use <b>Resend email</b> in the banner at the top of your
           dashboard to get a new link.
         </p>
@@ -47,10 +51,11 @@ export default async function VerifyEmailPage({
 
   return (
     <AuthShell
+      themeToggle
       title="Confirm your email"
       subtitle={`Confirm ${row.user.email} to finish setting up your account.`}
       footer={
-        <Link href="/login" className="font-semibold text-brand">
+        <Link href="/login" className={linkCls}>
           Back to log in
         </Link>
       }

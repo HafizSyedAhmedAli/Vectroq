@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { AuthSubmit } from "@/components/auth/AuthSubmit";
+import { darkAlert } from "@/components/auth/dark-styles";
 
 export function VerifyEmailButton({ token }: { token: string }) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export function VerifyEmailButton({ token }: { token: string }) {
       {error && (
         <p
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          className={`rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 ${darkAlert}`}
         >
           {error}
         </p>

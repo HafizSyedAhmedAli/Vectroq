@@ -47,7 +47,7 @@ export function ForgotPasswordForm({
     return (
       <div
         role="status"
-        className="rounded-2xl border border-green-200 bg-green-50 p-5 text-sm text-green-900"
+        className="rounded-2xl border border-green-200 bg-green-50 p-5 text-sm text-green-900 dark:border-green-400/30 dark:bg-green-500/10 dark:text-green-200"
       >
         <MailCheck className="size-6" />
         <p className="mt-3 font-semibold">Check your email</p>
@@ -86,7 +86,7 @@ export function ForgotPasswordForm({
       {formError && (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700"
+          className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700 dark:border-red-400/30 dark:bg-red-500/10 dark:text-red-300"
         >
           <CircleAlert className="mt-0.5 size-4 shrink-0" />
           <span>{formError}</span>

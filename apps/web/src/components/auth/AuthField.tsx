@@ -25,13 +25,16 @@ export function AuthField({
 
   return (
     <div>
-      <label htmlFor={id} className="text-sm font-semibold text-brand-black">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-brand-black dark:text-slate-200"
+      >
         {label}
       </label>
       <div className="relative mt-2">
         <span
           className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 [&_svg]:size-4 ${
-            error ? "text-red-400" : "text-stone-400"
+            error ? "text-red-400" : "text-stone-400 dark:text-slate-500"
           }`}
         >
           {icon}
@@ -43,10 +46,10 @@ export function AuthField({
           aria-describedby={describedBy}
           className={`h-12 w-full rounded-xl border bg-white pl-11 ${
             right ? "pr-12" : "pr-4"
-          } text-base text-brand-black shadow-sm outline-none transition placeholder:text-stone-400 focus:ring-4 sm:text-[15px] ${
+          } text-base text-brand-black shadow-sm outline-none transition placeholder:text-stone-400 focus:ring-4 sm:text-[15px] dark:bg-white/5 dark:text-white dark:placeholder:text-slate-500 ${
             error
-              ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-              : "border-stone-200 hover:border-stone-300 focus:border-brand focus:ring-brand/15"
+              ? "border-red-400 focus:border-red-500 focus:ring-red-100 dark:border-red-400/60 dark:focus:ring-red-500/20"
+              : "border-stone-200 hover:border-stone-300 focus:border-brand focus:ring-brand/15 dark:border-white/15 dark:hover:border-white/30 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
           }`}
           {...input}
         />
@@ -60,14 +63,14 @@ export function AuthField({
         <p
           id={`${id}-error`}
           role="alert"
-          className="mt-1.5 text-xs font-medium text-red-600"
+          className="mt-1.5 text-xs font-medium text-red-600 dark:text-red-400"
         >
           {error}
         </p>
       ) : hint ? (
         <p
           id={`${id}-hint`}
-          className="mt-1.5 text-xs font-medium text-amber-600"
+          className="mt-1.5 text-xs font-medium text-amber-600 dark:text-amber-400"
         >
           {hint}
         </p>

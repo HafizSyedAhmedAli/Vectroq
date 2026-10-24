@@ -126,7 +126,7 @@ export function LoginForm({ next }: { next: string }) {
             onClick={() => setShow((s) => !s)}
             aria-label={show ? "Hide password" : "Show password"}
             aria-pressed={show}
-            className="grid size-9 cursor-pointer place-items-center rounded-lg text-stone-400 transition hover:bg-stone-100 hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+            className="grid size-9 cursor-pointer place-items-center rounded-lg text-stone-400 transition hover:bg-stone-100 hover:text-stone-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 dark:hover:bg-white/10 dark:hover:text-white"
           >
             {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
@@ -134,7 +134,7 @@ export function LoginForm({ next }: { next: string }) {
       />
 
       <div className="flex items-center justify-between text-sm">
-        <label className="flex cursor-pointer select-none items-center gap-2 text-stone-600">
+        <label className="flex cursor-pointer select-none items-center gap-2 text-stone-600 dark:text-slate-300">
           <input
             type="checkbox"
             checked={remember}
@@ -145,7 +145,7 @@ export function LoginForm({ next }: { next: string }) {
         </label>
         <Link
           href={`/forgot-password${email.trim() ? `?email=${encodeURIComponent(email.trim())}` : ""}`}
-          className="rounded font-medium text-brand hover:text-brand-dark hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+          className="rounded font-medium text-brand hover:text-brand-dark hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 dark:text-blue-400 dark:hover:text-blue-300"
         >
           Forgot your password?
         </Link>
@@ -154,7 +154,7 @@ export function LoginForm({ next }: { next: string }) {
       {formError && (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700"
+          className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-700 dark:border-red-400/30 dark:bg-red-500/10 dark:text-red-300"
         >
           <CircleAlert className="mt-0.5 size-4 shrink-0" />
           <span>{formError}</span>

@@ -2,11 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthSubmit } from "./auth/AuthSubmit";
+import { darkAlert, darkInput, darkLabel } from "@/components/auth/dark-styles";
 
 export function AcceptInviteForm({
   token,
@@ -43,17 +42,19 @@ export function AcceptInviteForm({
     <form onSubmit={submit} className="space-y-5" noValidate>
       {!hasAccount && (
         <div>
-          <Label htmlFor="inv-name">Your name</Label>
+          <Label htmlFor="inv-name" className={darkLabel}>
+            Your name
+          </Label>
           <Input
             id="inv-name"
-            className="mt-1.5 h-11"
+            className={`mt-1.5 h-11 ${darkInput}`}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </div>
       )}
       <div>
-        <Label htmlFor="inv-pw">
+        <Label htmlFor="inv-pw" className={darkLabel}>
           {hasAccount
             ? "Your existing password"
             : "Choose a password (min 8 characters)"}
@@ -61,7 +62,7 @@ export function AcceptInviteForm({
         <Input
           id="inv-pw"
           type="password"
-          className="mt-1.5 h-11"
+          className={`mt-1.5 h-11 ${darkInput}`}
           autoComplete={hasAccount ? "current-password" : "new-password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -70,7 +71,7 @@ export function AcceptInviteForm({
       {error && (
         <p
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          className={`rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 ${darkAlert}`}
         >
           {error}
         </p>

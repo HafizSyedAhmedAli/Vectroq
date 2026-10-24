@@ -2,13 +2,11 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { slugify } from "@/lib/org-slug";
 import { AuthSubmit } from "@/components/auth/AuthSubmit";
-
+import { darkAlert, darkInput, darkLabel } from "@/components/auth/dark-styles";
 
 export function SignupForm() {
   const router = useRouter();
@@ -51,12 +49,14 @@ export function SignupForm() {
     auto?: string,
   ) => (
     <div>
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} className={darkLabel}>
+        {label}
+      </Label>
       <Input
         id={id}
         type={type}
         autoComplete={auto}
-        className="mt-1.5 h-11"
+        className={`mt-1.5 h-11 ${darkInput}`}
         value={f[key]}
         onChange={(e) => set(key, e.target.value)}
       />
@@ -75,10 +75,12 @@ export function SignupForm() {
         "new-password",
       )}
       <div>
-        <Label htmlFor="su-company">Company name</Label>
+        <Label htmlFor="su-company" className={darkLabel}>
+          Company name
+        </Label>
         <Input
           id="su-company"
-          className="mt-1.5 h-11"
+          className={`mt-1.5 h-11 ${darkInput}`}
           value={f.company}
           maxLength={100}
           onChange={(e) => {
@@ -88,12 +90,14 @@ export function SignupForm() {
         />
       </div>
       <div>
-        <Label htmlFor="su-slug">Your public form address</Label>
-        <div className="mt-1.5 flex items-center gap-2 text-sm text-stone-500">
+        <Label htmlFor="su-slug" className={darkLabel}>
+          Your public form address
+        </Label>
+        <div className="mt-1.5 flex items-center gap-2 text-sm text-stone-500 dark:text-slate-400">
           <span>/c/</span>
           <Input
             id="su-slug"
-            className="h-11"
+            className={`h-11 ${darkInput}`}
             value={f.slug}
             onChange={(e) => {
               setSlugTouched(true);
@@ -105,7 +109,7 @@ export function SignupForm() {
       {error && (
         <p
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+          className={`rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 ${darkAlert}`}
         >
           {error}
         </p>
@@ -113,7 +117,6 @@ export function SignupForm() {
       <AuthSubmit busy={busy} busyLabel="Creating…" arrow={false}>
         Create my company
       </AuthSubmit>
-      
     </form>
   );
 }

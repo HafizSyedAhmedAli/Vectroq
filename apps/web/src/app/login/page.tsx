@@ -24,6 +24,7 @@ export default async function LoginPage({
 
   return (
     <AuthShell
+      themeToggle
       title="Welcome back"
       subtitle="Sign in to your Vectroq account to continue."
       footer={
@@ -31,7 +32,7 @@ export default async function LoginPage({
           New here?{" "}
           <Link
             href="/signup"
-            className="inline-flex items-center gap-1 font-semibold text-brand hover:text-brand-dark"
+            className="inline-flex items-center gap-1 font-semibold text-brand hover:text-brand-dark dark:text-blue-400 dark:hover:text-blue-300"
           >
             Create your company <ArrowRight className="size-3.5" />
           </Link>
@@ -41,7 +42,7 @@ export default async function LoginPage({
       {reset === "1" && (
         <p
           role="status"
-          className="mb-5 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800"
+          className="mb-5 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800 dark:border-green-400/30 dark:bg-green-500/10 dark:text-green-300"
         >
           Password updated. Log in with your new password.
         </p>
