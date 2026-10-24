@@ -3,6 +3,8 @@
 
 import { useState, type FormEvent } from "react";
 import {
+  planFileExtension,
+  sniffPlanFile,
   validateConfirmation,
   validateLeadIntake,
   validatePlanFile,
@@ -32,6 +34,16 @@ const STEP_VALIDATORS = [
   validateConfirmation,
 ] as const;
 
+/** First 4 KB of a file, enough for the signature check. */
+function readHead(file: File): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(new Uint8Array(r.result as ArrayBuffer));
+    r.onerror = () => reject(r.error ?? new Error("Could not read the file."));
+    r.readAsArrayBuffer(file.slice(0, 4096));
+  });
+}
+
 // All wizard state and transitions live here so the components stay dumb.
 export function useIntakeForm(onSubmit: IntakeSubmitHandler) {
   const [step, setStep] = useState(0);
@@ -55,15 +67,29 @@ export function useIntakeForm(onSubmit: IntakeSubmitHandler) {
     });
   };
 
-  function choosePlanFile(file: File | null) {
+   async function choosePlanFile(file: File | null) {
     if (!file) {
       setPlanFile(null);
       setPlanFileError(null);
       return;
     }
     const problem = validatePlanFile(file);
-    setPlanFileError(problem);
-    setPlanFile(problem ? null : file);
+    if (problem) {
+      setPlanFile(null);
+      setPlanFileError(problem);
+      return;
+    }
+    let contentProblem: string | null = null;
+    try {
+      contentProblem = sniffPlanFile(
+        await readHead(file),
+        planFileExtension(file.name),
+      );
+    } catch {
+      /* unreadable: the server check will still catch it */
+    }
+    setPlanFileError(contentProblem);
+    setPlanFile(contentProblem ? null : file);
   }
 
   function next() {

@@ -1,5 +1,6 @@
 "use client";
 
+import { selectCls } from "./rates/field-styles";
 import { useState } from "react";
 import { Check, Copy, Link2, Loader2 } from "lucide-react";
 import {
@@ -102,20 +103,23 @@ export function ShareLinkPanel({
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <NativeSelect
-          aria-label="Link duration"
-          value={days}
-          onChange={(e) => setDays(e.target.value)}
-        >
-          <NativeSelectOption value="7">7 days</NativeSelectOption>
-          <NativeSelectOption value="30">30 days</NativeSelectOption>
-          <NativeSelectOption value="90">90 days</NativeSelectOption>
-        </NativeSelect>
+        <div className="w-40">
+          <NativeSelect
+            aria-label="Link duration"
+            className={selectCls}
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+          >
+            <NativeSelectOption value="7">7 days</NativeSelectOption>
+            <NativeSelectOption value="30">30 days</NativeSelectOption>
+            <NativeSelectOption value="90">90 days</NativeSelectOption>
+          </NativeSelect>
+        </div>
         <button
           type="button"
           onClick={create}
           disabled={busy}
-          className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
+          className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
         >
           {busy && <Loader2 className="size-4 animate-spin" />}
           {share ? "Replace link" : "Create link"}
@@ -125,7 +129,7 @@ export function ShareLinkPanel({
             type="button"
             onClick={revoke}
             disabled={busy}
-            className="text-sm text-stone-500 underline cursor-pointer"
+            className="cursor-pointer text-sm text-stone-500 underline"
           >
             Revoke
           </button>

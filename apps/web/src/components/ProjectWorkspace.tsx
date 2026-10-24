@@ -2,13 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Box, Check, CircleCheck, FileText, Receipt, Ruler } from "lucide-react";
+import {
+  Box,
+  Check,
+  CircleCheck,
+  FileText,
+  Receipt,
+  Ruler,
+} from "lucide-react";
 import type { BOQResult, Category, Geometry } from "@vectroq/shared-types";
 import { CadReviewPanel } from "@/components/CardReviewPanel";
 import { BoqTable } from "@/components/BoqTable";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ProjectStepper } from "@/components/ProjectStepper";
 import { LivingFloor } from "./viewer/materials";
+import { useRouter } from "next/navigation";
 
 interface ProjectWorkspaceProps {
   projectId: string;
@@ -57,6 +65,8 @@ export function ProjectWorkspace({
   const [geometry, setGeometry] = useState<Geometry | null>(initialGeometry);
   const [boq, setBoq] = useState<BOQResult | null>(initialBoq);
 
+  const router = useRouter();
+
   return (
     <div className="space-y-6">
       <ProjectStepper hasCad={geometry !== null} hasBoq={boq !== null} />
@@ -80,7 +90,10 @@ export function ProjectWorkspace({
           initialFileName={initialFileName}
           showBoq={false}
           onGeometryChange={setGeometry}
-          onBoqChange={setBoq}
+          onBoqChange={(b) => {
+            setBoq(b);
+            router.refresh(); // makes the share-link panel appear/disappear
+          }}
         />
       </section>
 

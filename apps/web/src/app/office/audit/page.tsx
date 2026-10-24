@@ -16,6 +16,8 @@ const LABEL: Record<string, string> = {
   RATE_SET_APPROVED: "Rate set approved",
   MEMBER_ROLE_CHANGED: "Member role changed",
   MEMBER_REMOVED: "Member removed",
+  LOGIN: "Signed in",
+  LEAD_CREATED: "Lead received",
 };
 
 const pkr = new Intl.NumberFormat("en-PK", { maximumFractionDigits: 0 });

@@ -152,7 +152,7 @@ describe("IntakeForm — wizard", () => {
 
     const file = new File(["%PDF"], "plan.pdf", { type: "application/pdf" });
     await user.upload(screen.getByLabelText(/upload plot plan/i), file);
-    expect(screen.getByText("plan.pdf")).toBeInTheDocument();
+    expect(await screen.findByText("plan.pdf")).toBeInTheDocument();
 
     await fillStep2(user);
     await agree(user);
@@ -188,7 +188,7 @@ describe("IntakeForm — wizard", () => {
     );
 
     await user.click(
-      screen.getByRole("button", { name: /remove uploaded file/i }),
+      await screen.findByRole("button", { name: /remove uploaded file/i }),
     );
 
     expect(screen.queryByText("plan.pdf")).not.toBeInTheDocument();
@@ -263,5 +263,19 @@ describe("IntakeForm — wizard", () => {
     );
 
     expect(screen.getByLabelText(/full name/i)).toHaveValue("");
+  });
+
+  it("rejects a file whose contents don't match its extension", async () => {
+    render(<IntakeForm onSubmit={vi.fn()} />);
+    const user = userEvent.setup();
+    await fillStep1(user);
+
+    await user.upload(
+      screen.getByLabelText(/upload plot plan/i),
+      new File(["MZ not a pdf"], "fake.pdf", { type: "application/pdf" }),
+    );
+
+    expect(await screen.findByText(/don't match/i)).toBeInTheDocument();
+    expect(screen.queryByText("fake.pdf")).not.toBeInTheDocument();
   });
 });

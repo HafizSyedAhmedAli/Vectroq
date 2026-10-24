@@ -32,6 +32,8 @@ vi.mock("@/lib/rate-limit", () => ({
   clientIp: vi.fn(() => "1.2.3.4"),
 }));
 
+vi.mock("@/lib/audit", () => ({ audit: vi.fn() }));
+
 import { getOrgBySlug } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
 import { prisma } from "@vectroq/db";

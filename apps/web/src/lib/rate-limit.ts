@@ -9,9 +9,34 @@ export interface RateResult {
   retryAfterSec: number;
 }
 
+const memory = new Map<string, { count: number; resetAt: number }>();
+
+/** Per-instance fallback used only when the database is unreachable. */
+function memoryLimit(
+  key: string,
+  limit: number,
+  windowSec: number,
+): RateResult {
+  const now = Date.now();
+  if (memory.size > 5000) {
+    for (const [k, v] of memory) if (v.resetAt <= now) memory.delete(k);
+  }
+  let e = memory.get(key);
+  if (!e || e.resetAt <= now) {
+    e = { count: 0, resetAt: now + windowSec * 1000 };
+    memory.set(key, e);
+  }
+  e.count++;
+  return {
+    ok: e.count <= limit,
+    remaining: Math.max(0, limit - e.count),
+    retryAfterSec: Math.max(1, Math.ceil((e.resetAt - now) / 1000)),
+  };
+}
+
 /**
  * Fixed-window counter in one atomic SQL statement.
- * Fails OPEN: if the database errors, the request is allowed (and logged),
+ * Falls back to an in-memory counter: if the database errors, the request is allowed (and logged),
  * so a limiter problem never takes the site down.
  */
 export async function rateLimit(
@@ -47,8 +72,8 @@ export async function rateLimit(
       retryAfterSec: Math.max(1, retry),
     };
   } catch (err) {
-    console.error("Rate limiter failed, allowing request", err);
-    return { ok: true, remaining: limit, retryAfterSec: 0 };
+    console.error("Rate limiter DB failed, using in-memory fallback", err);
+    return memoryLimit(key, limit, windowSec);
   }
 }
 

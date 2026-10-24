@@ -58,15 +58,9 @@ const NAV: NavItem[] = [
 
 // Static pages under /office. Anything else under /office/ is a project page.
 const STATIC_PAGES = [
-  "/office/dashboard",
-  "/office/leads",
-  "/office/rates",
-  "/office/team",
-  "/office/rules",
-  "/office/settings",
-  "/office/account",
+  ...NAV.filter((n) => n.href !== "/office").map((n) => n.href),
   "/office/search",
-  "/office/audit",
+  "/office/admin",
 ];
 
 const COLLAPSE_KEY = "vq_sidebar_collapsed";

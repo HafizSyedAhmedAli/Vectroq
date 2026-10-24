@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -32,7 +32,11 @@ function loadScript(): Promise<void> {
   });
 }
 
-/** Mostly invisible: Cloudflare only shows a box when it is unsure. */
+/**
+ * Centered under the form. Once Cloudflare has issued a token the widget is
+ * hidden (not unmounted, so the token stays valid). If the token expires or
+ * errors, it reappears so the visitor can verify again.
+ */
 export function TurnstileWidget({
   siteKey,
   onToken,
@@ -41,19 +45,23 @@ export function TurnstileWidget({
   onToken: (token: string) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [verified, setVerified] = useState(false);
 
   useEffect(() => {
     let id: string | undefined;
     let cancelled = false;
+    const report = (token: string) => {
+      setVerified(token !== "");
+      onToken(token);
+    };
     loadScript()
       .then(() => {
         if (cancelled || !ref.current || !window.turnstile) return;
         id = window.turnstile.render(ref.current, {
           sitekey: siteKey,
-          appearance: "interaction-only",
-          callback: onToken,
-          "expired-callback": () => onToken(""),
-          "error-callback": () => onToken(""),
+          callback: report,
+          "expired-callback": () => report(""),
+          "error-callback": () => report(""),
         });
       })
       .catch(() => {});
@@ -63,5 +71,12 @@ export function TurnstileWidget({
     };
   }, [siteKey, onToken]);
 
-  return <div ref={ref} className="mt-3" />;
+  return (
+    <div
+      className={verified ? "hidden" : "mt-6 flex justify-center"}
+      aria-live="polite"
+    >
+      <div ref={ref} />
+    </div>
+  );
 }

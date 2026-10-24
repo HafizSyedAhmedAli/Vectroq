@@ -1,5 +1,4 @@
 import { prisma, Prisma } from "@vectroq/db";
-import type { AuthContext } from "@/lib/auth/session";
 
 export type AuditAction =
   | "CAD_UPLOADED"
@@ -11,11 +10,18 @@ export type AuditAction =
   | "RATES_IMPORTED"
   | "RATE_SET_APPROVED"
   | "MEMBER_ROLE_CHANGED"
-  | "MEMBER_REMOVED";
+  | "MEMBER_REMOVED"
+  | "LOGIN"
+  | "LEAD_CREATED";
+
+interface Actor {
+  org: { id: string };
+  user?: { id: string; email: string } | null;
+}
 
 /** Never throws: a logging problem must not break the action being logged. */
 export async function audit(
-  auth: Pick<AuthContext, "org" | "user">,
+  auth: Actor,
   action: AuditAction,
   entityType: string,
   entityId: string | null,
@@ -25,8 +31,8 @@ export async function audit(
     await prisma.auditLog.create({
       data: {
         organizationId: auth.org.id,
-        userId: auth.user.id,
-        userEmail: auth.user.email,
+        userId: auth.user?.id ?? null,
+        userEmail: auth.user?.email ?? null,
         action,
         entityType,
         entityId,

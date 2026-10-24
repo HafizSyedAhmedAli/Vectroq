@@ -43,12 +43,14 @@ function Meta({
   children: ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-2.5 text-sm">
-      <span className="text-stone-400 [&_svg]:size-4">{icon}</span>
-      <span className="text-stone-500">{label}:</span>
-      <span className="min-w-0 truncate font-medium text-brand-black">
-        {children}
-      </span>
+    <div className="flex items-start gap-2.5">
+      <span className="mt-0.5 text-stone-400 [&_svg]:size-4">{icon}</span>
+      <div className="min-w-0">
+        <p className="text-xs text-stone-500">{label}</p>
+        <p className="break-words text-sm font-medium leading-snug text-brand-black">
+          {children}
+        </p>
+      </div>
     </div>
   );
 }
@@ -112,7 +114,7 @@ export default async function OfficeProjectPage({
               <h1 className="truncate text-4xl font-extrabold tracking-tight text-brand-black">
                 {project.lead.name}
               </h1>
-              <div className="mt-3 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+              <div className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
                 <Meta icon={<MapPin />} label="Location">
                   {project.city}
                 </Meta>

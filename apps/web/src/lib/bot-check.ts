@@ -22,7 +22,14 @@ export async function verifyTurnstile(
   ip: string,
 ): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true;
+  if (!secret) {
+    // Fail closed in production so a missing env var can't disable the check.
+    if (process.env.NODE_ENV === "production") {
+      console.error("TURNSTILE_SECRET_KEY is not set: rejecting submission");
+      return false;
+    }
+    return true;
+  }
   if (typeof token !== "string" || !token) return false;
   try {
     const res = await fetch(

@@ -15,13 +15,15 @@ import { getOrgBySlug } from "@/lib/org";
 import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 import { botSignals, verifyTurnstile } from "@/lib/bot-check";
 import { checkFileContent } from "@/lib/upload-guard";
+import { audit } from "@/lib/audit";
 
 const MAX_REQUEST_BYTES = PLAN_FILE_MAX_BYTES + 512 * 1024;
+const LEAD_IP_LIMIT = Number(process.env.LEAD_IP_LIMIT) || 8;
 
 export async function POST(req: NextRequest) {
   // 1. Throttle before doing any work (including reading a 10 MB body).
   const ip = clientIp(req);
-  const byIp = await rateLimit(`lead:ip:${ip}`, 8, 600);
+  const byIp = await rateLimit(`lead:ip:${ip}`, LEAD_IP_LIMIT, 600);
   if (!byIp.ok) return tooMany(byIp);
 
   const declared = Number(req.headers.get("content-length") ?? 0);
@@ -113,6 +115,12 @@ export async function POST(req: NextRequest) {
       console.error("Could not save lead plan file", err);
     }
   }
+
+  await audit({ org }, "LEAD_CREATED", "Lead", lead.id, {
+    city,
+    source: "FORM",
+    hasPlanFile: !!planFile,
+  });
 
   const rateCard = await getLiveRateCard(
     org.id,

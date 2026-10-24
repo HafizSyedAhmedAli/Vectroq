@@ -7,6 +7,7 @@ import {
   verifyPassword,
 } from "@/lib/auth/credentials";
 import { createSession } from "@/lib/auth/session";
+import { audit } from "@/lib/audit";
 
 // Verified when the email is unknown, so response time doesn't reveal accounts.
 const dummyHash = hashPassword("not-a-real-password");
@@ -47,6 +48,17 @@ export async function POST(req: NextRequest) {
     user.id,
     membership.organizationId,
     b?.remember !== false,
+  );
+
+  await audit(
+    {
+      org: { id: membership.organizationId },
+      user: { id: user.id, email: user.email },
+    },
+    "LOGIN",
+    "User",
+    user.id,
+    { ip },
   );
   return NextResponse.json({ ok: true });
 }
