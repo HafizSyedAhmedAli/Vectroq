@@ -24,11 +24,19 @@ vi.mock("@/lib/rate-sets", () => ({
   getLiveRateCard: vi.fn().mockRejectedValue(new Error("no rates")),
 }));
 vi.mock("@/lib/save-plan-file", () => ({ savePlanFile: vi.fn() }));
+vi.mock("@/lib/rate-limit", () => ({
+  rateLimit: vi
+    .fn()
+    .mockResolvedValue({ ok: true, remaining: 5, retryAfterSec: 0 }),
+  tooMany: vi.fn(() => Response.json({ error: "Too many" }, { status: 429 })),
+  clientIp: vi.fn(() => "1.2.3.4"),
+}));
 
 import { getOrgBySlug } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
 import { prisma } from "@vectroq/db";
 import { savePlanFile } from "@/lib/save-plan-file";
+import { rateLimit } from "@/lib/rate-limit";
 
 const validBody = {
   name: "Ahmed Raza",
@@ -46,16 +54,21 @@ const validBody = {
   consent: true,
 };
 
+const BOT = { website: "", elapsedMs: 10_000 };
+
 function jsonReq(body: unknown) {
   return new Request("http://localhost/api/leads", {
     method: "POST",
-    body: JSON.stringify({ orgSlug: "demo", ...(body as object) }),
+    body: JSON.stringify({ orgSlug: "demo", bot: BOT, ...(body as object) }),
   });
 }
 
 function multipartReq(body: unknown, file: File) {
   const form = new FormData();
-  form.append("data", JSON.stringify({ orgSlug: "demo", ...(body as object) }));
+  form.append(
+    "data",
+    JSON.stringify({ orgSlug: "demo", bot: BOT, ...(body as object) }),
+  );
   form.append("file", file);
   return new Request("http://localhost/api/leads", {
     method: "POST",
@@ -192,5 +205,57 @@ describe("POST /api/leads", () => {
       }) as any,
     );
     expect(res.status).toBe(400);
+  });
+
+  it("429s when the IP is rate limited and does no work", async () => {
+    (rateLimit as any).mockResolvedValueOnce({
+      ok: false,
+      remaining: 0,
+      retryAfterSec: 60,
+    });
+    const res = await POST(jsonReq(validBody) as any);
+    expect(res.status).toBe(429);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
+  });
+
+  it("silently drops a filled honeypot (looks like success, saves nothing)", async () => {
+    const res = await POST(
+      new Request("http://localhost/api/leads", {
+        method: "POST",
+        body: JSON.stringify({
+          orgSlug: "demo",
+          ...validBody,
+          bot: { website: "spam", elapsedMs: 10_000 },
+        }),
+      }) as any,
+    );
+    expect(res.status).toBe(201);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
+  });
+
+  it("rejects a form submitted impossibly fast", async () => {
+    const res = await POST(
+      new Request("http://localhost/api/leads", {
+        method: "POST",
+        body: JSON.stringify({
+          orgSlug: "demo",
+          ...validBody,
+          bot: { website: "", elapsedMs: 200 },
+        }),
+      }) as any,
+    );
+    expect(res.status).toBe(400);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
+  });
+
+  it("rejects a plan file whose contents don't match its extension", async () => {
+    const fake = new File(["MZ not a pdf"], "plan.pdf", {
+      type: "application/pdf",
+    });
+    const res = await POST(multipartReq(validBody, fake) as any);
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.errors.planFile).toMatch(/don't match/i);
+    expect(prisma.lead.create).not.toHaveBeenCalled();
   });
 });

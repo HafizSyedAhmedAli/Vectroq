@@ -23,6 +23,7 @@ vi.mock("@/lib/auth/guard", () => ({
     },
   }),
 }));
+vi.mock("@/lib/audit", () => ({ audit: vi.fn() }));
 import { guard } from "@/lib/auth/guard";
 
 vi.mock("@/lib/rate-sets", async (importOriginal) => {
@@ -32,6 +33,7 @@ vi.mock("@/lib/rate-sets", async (importOriginal) => {
 
 import { prisma } from "@vectroq/db";
 import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
+import { audit } from "@/lib/audit";
 
 const UNIT: Record<string, RateCard["items"][number]["unit"]> = {
   steelFixing: "ton",
@@ -194,6 +196,13 @@ describe("POST /api/projects/:id/finalize", () => {
       "Karachi",
       "B",
       expect.anything(),
+    );
+    expect(audit).toHaveBeenCalledWith(
+      expect.anything(),
+      "BOQ_CALCULATED",
+      "Project",
+      "p1",
+      expect.objectContaining({ total: json.boq.total, previousTotal: null }),
     );
   });
 

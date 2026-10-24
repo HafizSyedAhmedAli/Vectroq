@@ -28,6 +28,7 @@ vi.mock("@/lib/auth/guard", () => ({
     },
   }),
 }));
+vi.mock("@/lib/audit", () => ({ audit: vi.fn() }));
 import { guard } from "@/lib/auth/guard";
 
 function ctx(id: string) {

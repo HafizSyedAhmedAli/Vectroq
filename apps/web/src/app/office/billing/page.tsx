@@ -30,8 +30,21 @@ export default async function BillingPage({
             </h1>
             <p className="mt-1 text-sm text-stone-500">
               You are on the <b>{plan.name}</b> plan.
-              {org.planRenewsAt &&
-                ` Renews ${org.planRenewsAt.toLocaleDateString("en-PK", { dateStyle: "medium" })}.`}
+              {org.planCancelsAt ? (
+                <>
+                  {" "}
+                  <b className="text-amber-700">
+                    Cancelled. Access ends{" "}
+                    {org.planCancelsAt.toLocaleDateString("en-PK", {
+                      dateStyle: "medium",
+                    })}
+                    , then the company moves to Starter.
+                  </b>
+                </>
+              ) : (
+                org.planRenewsAt &&
+                ` Renews ${org.planRenewsAt.toLocaleDateString("en-PK", { dateStyle: "medium" })}.`
+              )}
             </p>
           </div>
         </div>
@@ -42,7 +55,9 @@ export default async function BillingPage({
             hasSubscription={!!org.stripeCustomerId}
             billingEnabled={billingEnabled()}
             isDemo={org.isDemo}
-            flash={status === "success" || status === "cancelled" ? status : null}
+            flash={
+              status === "success" || status === "cancelled" ? status : null
+            }
             usage={{
               projects: usage.projectsThisMonth,
               projectLimit: plan.projectsPerMonth,

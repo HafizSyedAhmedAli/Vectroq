@@ -4,6 +4,7 @@ import type { Category } from "@vectroq/shared-types";
 import { importCsr } from "@/lib/import-csr";
 import { getCurrentOrg } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
+import { audit } from "@/lib/audit";
 
 export const maxDuration = 60;
 
@@ -60,6 +61,13 @@ export async function POST(req: NextRequest) {
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });
   }
+
+  await audit(g.auth, "RATES_IMPORTED", "RateSet", null, {
+    document,
+    year,
+    categories,
+    cities: result.cities,
+  });
 
   return NextResponse.json(
     { imported: result.imported, cities: result.cities },

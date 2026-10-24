@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@vectroq/db";
 import { guard } from "@/lib/auth/guard";
 import { newToken } from "@/lib/auth/tokens";
+import { audit } from "@/lib/audit";
 
 type Ctx = { params: Promise<{ id: string }> };
 const DURATIONS = [7, 30, 90];
@@ -25,6 +26,12 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     where: { id },
     data: { shareToken, shareExpiresAt },
   });
+
+  await audit(g.auth, "SHARE_CREATED", "Project", id, {
+    days,
+    expiresAt: shareExpiresAt.toISOString(),
+  });
+
   return NextResponse.json({
     token: shareToken,
     expiresAt: shareExpiresAt.toISOString(),
@@ -39,5 +46,7 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
     where: { id, organizationId: g.auth.org.id },
     data: { shareToken: null, shareExpiresAt: null },
   });
+
+  await audit(g.auth, "SHARE_REVOKED", "Project", id);
   return NextResponse.json({ ok: true });
 }

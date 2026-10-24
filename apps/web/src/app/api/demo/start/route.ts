@@ -5,10 +5,14 @@ import { createSession } from "@/lib/auth/session";
 import { cleanupExpiredDemos, DEMO_HOURS, MAX_ACTIVE_DEMOS } from "@/lib/demo";
 import { createSampleProject } from "@/lib/sample-project";
 import { appUrl } from "@/lib/app-url";
+import { clientIp } from "@/lib/client-ip";
+import { rateLimit, tooMany } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
+  const rl = await rateLimit(`demo:ip:${clientIp(req)}`, 10, 3600);
+  if (!rl.ok) return tooMany(rl);
   await cleanupExpiredDemos().catch((e) =>
     console.error("Demo cleanup failed", e),
   );

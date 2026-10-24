@@ -3,6 +3,7 @@ import { put } from "@vercel/blob";
 import { prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
+import { checkFileContent } from "@/lib/upload-guard";
 
 const MAX_BYTES = 1024 * 1024;
 
@@ -29,6 +30,10 @@ export async function POST(req: NextRequest) {
   }
 
   const ext = file.type === "image/png" ? "png" : "jpg";
+  const contentError = await checkFileContent(file, ext);
+  if (contentError) {
+    return NextResponse.json({ error: contentError }, { status: 400 });
+  }
   const blob = await put(`org-logos/${org.id}.${ext}`, file, {
     access: "public", // branding is meant to be public
     addRandomSuffix: true,

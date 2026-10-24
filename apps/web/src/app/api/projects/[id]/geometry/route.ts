@@ -4,6 +4,7 @@ import type { Geometry } from "@vectroq/shared-types";
 import { Prisma, prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
+import { audit } from "@/lib/audit";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -34,9 +35,18 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     );
   }
 
+  const clearedTotal =
+    (cadFile.boq as { total?: number } | null | undefined)?.total ?? null;
+
   const updated = await prisma.cadFile.update({
     where: { projectId },
     data: { geometry: geometry as unknown as object, boq: Prisma.JsonNull },
+  });
+
+  await audit(g.auth, "GEOMETRY_EDITED", "Project", projectId, {
+    rooms: geometry.rooms.length,
+    walls: geometry.walls.length,
+    clearedBoqTotal: clearedTotal,
   });
 
   return NextResponse.json(updated);

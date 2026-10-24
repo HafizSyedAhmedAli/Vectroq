@@ -6,6 +6,7 @@ import {
   validateOrgRules,
 } from "@vectroq/shared-types";
 import { guard } from "@/lib/auth/guard";
+import { audit } from "@/lib/audit";
 
 export async function GET() {
   const g = await guard("VIEWER");
@@ -34,5 +35,10 @@ export async function PATCH(req: NextRequest) {
     where: { id: org.id },
     data: { rules: v.rules as unknown as Prisma.InputJsonValue },
   });
+
+  await audit(g.auth, "RULES_UPDATED", "Organization", org.id, {
+    reset: body?.reset === true,
+  });
+
   return NextResponse.json({ rules: v.rules });
 }

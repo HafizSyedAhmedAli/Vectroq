@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse, after } from "next/server";
+import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 import { Prisma, prisma } from "@vectroq/db";
 import {
   hashPassword,
@@ -12,6 +13,8 @@ import { slugify, validateSlug } from "@/lib/org-slug";
 import { appUrl } from "@/lib/app-url";
 
 export async function POST(req: NextRequest) {
+  const rl = await rateLimit(`signup:ip:${clientIp(req)}`, 5, 3600);
+  if (!rl.ok) return tooMany(rl);
   const b = await req.json().catch(() => null);
   const fail = (error: string, status = 400) =>
     NextResponse.json({ error }, { status });

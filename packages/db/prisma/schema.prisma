@@ -120,30 +120,55 @@ model RateSet {
   @@index([organizationId, city, category, status])
 }
 
+model RateLimit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+
+  @@index([resetAt])
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String?
+  userEmail      String? // kept so the log survives a deleted user
+  action         String
+  entityType     String
+  entityId       String?
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([entityType, entityId])
+}
 model Organization {
-  id           String    @id @default(cuid())
-  slug         String    @unique
-  name         String
-  tagline      String?
-  logoUrl      String?
-  primaryColor String    @default("#2563EB")
-  phone        String?
-  email        String?
-  website      String?
-  offices      Json      @default("[]") // [{ title, address }]
-  rules        Json?
-  isDemo        Boolean   @default(false)
-  demoExpiresAt DateTime?
-  plan                 String    @default("FREE") // FREE | PRO | BUSINESS
+  id                   String     @id @default(cuid())
+  slug                 String     @unique
+  name                 String
+  tagline              String?
+  logoUrl              String?
+  primaryColor         String     @default("#2563EB")
+  phone                String?
+  email                String?
+  website              String?
+  offices              Json       @default("[]") // [{ title, address }]
+  rules                Json?
+  isDemo               Boolean    @default(false)
+  demoExpiresAt        DateTime?
+  plan                 String     @default("FREE") // FREE | PRO | BUSINESS
   planStatus           String? // Stripe subscription status
   planRenewsAt         DateTime?
-  stripeCustomerId     String?   @unique
+  stripeCustomerId     String?    @unique
   stripeSubscriptionId String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  leads        Lead[]
-  projects     Project[]
-  rateSets     RateSet[]
+  planCancelsAt        DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+  leads                Lead[]
+  projects             Project[]
+  rateSets             RateSet[]
+  auditLogs            AuditLog[]
 
   memberships Membership[]
   invitations Invitation[]

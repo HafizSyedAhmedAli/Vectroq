@@ -1,11 +1,18 @@
 import type { LeadIntakeInput } from "@vectroq/lead-intake";
 
+export interface BotPayload {
+  website: string;
+  elapsedMs: number;
+  turnstileToken: string;
+}
+
 export function buildLeadRequest(
   data: LeadIntakeInput,
   planFile: File | null,
   orgSlug: string,
+  bot?: BotPayload,
 ): RequestInit {
-  const payload = { ...data, orgSlug };
+  const payload = { ...data, orgSlug, bot };
   if (!planFile) {
     return {
       method: "POST",

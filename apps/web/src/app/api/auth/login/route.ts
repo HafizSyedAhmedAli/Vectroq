@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit, tooMany } from "@/lib/rate-limit";
 import { prisma } from "@vectroq/db";
 import {
   hashPassword,
@@ -13,6 +14,13 @@ const dummyHash = hashPassword("not-a-real-password");
 export async function POST(req: NextRequest) {
   const b = await req.json().catch(() => null);
   const email = normalizeEmail(b?.email);
+  const ip = clientIp(req);
+  const byIp = await rateLimit(`login:ip:${ip}`, 30, 900);
+  if (!byIp.ok) return tooMany(byIp);
+  if (email) {
+    const byAcct = await rateLimit(`login:${ip}:${email}`, 8, 900);
+    if (!byAcct.ok) return tooMany(byAcct);
+  }
   const password = typeof b?.password === "string" ? b.password : "";
 
   const user = email

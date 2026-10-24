@@ -3,6 +3,8 @@ import { resolveOrgRules } from "@vectroq/shared-types";
 import { parseDxfToGeometry } from "@vectroq/cad-parser";
 import { Prisma, prisma } from "@vectroq/db";
 import { guard } from "@/lib/auth/guard";
+import { checkFileContent } from "@/lib/upload-guard";
+import { audit } from "@/lib/audit";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -35,6 +37,20 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
         error:
           ".dwg files aren't supported yet — DWG-to-DXF conversion isn't available. Please export the plan as .dxf and re-upload.",
       },
+      { status: 422 },
+    );
+  }
+
+  if (file.size === 0 || file.size > 10 * 1024 * 1024) {
+    return NextResponse.json(
+      { error: "The drawing must be between 1 byte and 10 MB." },
+      { status: 422 },
+    );
+  }
+  const contentError = await checkFileContent(file, "dxf");
+  if (contentError) {
+    return NextResponse.json(
+      { error: `Could not parse this DXF file: ${contentError}` },
       { status: 422 },
     );
   }
@@ -74,6 +90,12 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   await prisma.project.update({
     where: { id: projectId },
     data: { status: "CAD_UPLOADED" },
+  });
+
+  await audit(g.auth, "CAD_UPLOADED", "Project", projectId, {
+    fileName: file.name,
+    rooms: geometry.rooms.length,
+    note: "Any saved BOQ was cleared",
   });
 
   return NextResponse.json(cadFile, { status: 200 });

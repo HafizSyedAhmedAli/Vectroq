@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@vectroq/db";
 import { guard } from "@/lib/auth/guard";
 import { isRole } from "@/lib/auth/roles";
+import { audit } from "@/lib/audit";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -38,6 +39,10 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     return lastOwnerError();
 
   await prisma.membership.update({ where: { id }, data: { role: b.role } });
+
+  await audit(g.auth, "MEMBER_ROLE_CHANGED", "Membership", id, {
+    role: b.role,
+  });
   return NextResponse.json({ ok: true });
 }
 
@@ -60,5 +65,7 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
     }),
     prisma.membership.delete({ where: { id } }),
   ]);
+
+  await audit(g.auth, "MEMBER_REMOVED", "Membership", id, { userId: m.userId });
   return NextResponse.json({ ok: true });
 }

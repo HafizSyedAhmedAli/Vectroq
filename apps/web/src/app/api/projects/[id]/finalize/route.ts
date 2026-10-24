@@ -11,6 +11,7 @@ import type {
 } from "@vectroq/shared-types";
 import { NextRequest, NextResponse } from "next/server";
 import { resolveOrgRules } from "@vectroq/shared-types";
+import { audit } from "@/lib/audit";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -36,6 +37,9 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
       { error: "No CAD file uploaded for this project yet" },
       { status: 404 },
     );
+
+  const previousTotal =
+    (cadFile.boq as unknown as BOQResult | null)?.total ?? null;
 
   const category = project.category as "A" | "B" | "C";
 
@@ -85,6 +89,15 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
   await prisma.project.update({
     where: { id: projectId },
     data: { status: "FINALIZED" },
+  });
+
+  await audit(g.auth, "BOQ_CALCULATED", "Project", projectId, {
+    total: boq.total,
+    previousTotal,
+    city: project.city,
+    category: project.category,
+    rates: boq.rateBasis?.label,
+    usedFallbackCity: boq.rateBasis?.isFallback ?? false,
   });
 
   return NextResponse.json({ ...updated, boq });

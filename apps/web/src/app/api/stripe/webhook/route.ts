@@ -20,10 +20,15 @@ async function applySubscription(sub: Stripe.Subscription) {
     (item as unknown as { current_period_end?: number })?.current_period_end ??
     (sub as unknown as { current_period_end?: number }).current_period_end;
 
+  const cancelAtUnix =
+    sub.cancel_at ?? (sub.cancel_at_period_end ? periodEnd : null);
+
   const data = {
     plan: active ? plan! : "FREE",
     planStatus: sub.status,
     planRenewsAt: periodEnd ? new Date(periodEnd * 1000) : null,
+    planCancelsAt:
+      active && cancelAtUnix ? new Date(cancelAtUnix * 1000) : null,
     stripeSubscriptionId: active ? sub.id : null,
   };
 
@@ -53,7 +58,9 @@ export async function POST(req: NextRequest) {
     case "checkout.session.completed": {
       const s = event.data.object as Stripe.Checkout.Session;
       if (typeof s.subscription === "string") {
-        await applySubscription(await stripe.subscriptions.retrieve(s.subscription));
+        await applySubscription(
+          await stripe.subscriptions.retrieve(s.subscription),
+        );
       }
       break;
     }

@@ -3,6 +3,7 @@ import { validateRateItems } from "@vectroq/rate-cards";
 import { approveRateSet, RateSetError } from "@/lib/rate-sets";
 import { getCurrentOrg } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
+import { audit } from "@/lib/audit";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -31,9 +32,12 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
     const g = await guard("ESTIMATOR"); // minimum role from the table
     if (!g.ok) return g.res;
     const org = g.auth.org;
-    return NextResponse.json(
-      await approveRateSet(org.id, id, approvedBy, items),
-    );
+    const approved = await approveRateSet(org.id, id, approvedBy, items);
+    await audit(g.auth, "RATE_SET_APPROVED", "RateSet", id, {
+      approvedBy,
+      edited: !!items,
+    });
+    return NextResponse.json(approved);
   } catch (err) {
     if (err instanceof RateSetError) {
       return err.code === "NOT_FOUND"

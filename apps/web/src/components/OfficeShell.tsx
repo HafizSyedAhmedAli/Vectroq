@@ -15,6 +15,7 @@ import {
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
+  ScrollText,
   Search,
   Settings,
   SlidersHorizontal,
@@ -50,7 +51,8 @@ const NAV: NavItem[] = [
     owner: true,
   },
   { href: "/office/settings", label: "Settings", icon: Settings, owner: true },
-    { href: "/office/billing", label: "Billing", icon: CreditCard, owner: true },
+  { href: "/office/billing", label: "Billing", icon: CreditCard, owner: true },
+  { href: "/office/audit", label: "Audit log", icon: ScrollText, owner: true },
   { href: "/office/account", label: "Account", icon: UserCog },
 ];
 
@@ -64,6 +66,7 @@ const STATIC_PAGES = [
   "/office/settings",
   "/office/account",
   "/office/search",
+  "/office/audit",
 ];
 
 const COLLAPSE_KEY = "vq_sidebar_collapsed";
