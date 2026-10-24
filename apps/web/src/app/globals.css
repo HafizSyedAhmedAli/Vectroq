@@ -1,5 +1,7 @@
 /* apps/web/src/app/globals.css */
 @import "tailwindcss";
+/* Dark mode is class-based: <html class="dark"> */
+@custom-variant dark (&:where(.dark, .dark *));
 
 html {
   scroll-behavior: smooth;
@@ -120,4 +122,13 @@ html {
   @page {
     margin: 12mm;
   }
+}
+
+.dark {
+  color-scheme: dark;
+}
+.dark .bg-blueprint {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
 }
