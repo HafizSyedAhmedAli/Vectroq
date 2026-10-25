@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
-    "@vitest/coverage-v8": "2.1.9",
+    "@vitest/coverage-v8": "^2.1.9",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
   },
