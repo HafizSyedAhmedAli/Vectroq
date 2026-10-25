@@ -121,7 +121,7 @@ export function EmbedCode({ slug }: { slug: string }) {
         </pre>
       </div>
 
-      <p className="mt-4 flex items-center gap-3 rounded-xl bg-[#eef3fb] px-4 py-3.5 text-xs text-stone-600">
+      <p className="mt-4 flex items-center gap-3 rounded-xl bg-brand/10 px-4 py-3.5 text-xs text-stone-600">
         <Info className="size-4 shrink-0 text-brand" />
         Make sure to replace the URL with your actual form link if it changes.
       </p>

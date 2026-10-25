@@ -16,7 +16,7 @@ export default async function RulesPage() {
     <main className="min-h-[calc(100vh-72px)] bg-gradient-to-b from-stone-50 to-white pb-10">
       <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
         {/* Header card */}
-        <section className="relative overflow-hidden rounded-2xl border border-stone-200/70 bg-gradient-to-r from-[color-mix(in_srgb,var(--color-brand)_8%,white)] via-white to-[color-mix(in_srgb,var(--color-brand)_6%,white)] p-5 shadow-[0_10px_40px_-12px_rgba(15,23,42,0.10)] sm:p-6">
+        <section className="relative overflow-hidden rounded-2xl border border-stone-200/70 bg-gradient-to-r from-[color-mix(in_srgb,var(--color-brand)_8%,var(--color-white))] via-white to-[color-mix(in_srgb,var(--color-brand)_6%,var(--color-white))] p-5 shadow-[0_10px_40px_-12px_rgba(15,23,42,0.10)] sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-brand/10 text-brand">

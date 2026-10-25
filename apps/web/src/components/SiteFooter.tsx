@@ -43,7 +43,7 @@ export function SiteFooter({ brand }: { brand: Brand }) {
   ].filter(Boolean) as { label: string; href: string; external?: boolean }[];
 
   return (
-    <footer className="print:hidden relative overflow-hidden bg-[color-mix(in_srgb,var(--color-brand)_32%,black)] text-stone-300">
+    <footer className="vq-keep-light print:hidden relative overflow-hidden bg-[color-mix(in_srgb,var(--color-brand)_32%,black)] text-stone-300">
       <Skyline />
       <div className="relative mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-5 px-4 py-8">
         <div className="h-fit w-fit rounded-md bg-white p-2">

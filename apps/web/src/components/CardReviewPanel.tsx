@@ -341,7 +341,7 @@ export function CadReviewPanel({
     <div className="space-y-6">
       {/* Upload tile + summary tiles */}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,250px)_1fr]">
-        <div className="rounded-2xl bg-gradient-to-b from-brand to-[color-mix(in_srgb,var(--color-brand)_70%,black)] p-4 text-white shadow-md shadow-brand/25">
+        <div className="vq-keep-light rounded-2xl bg-gradient-to-b from-brand to-[color-mix(in_srgb,var(--color-brand)_70%,black)] p-4 text-white shadow-md shadow-brand/25">
           <div className="flex items-center gap-3">
             <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-white/15">
               <FileText className="size-5" />

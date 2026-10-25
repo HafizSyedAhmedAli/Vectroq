@@ -72,7 +72,7 @@ export function CompanyIllustration({
       className={`relative overflow-hidden rounded-xl ${className}`}
       style={{
         background:
-          "linear-gradient(to bottom, color-mix(in srgb, var(--color-brand) 14%, white), white)",
+          "linear-gradient(to bottom, color-mix(in srgb, var(--color-brand) 14%, var(--color-white)), var(--color-white))",
       }}
     >
       <svg
@@ -82,10 +82,10 @@ export function CompanyIllustration({
       >
         <polygon
           points="135,176 245,121 135,66 25,121"
-          fill="white"
           fillOpacity={0.7}
           stroke="var(--color-brand)"
           strokeOpacity={0.12}
+          style={{ fill: "var(--color-white)" }}
         />
         <IsoBox cx={135} cy={108} a={22} h={72} />
         <IsoBox cx={86} cy={120} a={26} h={34} />

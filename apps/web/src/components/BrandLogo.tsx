@@ -17,6 +17,10 @@ export function BrandLogo({
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element -- org logos are arbitrary blob URLs
-    <img src={brand.logoUrl} alt={brand.name} className={className} />
+    <img
+      src={brand.logoUrl}
+      alt={brand.name}
+      className={`${className} vq-logo`}
+    />
   );
 }

@@ -12,7 +12,7 @@ export default async function OfficeLayout({
   const auth = await requirePage();
   const brand = brandFromOrg(auth.org);
   return (
-    <div style={brandStyle(brand)}>
+        <div style={brandStyle(brand)} className="vq-app">
       <OfficeShell
         brand={brand}
         orgSlug={auth.org.slug}

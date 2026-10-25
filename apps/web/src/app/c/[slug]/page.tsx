@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { notFound } from "next/navigation";
 import { MapPin, Phone, ShieldCheck } from "lucide-react";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -44,20 +45,23 @@ export default async function OrgIntakePage({ params }: Props) {
   return (
     <div
       style={brandStyle(brand)}
-      className="flex min-h-screen flex-col bg-white"
+      className="vq-app flex min-h-screen flex-col bg-white"
     >
       <header className="relative z-20 border-b border-stone-100 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4">
           <BrandLogo brand={brand} />
-          {brand.contact.phone && (
-            <a
-              href={`tel:${brand.contact.phone.replace(/\s/g, "")}`}
-              className="flex items-center gap-2 text-sm font-semibold text-brand-black"
-            >
-              <Phone className="size-4 text-brand" />
-              {brand.contact.phone}
-            </a>
-          )}
+          <div className="flex items-center gap-4">
+            {brand.contact.phone && (
+              <a
+                href={`tel:${brand.contact.phone.replace(/\s/g, "")}`}
+                className="flex items-center gap-2 text-sm font-semibold text-brand-black"
+              >
+                <Phone className="size-4 text-brand" />
+                {brand.contact.phone}
+              </a>
+            )}
+            <ThemeToggle className="vq-keep-light" />
+          </div>
         </div>
       </header>
 

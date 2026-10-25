@@ -1,5 +1,7 @@
 "use client";
 
+// import
+import { ThemeToggle } from "./ThemeToggle";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ROLE_LABEL, hasRole, type Role } from "@/lib/auth/roles";
 import type { Brand } from "@/lib/brand";
@@ -171,7 +173,7 @@ export function OfficeShell({
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[color-mix(in_srgb,var(--color-brand)_32%,black)] text-white transition-all duration-200 lg:translate-x-0 print:hidden ${
+        className={`vq-keep-light fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[color-mix(in_srgb,var(--color-brand)_32%,black)] text-white transition-all duration-200 lg:translate-x-0 print:hidden ${
           collapsed ? "lg:w-[76px]" : "lg:w-64"
         } ${drawer ? "translate-x-0" : "-translate-x-full"}`}
       >
@@ -321,6 +323,8 @@ export function OfficeShell({
               className="h-10 w-full rounded-xl border border-stone-200 bg-stone-50 pl-10 pr-3 text-sm outline-none focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/15"
             />
           </form>
+
+          <ThemeToggle className="vq-keep-light ml-3" />
 
           <div className="relative ml-3" data-user-menu>
             <button

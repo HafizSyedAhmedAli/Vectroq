@@ -33,7 +33,7 @@ const card =
   "rounded-2xl border border-stone-200/70 bg-white p-5 shadow-[0_10px_40px_-12px_rgba(15,23,42,0.10)] sm:p-6";
 const group = "rounded-xl border border-stone-200 bg-white p-4";
 const tinted =
-  "rounded-xl border border-[color-mix(in_srgb,var(--color-brand)_18%,white)] bg-gradient-to-r from-[color-mix(in_srgb,var(--color-brand)_6%,white)] to-white p-4";
+  "rounded-xl border border-[color-mix(in_srgb,var(--color-brand)_18%,var(--color-white))] bg-gradient-to-r from-[color-mix(in_srgb,var(--color-brand)_6%,var(--color-white))] to-white p-4";
 const inputCls =
   "h-11 rounded-lg border-stone-200! bg-white! text-sm text-brand-black shadow-none hover:border-stone-300! focus-visible:border-brand! focus-visible:ring-brand/20 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 const labelCls = "text-xs font-semibold text-brand-black";

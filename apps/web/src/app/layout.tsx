@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 // Dark mode is only allowed on the landing page, the demo and the auth pages.
-const THEME_SCRIPT = `try{var p=location.pathname;var d=["/demo","/login","/signup","/forgot-password","/reset-password","/verify-email","/invite"];if(p==="/"||d.some(function(x){return p===x||p.indexOf(x+"/")===0})){var t=localStorage.getItem("vq_theme");if(t==="dark"||(t===null&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}}catch(e){}`;
+const THEME_SCRIPT = `try{var p=location.pathname;var d=["/demo","/login","/signup","/forgot-password","/reset-password","/verify-email","/invite","/office","/c","/client"];if(p==="/"||d.some(function(x){return p===x||p.indexOf(x+"/")===0})){var t=localStorage.getItem("vq_theme");if(t==="dark"||(t===null&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}}catch(e){}`;
 
 export default function RootLayout({
   children,

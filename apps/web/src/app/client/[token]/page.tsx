@@ -5,6 +5,7 @@ import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { formatPkr } from "@/lib/boq-format";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { brandFromOrg, brandStyle } from "@/lib/brand";
 import { prisma } from "@vectroq/db";
 import {
@@ -105,20 +106,22 @@ export default async function ClientProjectPage({
   const modelLabel = modelName(rules, project.model);
 
   return (
-    <div style={brandStyle(brand)}>
-      {/* Header */}
+    <div style={brandStyle(brand)} className="vq-app">
       <header className="print:hidden border-b border-stone-100 bg-white/90 backdrop-blur">
         <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-4">
           <BrandLogo brand={brand} priority />
-          {brand.contact.phone && (
-            <a
-              href={`tel:${brand.contact.phone.replace(/\s/g, "")}`}
-              className="flex items-center gap-2 text-sm font-semibold text-brand-black"
-            >
-              <Phone className="size-4 text-brand" />
-              {brand.contact.phone}
-            </a>
-          )}
+          <div className="flex items-center gap-4">
+            {brand.contact.phone && (
+              <a
+                href={`tel:${brand.contact.phone.replace(/\s/g, "")}`}
+                className="flex items-center gap-2 text-sm font-semibold text-brand-black"
+              >
+                <Phone className="size-4 text-brand" />
+                {brand.contact.phone}
+              </a>
+            )}
+            <ThemeToggle className="vq-keep-light" />
+          </div>
         </div>
       </header>
 

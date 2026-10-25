@@ -45,6 +45,7 @@
     "dev": "next dev",
     "build": "pnpm --filter @vectroq/db generate && next build",
     "start": "next start",
+    "prod": "pnpm run build && next start",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",

@@ -37,10 +37,10 @@ export function BrandHero() {
       >
         <polygon
           points="300,380 500,280 300,180 100,280"
-          fill="white"
           fillOpacity={0.7}
           stroke="var(--color-brand)"
           strokeOpacity={0.15}
+          style={{ fill: "var(--color-white)" }}
         />
         <IsoBox cx={300} cy={262} a={70} h={120} />
         <IsoBox cx={205} cy={292} a={48} h={62} />

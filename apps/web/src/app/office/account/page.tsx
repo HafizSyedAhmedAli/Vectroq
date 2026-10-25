@@ -74,7 +74,9 @@ export default async function AccountPage() {
           <p className="mb-6 mt-1 text-sm text-stone-500">
             You&apos;ll stay signed in here. Every other device is signed out.
           </p>
-          <ChangePasswordForm />
+          <div className="vq-keep-light">
+            <ChangePasswordForm />
+          </div>
         </section>
       </div>
     </main>

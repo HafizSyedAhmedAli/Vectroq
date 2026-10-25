@@ -132,3 +132,165 @@ html {
     linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
 }
+
+/* =====================================================================
+   Dark mode for the signed-in app (/office), the public company form
+   (/c/*) and the client page (/client/*).
+   Scoped to .vq-app so the pages that already have their own dark mode
+   (landing, demo, auth) are not affected. Screen only: print stays light.
+   ===================================================================== */
+@media screen {
+  .dark .vq-app {
+    color-scheme: dark;
+    color: var(--color-stone-900);
+
+    /* Company brand, adapted per company (computed in lib/brand.ts) */
+    --color-brand: var(--vq-brand-dm) !important;
+    --color-brand-dark: var(--vq-brand-dm-dark) !important;
+
+    /* Surfaces and neutrals (same family as the existing dark pages) */
+    --color-white: #0c1833;
+    --color-stone-50: #060c1d;
+    --color-stone-100: #14234a;
+    --color-stone-200: #1f305a;
+    --color-stone-300: #2e4170;
+    --color-stone-400: #7b8bad;
+    --color-stone-500: #94a3b8;
+    --color-stone-600: #b0bdd0;
+    --color-stone-700: #cbd5e1;
+    --color-stone-800: #e2e8f0;
+    --color-stone-900: #f1f5f9;
+    --color-brand-black: #f1f5f9;
+
+    /* Status / tint colors: pale fills become dark tints, dark text becomes light.
+       500 and red-600 are left alone because they are used as solid fills. */
+    --color-red-50: #2a0f16;
+    --color-red-100: #3b1219;
+    --color-red-200: #5c1d27;
+    --color-red-700: #fca5a5;
+    --color-red-800: #fecaca;
+    --color-red-900: #fee2e2;
+
+    --color-green-50: #0c2418;
+    --color-green-100: #12331f;
+    --color-green-200: #1c5233;
+    --color-green-600: #4ade80;
+    --color-green-700: #86efac;
+    --color-green-800: #bbf7d0;
+    --color-green-900: #dcfce7;
+
+    --color-amber-50: #2a1f08;
+    --color-amber-100: #3d2c0a;
+    --color-amber-200: #5c4410;
+    --color-amber-600: #fbbf24;
+    --color-amber-700: #fcd34d;
+    --color-amber-800: #fde68a;
+    --color-amber-900: #fef3c7;
+
+    --color-blue-50: #0f1d3d;
+    --color-blue-100: #172a55;
+    --color-blue-200: #1e3a78;
+    --color-blue-600: #60a5fa;
+    --color-blue-700: #93c5fd;
+    --color-blue-800: #bfdbfe;
+    --color-blue-900: #dbeafe;
+
+    --color-sky-50: #0c2236;
+    --color-indigo-50: #151a3d;
+    --color-indigo-100: #1e2552;
+
+    --color-purple-50: #1e1233;
+    --color-purple-100: #2c1a4d;
+    --color-purple-600: #c084fc;
+    --color-purple-700: #d8b4fe;
+
+    --color-violet-50: #1a1238;
+    --color-violet-100: #281a52;
+    --color-violet-600: #a78bfa;
+    --color-violet-700: #c4b5fd;
+
+    --color-emerald-50: #08251d;
+    --color-emerald-100: #0d3a2c;
+    --color-emerald-600: #34d399;
+    --color-emerald-700: #6ee7b7;
+
+    --color-rose-50: #2d0f1a;
+    --color-rose-100: #451426;
+    --color-rose-600: #fb7185;
+
+    /* shadcn tokens used by Button/Input variants (undefined in light mode) */
+    --color-border: var(--color-stone-200);
+    --color-input: var(--color-stone-300);
+    --color-background: var(--color-white);
+    --color-foreground: var(--color-stone-900);
+    --color-muted: var(--color-stone-100);
+    --color-muted-foreground: var(--color-stone-500);
+    --color-ring: var(--vq-brand-fg);
+  }
+
+  /* Elements whose OWN text is white keep real white (alpha variants too).
+     Whole-token match only: "active:text-white" or "hover:text-white" must
+     not count, or their backgrounds turn white in dark mode. */
+  .dark .vq-app [class~="text-white"],
+  .dark .vq-app [class^="text-white/"],
+  .dark .vq-app [class*=" text-white/"] {
+    --color-white: #fff;
+  }
+  /* Solid dark panels (BOQ totals box) stay dark. */
+  .dark .vq-app .bg-brand-black {
+    --color-brand-black: #020617;
+  }
+
+  /* Opt-out: parts that are already dark/colored in light mode (sidebar,
+     footer, brand tiles) and the dark: styled auth fields keep light values. */
+  .dark .vq-app .vq-keep-light {
+    --color-white: #fff;
+    --color-stone-50: #fafaf9;
+    --color-stone-100: #f5f5f4;
+    --color-stone-200: #e7e5e4;
+    --color-stone-300: #d6d3d1;
+    --color-stone-400: #a8a29e;
+    --color-stone-500: #78716c;
+    --color-stone-600: #57534e;
+    --color-stone-700: #44403c;
+    --color-stone-800: #292524;
+    --color-stone-900: #1c1917;
+    --color-brand-black: #0f172a;
+    --vq-brand-fg: var(--vq-brand-dm);
+  }
+
+  /* Brand used as text / border / ring: use the lightened version */
+  .dark .vq-app .text-brand,
+  .dark .vq-app .hover\:text-brand:hover,
+  .dark .vq-app .hover\:text-brand-dark:hover,
+  .dark .vq-app .group:hover .group-hover\:text-brand,
+  .dark .vq-app .group:hover .group-hover\:text-brand-dark {
+    color: var(--vq-brand-fg);
+  }
+  .dark .vq-app .border-brand,
+  .dark .vq-app .hover\:border-brand:hover,
+  .dark .vq-app .focus\:border-brand:focus,
+  .dark .vq-app .focus-visible\:border-brand:focus-visible {
+    border-color: var(--vq-brand-fg);
+  }
+  .dark .vq-app .ring-brand {
+    --tw-ring-color: var(--vq-brand-fg);
+  }
+
+  /* red-600 is also a button fill, so only recolor it when used as text */
+  .dark .vq-app .text-red-600,
+  .dark .vq-app .hover\:text-red-600:hover {
+    color: #f87171;
+  }
+
+  /* Company logos are usually dark artwork: give them a white plate */
+  .dark .vq-app .vq-logo {
+    background: #fff;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+  }
+  .dark .vq-app .vq-keep-light .vq-logo {
+    background: transparent;
+    padding: 0;
+  }
+}
