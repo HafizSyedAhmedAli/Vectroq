@@ -9,3 +9,5 @@ apps/web/public/lead-plans/
 # build artifacts and editor files
 *.tsbuildinfo
 .vscode/
+
+coverage/
