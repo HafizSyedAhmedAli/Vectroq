@@ -27,18 +27,23 @@ export function SignupForm() {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(f),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(f),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setBusy(false);
+        return setError(data.error ?? "Could not create your account.");
+      }
+      router.push("/office/settings");
+      router.refresh();
+    } catch {
       setBusy(false);
-      return setError(data.error ?? "Could not create your account.");
+      setError("Can't reach the server. Check your connection and try again.");
     }
-    router.push("/office/settings");
-    router.refresh();
   }
 
   const field = (

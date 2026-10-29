@@ -11,10 +11,14 @@ export function getStripe(): Stripe {
 
 export const billingEnabled = () => !!process.env.STRIPE_SECRET_KEY;
 
-export const PRICE_IDS: Record<"PRO" | "BUSINESS", string | undefined> = {
-  PRO: process.env.STRIPE_PRICE_PRO,
-  BUSINESS: process.env.STRIPE_PRICE_BUSINESS,
-};
+export const PRICE_IDS = {
+  get PRO() {
+    return process.env.STRIPE_PRICE_PRO;
+  },
+  get BUSINESS() {
+    return process.env.STRIPE_PRICE_BUSINESS;
+  },
+} as Record<"PRO" | "BUSINESS", string | undefined>;
 
 export function planForPrice(priceId: string | undefined): PlanId | null {
   if (!priceId) return null;

@@ -7,5 +7,6 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
+    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
   },
 });

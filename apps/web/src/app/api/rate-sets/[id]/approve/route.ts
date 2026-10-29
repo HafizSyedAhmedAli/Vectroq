@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateRateItems } from "@vectroq/rate-cards";
 import { approveRateSet, RateSetError } from "@/lib/rate-sets";
-import { getCurrentOrg } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
 import { audit } from "@/lib/audit";
 
@@ -10,7 +9,11 @@ interface RouteContext {
 }
 
 export async function POST(req: NextRequest, { params }: RouteContext) {
+  const g = await guard("ESTIMATOR"); // role first, before looking at the body
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
   const { id } = await params;
+
   const body = await req.json().catch(() => null);
   const approvedBy =
     typeof body?.approvedBy === "string" ? body.approvedBy.trim() : "";
@@ -29,9 +32,6 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   }
 
   try {
-    const g = await guard("ESTIMATOR"); // minimum role from the table
-    if (!g.ok) return g.res;
-    const org = g.auth.org;
     const approved = await approveRateSet(org.id, id, approvedBy, items);
     await audit(g.auth, "RATE_SET_APPROVED", "RateSet", id, {
       approvedBy,

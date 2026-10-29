@@ -33,8 +33,16 @@ export async function projectPdfResponse(
       { status: 404 },
     );
   }
-  const brand = brandFromOrg(project.organization!);
-  const rules = resolveOrgRules(project.organization!.rules);
+
+  const organization = project.organization;
+  if (!organization) {
+    return Response.json(
+      { error: "This project has no company attached." },
+      { status: 500 },
+    );
+  }
+  const brand = brandFromOrg(organization);
+  const rules = resolveOrgRules(organization.rules);
   const notes = resolveNotes(rules);
   const boq = project.cadFile.boq as unknown as BOQResult;
   const geometry = project.cadFile.geometry as unknown as Geometry;
@@ -42,7 +50,7 @@ export async function projectPdfResponse(
 
   const pdf = await renderBoqPdf({
     brand,
-    platformBranding: !planOf(project.organization!).removeBranding,
+    platformBranding: !planOf(organization).removeBranding,
     boq,
     logo: await fetchLogo(brand.logoUrl),
     clientName: project.lead.name,

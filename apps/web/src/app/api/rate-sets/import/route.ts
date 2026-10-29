@@ -10,6 +10,10 @@ export const maxDuration = 60;
 
 // Body: { csv, document, year, categories: ["A","B","C"], approvedBy }
 export async function POST(req: NextRequest) {
+  const g = await guard("ESTIMATOR");
+  if (!g.ok) return g.res;
+  const org = g.auth.org;
+
   const body = await req.json().catch(() => null);
   const approvedBy =
     typeof body?.approvedBy === "string" ? body.approvedBy.trim() : "";
@@ -44,10 +48,6 @@ export async function POST(req: NextRequest) {
       { status: 400 },
     );
   }
-
-  const g = await guard("ESTIMATOR"); // minimum role from the table
-  if (!g.ok) return g.res;
-  const org = g.auth.org;
 
   const result = await importCsr({
     organizationId: org.id,
