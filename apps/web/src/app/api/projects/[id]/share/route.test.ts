@@ -75,6 +75,7 @@ describe("POST /api/projects/:id/share", () => {
     expect(prisma.project.findFirst).toHaveBeenCalledWith({
       where: { id: "p1", organizationId: "org_1" },
     });
+    (prisma.project.update as any).mockClear();
     (prisma.project.findFirst as any).mockResolvedValue(null);
     const res = await post({});
     expect(res.status).toBe(404);

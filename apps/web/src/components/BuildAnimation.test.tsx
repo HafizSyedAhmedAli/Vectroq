@@ -54,7 +54,8 @@ describe("BuildAnimation", () => {
   it("replay restarts from the beginning", () => {
     stubMotion(false);
     render(<BuildAnimation />);
-    tick(700 + 1200);
+    tick(700);
+    tick(1200);
     expect(screen.getByText("Step 2 of 8")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Replay the build" }));
     expect(screen.getByText("Breaking ground")).toBeInTheDocument();

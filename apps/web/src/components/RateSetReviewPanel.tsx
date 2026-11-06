@@ -31,6 +31,7 @@ import {
 import { useRouter } from "next/navigation";
 import {
   Fragment,
+  useEffect,
   useRef,
   useState,
   type FormEvent,
@@ -185,6 +186,11 @@ export function RateSetReviewPanel({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  // keep in sync when the server sends a fresh list (after router.refresh)
+  useEffect(() => {
+    setDrafts(initialDrafts);
+  }, [initialDrafts]);
 
   const rows = approved.filter(
     (a) =>

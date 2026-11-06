@@ -23,8 +23,11 @@ export function CountUp({
       if (!entry.isIntersecting) return;
       io.disconnect();
       const start = performance.now();
-      const tick = (now: number) => {
-        const t = Math.min((now - start) / duration, 1);
+      const tick = () => {
+        const t = Math.min(
+          Math.max((performance.now() - start) / duration, 0),
+          1,
+        );
         const eased = 1 - Math.pow(1 - t, 3);
         setValue(Math.round(to * eased));
         if (t < 1) raf = requestAnimationFrame(tick);

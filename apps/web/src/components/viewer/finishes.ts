@@ -60,7 +60,7 @@ export function finishSummary(
   category: Category,
   living: LivingFloor,
 ): string[] {
-  const f = CATEGORY_FINISH[category];
+  const f = CATEGORY_FINISH[category] ?? CATEGORY_FINISH.B;
   return [
     living === "marble"
       ? "Marble in dry rooms; kitchen and baths tiled"

@@ -13,6 +13,7 @@ vi.mock("@/components/OfficeShell", () => ({
 
 import { requirePage } from "@/lib/org";
 import OfficeLayout from "./layout";
+import { readableBrand } from "@/lib/brand";
 
 const org = (o: Record<string, unknown> = {}) => ({
   slug: "acme",
@@ -82,7 +83,7 @@ describe("Office layout", () => {
     const { container } = render(await OfficeLayout({ children: null }));
     const wrap = container.querySelector(".vq-app") as HTMLElement;
     expect(wrap.style.getPropertyValue("--color-brand").toLowerCase()).toBe(
-      "#16a34a",
+      readableBrand("#16A34A").toLowerCase(),
     );
   });
 });

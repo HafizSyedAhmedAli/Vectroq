@@ -9,24 +9,28 @@ export function VerifyEmailButton({ token }: { token: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/auth/verify-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/auth/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setBusy(false);
+        return setError(data.error ?? "Could not confirm your email.");
+      }
+      router.push("/office/dashboard");
+      router.refresh();
+    } catch {
       setBusy(false);
-      return setError(data.error ?? "Could not confirm your email.");
+      setError("Can't reach the server. Check your connection and try again.");
     }
-    router.push("/office/dashboard");
-    router.refresh();
   }
 
   return (

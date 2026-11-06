@@ -22,21 +22,28 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (busy) return;
     if (password !== confirm) return setError("Passwords don't match.");
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/auth/reset", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, password }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
+    setExpired(false);
+    try {
+      const res = await fetch("/api/auth/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setBusy(false);
+        setExpired(res.status === 410);
+        return setError(data.error ?? "Could not reset your password.");
+      }
+      router.push("/login?reset=1");
+    } catch {
       setBusy(false);
-      setExpired(res.status === 410);
-      return setError(data.error ?? "Could not reset your password.");
+      setError("Can't reach the server. Check your connection and try again.");
     }
-    router.push("/login?reset=1");
   }
 
   const field = (
