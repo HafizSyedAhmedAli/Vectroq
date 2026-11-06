@@ -11,6 +11,9 @@ importers:
       '@playwright/test':
         specifier: ^1.48.0
         version: 1.63.0
+      '@types/node':
+        specifier: ^20.17.6
+        version: 20.17.6
       '@vitest/coverage-v8':
         specifier: ^2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@20.17.6)(jsdom@25.0.1)(lightningcss@1.32.0))

@@ -24,18 +24,23 @@ export function AcceptInviteForm({
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/invites/accept", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, name, password }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/invites/accept", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, name, password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setBusy(false);
+        return setError(data.error ?? "Could not accept the invitation.");
+      }
+      router.push("/office/dashboard");
+      router.refresh();
+    } catch {
       setBusy(false);
-      return setError(data.error ?? "Could not accept the invitation.");
+      setError("Can't reach the server. Please check your connection.");
     }
-    router.push("/office/dashboard");
-    router.refresh();
   }
 
   return (

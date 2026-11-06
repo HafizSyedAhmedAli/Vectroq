@@ -11,3 +11,4 @@ apps/web/public/lead-plans/
 .vscode/
 
 coverage/
+test-results/

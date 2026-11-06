@@ -8,5 +8,6 @@
     "skipLibCheck": true,
     "declaration": true,
     "composite": true,
-  }
+    "types": ["node"]
+  },
 }
