@@ -21,11 +21,11 @@ interface UnitDef {
 }
 
 /**
- * $INSUNITS codes we convert. Meanings are from the Autodesk DXF reference
- * ($INSUNITS: 1 inches, 2 feet, 4 mm, 5 cm, 6 m, 10 yards, 14 decimetres,
- * 21 US survey feet). 0 = unitless. Every other code (miles, km, microns,
- * mils, astronomical units, ...) is deliberately unsupported: such a drawing is
- * not a building plan we can price, so it is reported as invalid metadata.
+ * $INSUNITS codes we convert (supported). Meanings are from the Autodesk DXF
+ * reference. 0 = unitless. Codes in KNOWN_UNSUPPORTED are valid DXF units that
+ * we deliberately do not convert (a house plan is not drawn in miles or
+ * angstroms); they raise UNIT_UNSUPPORTED. Anything else (negative, > 24,
+ * fractional, non-numeric) is malformed: UNIT_METADATA_INVALID.
  */
 export const UNIT_DEFS: readonly UnitDef[] = [
   { unit: "inch", insunits: 1, feetPerUnit: 1 / 12, legacyFeetPerUnit: 1 / 12 },
@@ -52,6 +52,29 @@ export const UNIT_DEFS: readonly UnitDef[] = [
   { unit: "decimetre", insunits: 14, feetPerUnit: 1 / 3.048 },
   { unit: "survey-foot", insunits: 21, feetPerUnit: 1200 / 3937 },
 ];
+
+/**
+ * The rest of the standard $INSUNITS enumeration (codes 0-24): valid, but not
+ * supported for building plans. Never converted, never guessed as feet or mm.
+ */
+export const KNOWN_UNSUPPORTED: Readonly<Record<number, string>> = {
+  3: "miles",
+  7: "kilometres",
+  8: "microinches",
+  9: "mils",
+  11: "angstroms",
+  12: "nanometres",
+  13: "microns",
+  15: "decametres",
+  16: "hectometres",
+  17: "gigametres",
+  18: "astronomical units",
+  19: "light years",
+  20: "parsecs",
+  22: "US survey inches",
+  23: "US survey yards",
+  24: "US survey miles",
+};
 
 const BY_CODE = new Map(UNIT_DEFS.map((d) => [d.insunits, d]));
 const BY_NAME = new Map(UNIT_DEFS.map((d) => [d.unit, d]));
@@ -239,6 +262,7 @@ type HeaderState =
   | { kind: "valid"; def: UnitDef }
   | { kind: "unitless" }
   | { kind: "missing" }
+  | { kind: "unsupported"; code: number; name: string }
   | { kind: "invalid"; raw: unknown };
 
 function readHeader(header: unknown): HeaderState {
@@ -248,6 +272,8 @@ function readHeader(header: unknown): HeaderState {
     if (raw === 0) return { kind: "unitless" };
     const def = BY_CODE.get(raw);
     if (def) return { kind: "valid", def };
+    const name = KNOWN_UNSUPPORTED[raw];
+    if (name) return { kind: "unsupported", code: raw, name };
   }
   return { kind: "invalid", raw };
 }
@@ -257,7 +283,7 @@ function readHeader(header: unknown): HeaderState {
  *
  * 1. A user-confirmed unit wins over everything (source "user").
  * 2. Else a valid explicit $INSUNITS is used (source "header").
- * 3. Else (missing, 0, or invalid): extents are evaluated against the
+ * 3. Else (missing, 0, unsupported or invalid): extents are evaluated against the
  *    plausibility rules. The result is ALWAYS needsConfirmation: geometric
  *    plausibility is not proof of the original unit. If one candidate is
  *    plausible it is suggested (medium); if several are, the drawing is
@@ -293,6 +319,12 @@ export function resolveUnits(input: ResolveUnitsInput): UnitResolution {
       header.kind === "unitless"
         ? "The DXF declares no units ($INSUNITS = 0)."
         : "The DXF has no $INSUNITS header, so its units are not declared.",
+    );
+  } else if (header.kind === "unsupported") {
+    w(
+      headerSeverity,
+      "UNIT_UNSUPPORTED",
+      `The DXF declares $INSUNITS = ${header.code} (${header.name}), a valid DXF unit this parser does not convert for building plans. It was not used; the unit must be confirmed.`,
     );
   } else if (header.kind === "invalid") {
     w(

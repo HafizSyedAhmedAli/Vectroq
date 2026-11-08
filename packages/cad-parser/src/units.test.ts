@@ -1,8 +1,10 @@
 // Phase 1 unit tests. Real dxf-parser, real DXF text, numeric assertions on feet.
+import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
+import { FIXTURES } from "../eval/fixtures";
 import { unitNeedsConfirmation } from "@vectroq/shared-types";
 import { parseDxf, parseDxfToGeometry, feetPerUnit } from "./parse-dxf";
-import { resolveUnits, isPlausibleFootprint, drawingExtents } from "./units";
+import { resolveUnits, isPlausibleFootprint, drawingExtents, KNOWN_UNSUPPORTED, UNIT_DEFS } from "./units";
 
 /** Closed rectangle on WALLS (an LWPOLYLINE), optionally with a $INSUNITS header. */
 function rectDxf(w: number, h: number, opts: { insunits?: string; x0?: number; y0?: number } = {}) {
@@ -221,7 +223,7 @@ describe("user confirmation and override (J, K)", () => {
 });
 
 describe("invalid or unsupported $INSUNITS (L)", () => {
-  it.each(["99", "3", "7", "-1", "abc"])("$INSUNITS=%s warns and is not used as a unit", (raw) => {
+  it.each(["99", "25", "-1", "abc"])("$INSUNITS=%s warns and is not used as a unit", (raw) => {
     const { meta } = sides(rectDxf(12, 10, { insunits: raw }));
     expect(meta.warnings[0]).toMatchObject({ code: "UNIT_METADATA_INVALID", severity: "warning" });
     expect(meta.warnings[0].message).toContain(raw === "abc" ? "NaN" : raw);
@@ -229,6 +231,12 @@ describe("invalid or unsupported $INSUNITS (L)", () => {
     expect(meta.unit.needsConfirmation).toBe(true);
     expect(meta.warnings.map((w) => w.code)).toContain("UNIT_CONFIRMATION_REQUIRED");
     expect(meta.unit.unit).toBe("metre"); // from the extents suggestion, never from the bad code
+  });
+
+  it("covers the whole standard enumeration: 0 unitless, 17 supported or unsupported codes, nothing in between is invalid", () => {
+    const supported = UNIT_DEFS.map((d) => d.insunits);
+    const unsupported = Object.keys(KNOWN_UNSUPPORTED).map(Number);
+    expect([...supported, ...unsupported, 0].sort((a, b) => a - b)).toEqual(Array.from({ length: 25 }, (_, i) => i));
   });
 
   it("a user can resolve an invalid header; the invalid-metadata note is kept as info", () => {
@@ -243,6 +251,31 @@ describe("invalid or unsupported $INSUNITS (L)", () => {
     near(lengths, [5, 5, 5, 5]);
     expect(meta.unit).toMatchObject({ source: "header", confidence: "medium", needsConfirmation: false });
     expect(meta.warnings.map((w) => w.code)).toEqual(["UNIT_HEADER_IMPLAUSIBLE"]);
+  });
+});
+
+describe("valid but unsupported $INSUNITS (UNIT_UNSUPPORTED)", () => {
+  it.each(Object.entries(KNOWN_UNSUPPORTED))("code %s (%s) is reported as unsupported, not invalid, and never converted", (code, name) => {
+    const { meta } = sides(rectDxf(12, 10, { insunits: code }));
+    expect(meta.warnings[0]).toMatchObject({ code: "UNIT_UNSUPPORTED", severity: "warning" });
+    expect(meta.warnings[0].message).toContain(`${code} (${name})`);
+    expect(meta.warnings.map((w) => w.code)).not.toContain("UNIT_METADATA_INVALID");
+    expect(meta.warnings.map((w) => w.code)).toContain("UNIT_CONFIRMATION_REQUIRED");
+    expect(meta.unit).toMatchObject({ source: "plausibility", needsConfirmation: true, confirmed: false });
+    expect(meta.unit.insunits).not.toBe(Number(code));
+  });
+
+  it("miles (3) on a 12 x 10 drawing is not read as miles, feet or mm: suggestion is extents-based (metres) and unconfirmed", () => {
+    const { lengths, meta } = sides(rectDxf(12, 10, { insunits: "3" }));
+    expect(meta.unit.unit).toBe("metre");
+    expect(Math.max(...lengths)).toBeGreaterThan(39); // not 12 ft (feet) and not 63360 ft (miles)
+  });
+
+  it("a user can resolve an unsupported header; the note is kept as info", () => {
+    const { lengths, meta } = sides(rectDxf(480, 360, { insunits: "7" }), "inch");
+    near(lengths, [30, 30, 40, 40], 1e-6);
+    expect(meta.warnings.find((w) => w.code === "UNIT_UNSUPPORTED")!.severity).toBe("info");
+    expect(meta.unit).toMatchObject({ source: "user", confirmed: true });
   });
 });
 
@@ -261,4 +294,29 @@ describe("helpers", () => {
     expect(isPlausibleFootprint(500, 100)).toBe(false); // too long
     expect(isPlausibleFootprint(10, 10)).toBe(false); // too small
   });
+});
+
+describe("fixtures: no silent trusted estimate through the new API", () => {
+  const total = (g: { walls: { length: number }[] }) => g.walls.reduce((a, w) => a + w.length, 0);
+  for (const f of FIXTURES) {
+    const text = readFileSync(f.path, "utf8");
+    const { geometry, meta } = parseDxf(text);
+    const declared = /\$INSUNITS\s+70\s+[1-9]/.test(text.replace(/\r/g, ""));
+    it(`${f.name}: ${declared ? "explicit header is trusted" : "unitless is flagged and unconfirmed"}`, () => {
+      expect(unitNeedsConfirmation(meta)).toBe(!declared);
+      expect(meta.unit.source).toBe(declared ? "header" : "plausibility");
+    });
+    if (!declared) {
+      it(`${f.name}: confirming millimetres gives the same walls (within 1e-6 relative) and clears the flag`, () => {
+        const c = parseDxf(text, { confirmedUnit: "millimetre" });
+        expect(unitNeedsConfirmation(c.meta)).toBe(false);
+        expect(Math.abs(total(c.geometry) / total(geometry) - 1)).toBeLessThan(1e-6);
+      });
+      it(`${f.name}: confirming a different unit changes the geometry by exactly that ratio`, () => {
+        const cm = parseDxf(text, { confirmedUnit: "centimetre" });
+        expect(total(cm.geometry) / total(geometry)).toBeCloseTo(10, 5);
+        expect(cm.meta.unit).toMatchObject({ unit: "centimetre", source: "user", suggestedUnit: "millimetre" });
+      });
+    }
+  }
 });
