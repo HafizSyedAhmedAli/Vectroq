@@ -1,7 +1,12 @@
 // packages/cad-parser/src/parse-dxf.ts
-import type { ConstructionDefaults, Geometry } from "@vectroq/shared-types";
+import type {
+  ConstructionDefaults,
+  Geometry,
+  ParseMeta,
+} from "@vectroq/shared-types";
 import DxfParser from "dxf-parser";
 import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
+import { ParseReport } from "./report";
 
 // $INSUNITS code -> feet per drawing unit
 const FEET_PER_UNIT: Record<number, number> = {
@@ -31,10 +36,25 @@ function scaleEntity(e: any, k: number): RawEntity {
   } as RawEntity;
 }
 
-export function parseDxfToGeometry(
+export interface ParseOptions {
+  construction?: ConstructionDefaults;
+}
+
+export interface ParseResult {
+  geometry: Geometry;
+  meta: ParseMeta;
+}
+
+/**
+ * Parses a DXF into geometry plus a parse report.
+ * Phase 0: geometry is exactly what parseDxfToGeometry always returned; the
+ * meta only records what the legacy code did. Nothing is detected or fixed yet.
+ */
+export function parseDxf(
   dxfText: string,
-  construction?: ConstructionDefaults,
-): Geometry {
+  opts: ParseOptions = {},
+): ParseResult {
+  const report = new ParseReport();
   const parser = new DxfParser();
   const dxf = parser.parseSync(dxfText);
   if (!dxf) {
@@ -59,8 +79,29 @@ export function parseDxfToGeometry(
   ]);
   const maxExtent = coords.length ? Math.max(...coords) : 0;
   const k = feetPerUnit((dxf.header as any)?.$INSUNITS, maxExtent);
-  return dxfToGeometry(
+  const geometry = dxfToGeometry(
     { entities: normalised.map((e) => scaleEntity(e, k)) },
-    construction,
+    opts.construction,
   );
+
+  report.stat("entities", entities.length);
+  report.stat("walls", geometry.walls.length);
+  report.stat("rooms", geometry.rooms.length);
+  report.stat("openings", geometry.openings.length);
+
+  const meta = report.toMeta({
+    feetPerUnit: k,
+    source: "legacy",
+    confidence: "unknown",
+    confirmed: false,
+  });
+  return { geometry, meta };
+}
+
+/** Backward-compatible entry point. Unchanged signature and output. */
+export function parseDxfToGeometry(
+  dxfText: string,
+  construction?: ConstructionDefaults,
+): Geometry {
+  return parseDxf(dxfText, { construction }).geometry;
 }

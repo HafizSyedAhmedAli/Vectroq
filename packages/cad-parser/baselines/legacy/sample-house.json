@@ -1,0 +1,242 @@
+{
+  "walls": [
+    {
+      "id": "wall-0-0",
+      "startX": 0,
+      "startY": 0,
+      "endX": 20,
+      "endY": 0,
+      "length": 20,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-0-1",
+      "startX": 20,
+      "startY": 0,
+      "endX": 20,
+      "endY": 12,
+      "length": 12,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-0-2",
+      "startX": 20,
+      "startY": 12,
+      "endX": 0,
+      "endY": 12,
+      "length": 20,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-0-3",
+      "startX": 0,
+      "startY": 12,
+      "endX": 0,
+      "endY": 0,
+      "length": 12,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-1-0",
+      "startX": 20,
+      "startY": 0,
+      "endX": 35,
+      "endY": 0,
+      "length": 15,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-1-1",
+      "startX": 35,
+      "startY": 0,
+      "endX": 35,
+      "endY": 18,
+      "length": 18,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-1-2",
+      "startX": 35,
+      "startY": 18,
+      "endX": 20,
+      "endY": 18,
+      "length": 15,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-1-3",
+      "startX": 20,
+      "startY": 18,
+      "endX": 20,
+      "endY": 0,
+      "length": 18,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-2-0",
+      "startX": 35,
+      "startY": 0,
+      "endX": 41,
+      "endY": 0,
+      "length": 6,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-2-1",
+      "startX": 41,
+      "startY": 0,
+      "endX": 41,
+      "endY": 8,
+      "length": 8,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-2-2",
+      "startX": 41,
+      "startY": 8,
+      "endX": 35,
+      "endY": 8,
+      "length": 6,
+      "height": 10,
+      "thickness": 0.75
+    },
+    {
+      "id": "wall-2-3",
+      "startX": 35,
+      "startY": 8,
+      "endX": 35,
+      "endY": 0,
+      "length": 8,
+      "height": 10,
+      "thickness": 0.75
+    }
+  ],
+  "rooms": [
+    {
+      "id": "room-0",
+      "name": "Kitchen",
+      "area": 240,
+      "type": "kitchen",
+      "labelX": 5,
+      "labelY": 5,
+      "shapes": [
+        [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 20,
+            "y": 0
+          },
+          {
+            "x": 20,
+            "y": 12
+          },
+          {
+            "x": 0,
+            "y": 12
+          },
+          {
+            "x": 0,
+            "y": 0
+          }
+        ]
+      ]
+    },
+    {
+      "id": "room-1",
+      "name": "Living Room",
+      "area": 270,
+      "type": "general",
+      "labelX": 23,
+      "labelY": 8,
+      "shapes": [
+        [
+          {
+            "x": 20,
+            "y": 0
+          },
+          {
+            "x": 35,
+            "y": 0
+          },
+          {
+            "x": 35,
+            "y": 18
+          },
+          {
+            "x": 20,
+            "y": 18
+          },
+          {
+            "x": 20,
+            "y": 0
+          }
+        ]
+      ]
+    },
+    {
+      "id": "room-2",
+      "name": "Bathroom",
+      "area": 48,
+      "type": "bathroom",
+      "labelX": 37,
+      "labelY": 4,
+      "shapes": [
+        [
+          {
+            "x": 35,
+            "y": 0
+          },
+          {
+            "x": 41,
+            "y": 0
+          },
+          {
+            "x": 41,
+            "y": 8
+          },
+          {
+            "x": 35,
+            "y": 8
+          },
+          {
+            "x": 35,
+            "y": 0
+          }
+        ]
+      ]
+    }
+  ],
+  "openings": [
+    {
+      "id": "door-0",
+      "type": "door",
+      "width": 3,
+      "height": 7,
+      "x": 20,
+      "y": 5.5,
+      "angle": 1.5707963267948966
+    },
+    {
+      "id": "window-0",
+      "type": "window",
+      "width": 4,
+      "height": 4,
+      "x": 0,
+      "y": 5,
+      "angle": -1.5707963267948966
+    }
+  ]
+}

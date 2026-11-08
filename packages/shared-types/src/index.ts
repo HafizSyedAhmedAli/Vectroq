@@ -1,4 +1,5 @@
 import { DEFAULT_ORG_RULES, type OrgRules } from "./org-rules";
+import type { ParseMeta } from "./parse-meta";
 export type Category = "A" | "B" | "C";
 export type EngagementModel = 1 | 2 | 3;
 
@@ -11,6 +12,10 @@ export interface Wall {
   length: number;
   height: number;
   thickness: number;
+  /** Reserved (Phase 3). Not populated yet. */
+  kind?: "exterior" | "interior";
+  inferred?: boolean;
+  source?: "polyline" | "line" | "double-line";
 }
 
 export type RoomType = "bathroom" | "kitchen" | "general";
@@ -29,12 +34,18 @@ export interface Opening {
   openAngle?: number;
   /** Viewer-only passage added to link rooms the drawing does not connect. */
   archway?: boolean;
+  /** Reserved (Phase 5). Not populated yet. */
+  wallId?: string;
+  roomIds?: string[];
+  placed?: boolean;
 }
 
 export interface Geometry {
   walls: Wall[];
   rooms: Room[];
   openings: Opening[];
+   /** Reserved. Phase 0 returns meta from parseDxf() and does NOT store it here. */
+  meta?: ParseMeta;
 }
 
 // Not searched and not required on a rate card. Almost no source publishes
@@ -136,12 +147,6 @@ export const CORE_MATERIAL_TYPES = [
   "steelMaterial",
 ] as const satisfies readonly RateItemType[];
 
-export interface RateCardItem {
-  itemType: RateItemType;
-  unitRate: number;
-  unit: "sqft" | "ton" | "bath" | "1000nos" | "bag" | "cft";
-}
-
 // Default labour rates. They are the same in every city, so they are NEVER
 // searched and never vary by location.
 export const FIXED_LABOUR_TYPES = [
@@ -181,15 +186,6 @@ export function fixedLabourItems(
   ];
 }
 
-export interface Opening {
-  id: string;
-  type: "door" | "window";
-  width: number;
-  height: number;
-  x?: number;
-  y?: number;
-  angle?: number; // midpoint + wall angle, ft
-}
 export interface Room {
   id: string;
   name: string;
@@ -197,9 +193,14 @@ export interface Room {
   type: RoomType;
   labelX?: number;
   labelY?: number;
-  /** Floor outline(s) in feet: one polygon per piece of the room. */
+   /** Floor outline(s) in feet: one polygon per piece of the room. */
   shapes?: { x: number; y: number }[][];
+  /** Reserved (Phase 6). Not populated yet. */
+  netArea?: number;
+  labelConfidence?: number;
 }
 
 export * from "./pakistan-cities";
 export * from "./org-rules";
+export * from "./parse-meta";
+export * from "./invariants";
