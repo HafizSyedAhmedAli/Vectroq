@@ -12,6 +12,7 @@ import type {
 import { NextRequest, NextResponse } from "next/server";
 import { resolveOrgRules } from "@vectroq/shared-types";
 import { audit } from "@/lib/audit";
+import { evaluateUnitGate, publicUnitState } from "@/lib/cad-unit";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -37,6 +38,22 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
       { error: "No CAD file uploaded for this project yet" },
       { status: 404 },
     );
+
+  // Server-side gate: no BOQ from a drawing whose unit is unconfirmed, and none
+  // from a legacy row whose unit was never verified. Runs before rates are
+  // fetched or estimateFromGeometry is called, and writes nothing.
+  const gate = evaluateUnitGate(cadFile.unit);
+  if (!gate.ok) {
+    return NextResponse.json(
+      {
+        error: gate.message,
+        code: "UNIT_CONFIRMATION_REQUIRED",
+        reason: gate.reason,
+        unitState: publicUnitState(gate.state),
+      },
+      { status: 409 },
+    );
+  }
 
   const previousTotal =
     (cadFile.boq as unknown as BOQResult | null)?.total ?? null;

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { BOQResult, Category, Geometry } from "@vectroq/shared-types";
 import { CadReviewPanel } from "@/components/CardReviewPanel";
+import type { PublicUnitState } from "@/lib/cad-unit";
 import { BoqTable } from "@/components/BoqTable";
 import { ViewerPanel } from "@/components/ViewerPanel";
 import { ProjectStepper } from "@/components/ProjectStepper";
@@ -22,6 +23,8 @@ interface ProjectWorkspaceProps {
   projectId: string;
   initialGeometry: Geometry | null;
   initialBoq: BOQResult | null;
+  /** Server-saved unit decision; null = legacy drawing with unverified units. */
+  initialUnit?: PublicUnitState | null;
   initialFileName?: string | null;
   updatedLabel?: string | null;
   livingFloor?: LivingFloor;
@@ -57,6 +60,7 @@ export function ProjectWorkspace({
   projectId,
   initialGeometry,
   initialBoq,
+  initialUnit = null,
   initialFileName = null,
   updatedLabel = null,
   livingFloor = "tile",
@@ -87,6 +91,7 @@ export function ProjectWorkspace({
           projectId={projectId}
           initialGeometry={initialGeometry}
           initialBoq={initialBoq}
+          initialUnit={initialUnit}
           initialFileName={initialFileName}
           showBoq={false}
           onGeometryChange={setGeometry}

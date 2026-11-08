@@ -4,7 +4,7 @@ import { describe, it, expect } from "vitest";
 import { FIXTURES } from "../eval/fixtures";
 import { unitNeedsConfirmation } from "@vectroq/shared-types";
 import { parseDxf, parseDxfToGeometry, feetPerUnit } from "./parse-dxf";
-import { resolveUnits, isPlausibleFootprint, drawingExtents, KNOWN_UNSUPPORTED, UNIT_DEFS } from "./units";
+import { resolveUnits, isPlausibleFootprint, drawingExtents, parseUnitChoice, KNOWN_UNSUPPORTED, UNIT_DEFS } from "./units";
 
 /** Closed rectangle on WALLS (an LWPOLYLINE), optionally with a $INSUNITS header. */
 function rectDxf(w: number, h: number, opts: { insunits?: string; x0?: number; y0?: number } = {}) {
@@ -246,11 +246,42 @@ describe("invalid or unsupported $INSUNITS (L)", () => {
     expect(meta.unit.confirmed).toBe(true);
   });
 
-  it("an implausible explicit header is used as declared but warned about", () => {
+  it("an implausible explicit header is used provisionally, warned about, and REQUIRES confirmation", () => {
     const { lengths, meta } = sides(rectDxf(5, 5, { insunits: "2" }));
-    near(lengths, [5, 5, 5, 5]);
-    expect(meta.unit).toMatchObject({ source: "header", confidence: "medium", needsConfirmation: false });
-    expect(meta.warnings.map((w) => w.code)).toEqual(["UNIT_HEADER_IMPLAUSIBLE"]);
+    near(lengths, [5, 5, 5, 5]); // header factor still applied (provisional)
+    expect(meta.unit).toMatchObject({ source: "header", confidence: "low", needsConfirmation: true, confirmed: false });
+    expect(meta.warnings.map((w) => w.code)).toEqual(["UNIT_HEADER_IMPLAUSIBLE", "UNIT_CONFIRMATION_REQUIRED"]);
+    expect(unitNeedsConfirmation(meta)).toBe(true);
+  });
+
+  it("confirming an implausible explicit header (same or other unit) clears the flag", () => {
+    const same = sides(rectDxf(5, 5, { insunits: "2" }), "foot").meta;
+    expect(unitNeedsConfirmation(same)).toBe(false);
+    expect(same.unit).toMatchObject({ source: "user", unit: "foot" });
+    const other = sides(rectDxf(5, 5, { insunits: "2" }), "metre");
+    near(other.lengths, Array(4).fill(5 * 3.280839895), 1e-6);
+  });
+
+  it("an explicit $INSUNITS = 0 is unitless: same path as a missing header, with its own message", () => {
+    const zero = sides(rectDxf(12, 10, { insunits: "0" }));
+    const missing = sides(rectDxf(12, 10));
+    expect(zero.meta.warnings[0]).toMatchObject({ code: "UNIT_METADATA_MISSING" });
+    expect(zero.meta.warnings[0].message).toContain("$INSUNITS = 0");
+    expect(missing.meta.warnings[0].message).toContain("no $INSUNITS header");
+    expect(zero.meta.unit).toMatchObject({ source: "plausibility", unit: "metre", needsConfirmation: true });
+    near(zero.lengths, missing.lengths, 1e-12);
+  });
+
+  it("a user-confirmed unit that gives an implausible size warns but is still used and clears the flag", () => {
+    const { lengths, meta } = sides(rectDxf(12, 10), "millimetre"); // 12 mm x 10 mm
+    expect(Math.max(...lengths)).toBeCloseTo(12 / 304.8, 9);
+    expect(unitNeedsConfirmation(meta)).toBe(false);
+    expect(meta.unit.source).toBe("user");
+    expect(meta.warnings.map((w) => w.code)).toEqual(["UNIT_METADATA_MISSING", "UNIT_USER_CONFIRMED", "UNIT_CONFIRMED_IMPLAUSIBLE"]);
+  });
+
+  it("a plausible confirmed unit raises no implausibility warning", () => {
+    expect(sides(rectDxf(12, 10), "metre").meta.warnings.map((w) => w.code)).not.toContain("UNIT_CONFIRMED_IMPLAUSIBLE");
   });
 });
 
@@ -319,4 +350,13 @@ describe("fixtures: no silent trusted estimate through the new API", () => {
       });
     }
   }
+});
+
+describe("parseUnitChoice (external input)", () => {
+  it.each([["metre", "metre"], [" Metre ", "metre"], ["6", 6], [6, 6], ["1", 1], ["foot", "foot"]])("%j -> %j", (i, o) => {
+    expect(parseUnitChoice(i)).toBe(o);
+  });
+  it.each(["", "furlong", "3", "99", "-1", "6.5", "mm", null, undefined, {}, [], true, 3.5])("rejects %j", (i) => {
+    expect(() => parseUnitChoice(i)).toThrow(/Unsupported drawing unit/);
+  });
 });

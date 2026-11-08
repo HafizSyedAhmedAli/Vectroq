@@ -20,6 +20,6 @@ Machine-readable copy: `PARSER_BOQ_INVARIANTS` in `@vectroq/shared-types`.
 | INV-2 | **Violated.** Polyline mode counts shared walls once per room; line mode keeps overlapping collinear segments. | I-03, N5 |
 | INV-3 | **Violated.** Open or 2-vertex polylines, wall cavities and plot outlines can become rooms. | I-04, I-06, I-07 |
 | INV-4 | Holds. | |
-| INV-5 | Lengths are converted to feet. Phase 1: explicit units convert exactly; unitless or invalid-unit drawings are flagged (`needsConfirmation`, warnings, candidates) and need user confirmation, but the web app does not enforce that yet (see `docs/dxf-units.md`). Rotation is not applied yet. | I-02 |
+| INV-5 | Lengths are converted to feet. Phase 1: explicit units convert exactly; unitless or invalid-unit drawings are flagged (`needsConfirmation`, warnings, candidates) and need user confirmation, and the web app enforces it server-side: `finalize` returns 409 until the unit is confirmed, and legacy rows without unit state are unverified (see `docs/dxf-units.md`). Rotation is not applied yet. | I-02 |
 
 Each later phase must state which invariants it brings into compliance.

@@ -78,6 +78,13 @@ model CadFile {
   format     String   @default("dxf") // dwg->dxf conversion is not implemented yet — see cad-upload route
   geometry   Json // Geometry shape from @vectroq/shared-types, correctable by the team
   boq        Json? // BOQResult once finalized; null until then
+  // Server-owned unit decision (CadUnitState: ParseUnitInfo + warnings). NEVER
+  // written from a client body. null = legacy row, units never verified: its
+  // existing BOQ is kept, but no new BOQ can be priced until a unit is confirmed.
+  unit       Json?
+  // Private-blob pathname of the original DXF, kept so a unit confirmation can
+  // re-parse the untouched file. null for legacy rows and the bundled sample.
+  dxfBlobKey String?
   uploadedAt DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

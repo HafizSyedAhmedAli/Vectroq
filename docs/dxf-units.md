@@ -34,7 +34,7 @@ Phase 1 originally mislabelled 3 and 7 (and the other valid unsupported codes) a
 ## Decision order
 
 1. **User-confirmed unit** (`ParseOptions.confirmedUnit`, a unit name or `$INSUNITS` code). Always wins, even over a valid header. Source `user`, `confirmed: true`.
-2. **Valid explicit `$INSUNITS`**. Source `header`, confidence `high`. If the drawing then measures as a non-building (outside the plausibility rules below), the header is still used but `UNIT_HEADER_IMPLAUSIBLE` is raised and confidence drops to `medium`. A header is trusted, not verified.
+2. **Valid explicit `$INSUNITS`**. Source `header`, confidence `high`. **If the drawing then measures as a non-building (outside the plausibility rules below), the header is used provisionally but the drawing needs confirmation** (`UNIT_HEADER_IMPLAUSIBLE` + `UNIT_CONFIRMATION_REQUIRED`, confidence `low`): safety over silently pricing a possibly wrong unit. A header is trusted, not verified; a wrong header that still gives a plausible size is not caught.
 3. **Missing, `0` or invalid header**: extents are evaluated (below). The result is **always** `needsConfirmation: true`.
 
 The max-absolute-coordinate heuristic is gone from `parseDxf()`. Dimensions
@@ -51,11 +51,11 @@ The max-absolute-coordinate heuristic is gone from `parseDxf()`. Dimensions
 
 ## Mandatory confirmation
 
-`meta.unit.needsConfirmation && !meta.unit.confirmed` (helper `unitNeedsConfirmation(meta)` in `@vectroq/shared-types`) means: **geometry is provisional and must not feed a trusted BOQ.** `meta.unit.candidates` lists each interpretation with the resulting size in feet and the reason; `meta.warnings` carries `UNIT_METADATA_MISSING` / `UNIT_METADATA_INVALID`, `UNIT_AMBIGUOUS`, `UNIT_CONFIRMATION_REQUIRED`.
+`meta.unit.needsConfirmation && !meta.unit.confirmed` (helper `unitNeedsConfirmation(meta)` in `@vectroq/shared-types`) means: **geometry is provisional and must not feed a trusted BOQ.** `meta.unit.candidates` lists each interpretation with the resulting size in feet and the reason; `meta.warnings` carries `UNIT_METADATA_MISSING` / `UNIT_METADATA_INVALID` / `UNIT_UNSUPPORTED`, `UNIT_AMBIGUOUS`, `UNIT_HEADER_IMPLAUSIBLE`, `UNIT_CONFIRMATION_REQUIRED`.
 
 ## How a confirmed unit is applied
 
-Call `parseDxf(text, { confirmedUnit: "metre" })` (or a code such as `6`). The coordinates are converted with that unit's exact factor, `meta.unit` becomes `{ source: "user", confirmed: true, needsConfirmation: false, unit, feetPerUnit }`, `suggestedUnit` records what the parser would have used, and `UNIT_USER_CONFIRMED` says whether it overrode the header or the suggestion. An unsupported choice throws.
+Call `parseDxf(text, { confirmedUnit: "metre" })` (or a code such as `6`). The coordinates are converted with that unit's exact factor, `meta.unit` becomes `{ source: "user", confirmed: true, needsConfirmation: false, unit, feetPerUnit }`, `suggestedUnit` records what the parser would have used, and `UNIT_USER_CONFIRMED` says whether it overrode the header or the suggestion. An unsupported choice throws. If the confirmed unit gives an implausible building size the unit is still used (it is the user's decision) but `UNIT_CONFIRMED_IMPLAUSIBLE` is raised.
 
 ## Backward compatibility
 
@@ -79,37 +79,31 @@ Drawings they can reject (the true unit is then missing from the plausible list;
 
 Annotations and extents: text and dimension *entities* (TEXT, MTEXT, DIMENSION, INSERT, POINT) are excluded, but dimension *lines* drawn as LINE, title-block frames, grids and hatch lines are ordinary geometry and enlarge the box. A moderate frame or dimension lines did not change the outcome in the probes (the unit stayed plausible), a frame much larger than the building can. No layer filtering is done (layer names are not reliable).
 
-## Application integration: traced workflow and required changes
+## Application integration (Phase 1B, implemented)
 
-Current flow (Phase 1 leaves it unchanged):
+**Storage.** `CadFile.unit` (nullable JSON) holds a `CadUnitState` (`ParseUnitInfo` + warnings + optional `geometryEditedAt`); `CadFile.dxfBlobKey` (nullable text) is the private-blob pathname of the original DXF (`cad-dxf/<projectId>-<suffix>.dxf`, `PLANS_READ_WRITE_TOKEN`, same conventions as lead plans). Both are server-owned and never taken from a request body. `Geometry` is unchanged. Migration `20261108120000_add_cadfile_unit` adds the two columns with no default and no backfill.
 
-| Step | Where | Today |
-|---|---|---|
-| Upload | `CardReviewPanel.handleFileChange` -> `POST /api/projects/[id]/cad-upload` | Sends only `file`. |
-| Parse | `cad-upload/route.ts` calls `parseDxfToGeometry()`; `lib/sample-project.ts` calls it for the bundled sample | Unitless drawings get provisional geometry with no flag. |
-| Persist | `cad-upload` upserts `CadFile.geometry` (and clears `boq`); `PATCH .../geometry` overwrites `CadFile.geometry` and clears `boq`; `sample-project` creates `CadFile` | `CadFile` has no unit field; meta is discarded. |
-| Finalize | `POST .../finalize` loads `CadFile.geometry`, calls `estimateFromGeometry`, saves `CadFile.boq`, sets status `FINALIZED` | No unit check. |
-| BOQ generation | `finalize/route.ts` and `sample-project.ts` (both call `estimateFromGeometry`) | `sample-project` prices immediately. |
-| BOQ consumers | `boq-pdf`, share `boq-pdf`, client page, office pages read `CadFile.boq` | Only read what was stored. |
+**Flow.**
 
-The only way to stop an unconfirmed unitless drawing producing a trusted BOQ is to (a) carry the unit decision to the persistence layer and (b) check it at the two places a BOQ is created. Required changes:
+1. `POST /api/projects/[id]/cad-upload` (multipart `file`, optional `unit`): invalid `unit` -> 422. Parses with `parseDxf()`, stores the original DXF in blob storage (failure -> 502, nothing saved), upserts geometry + unit state + blob key, clears any BOQ, deletes the previously stored DXF blob (best-effort). Returns the geometry and `unitState` (`unit`, `warnings`, `needsConfirmation`, `geometryEdited`, candidates inside `unit`). The blob key is never returned.
+2. `POST /api/projects/[id]/cad-unit` (JSON `{ unit, replaceEditedGeometry? }`): validates the unit (422), reads the original DXF from blob storage (409 `ORIGINAL_DXF_UNAVAILABLE` if absent), refuses with 409 `MANUAL_EDITS_WOULD_BE_LOST` if the geometry has manual edits unless `replaceEditedGeometry === true`, re-parses with `confirmedUnit`, replaces geometry and unit state, clears the BOQ, sets the project back to `CAD_UPLOADED`, audits `CAD_UNIT_CONFIRMED`. The body can carry no geometry or unit state.
+3. `POST /api/projects/[id]/finalize`: reads the persisted unit state first. No state (legacy) or `needsConfirmation && !confirmed` -> 409 `UNIT_CONFIRMATION_REQUIRED` before rates are fetched or `estimateFromGeometry` is called; nothing is written and the project status is unchanged.
+4. `PATCH /api/projects/[id]/geometry`: accepts only walls/rooms/openings (a client `meta`, `unit` or key is dropped), keeps the unit decision unchanged, never confirms, and stamps `geometryEditedAt` when a unit state exists.
+5. `lib/sample-project.ts`: the bundled sample is genuinely millimetres (its own annotations read "12m x 10m", "12000 mm OVERALL WIDTH"), so it is parsed with `confirmedUnit: "millimetre"` and the unit state is persisted. It goes through the same `evaluateUnitGate` before pricing. It has no `dxfBlobKey` (re-upload to change its unit).
+6. UI (`CardReviewPanel` + `UnitConfirmation`): shows warnings, each candidate with its size in feet, lets the user pick a unit (overriding the suggestion), posts to `cad-unit`, shows a confirmed state, disables "Calculate BOQ" while unconfirmed or legacy, asks before replacing unsaved or saved corrections, and shows server errors (including 409). The disabled button only mirrors the server rule.
 
-1. **DB (migration)**: add to `CadFile` a nullable JSON column `unit` (store `meta.unit` and `meta.warnings` for unit codes) or scalar columns `unitSource`, `unitConfirmed`, `unitNeedsConfirmation`. Existing rows: backfill `needsConfirmation = false` (legacy, accepted as is) or `true` if you want old drawings re-reviewed.
-2. **API, `cad-upload`**: switch to `parseDxf()`. Read an optional multipart field `unit` and pass it as `confirmedUnit` (invalid value -> 422). Persist `meta.unit`. Return `{ geometry, unit, warnings }`; do not change status to a state that allows pricing while `unitNeedsConfirmation(meta)`.
-3. **API, new endpoint** (e.g. `POST .../unit`): body `{ unit }`. It must re-parse the original DXF, so the file text must be stored (add `CadFile.dxfText` or object-store key) because geometry is already converted; re-running with `confirmedUnit` replaces geometry and `unit`, and clears `boq`.
-4. **API, `finalize`**: if the stored unit `needsConfirmation && !confirmed`, return 409 `{ code: "UNIT_CONFIRMATION_REQUIRED" }` and do not price.
-5. **API, `geometry` PATCH**: keep the stored unit state. A manual geometry edit does not confirm a unit.
-6. **`sample-project`**: call `parseDxf(text, { construction, confirmedUnit: "millimetre" })` (the bundled sample is known to be mm) so it may price, and persist the confirmed unit.
-7. **UI, `CardReviewPanel`**: when the upload response has `needsConfirmation`, show the candidates (`unit`, size in ft, `reason`) and the warnings, require choosing one (can override the suggestion), call the unit endpoint, and disable the Finalize button until confirmed.
-8. **Tests**: route tests for 409 on finalize, 422 on a bad `unit`, upload with `unit`, sample project confirmed; a panel test for the picker. Existing mocks of `parseDxfToGeometry` in `cad-upload/route.test.ts` and `sample-project.test.ts` must switch to `parseDxf`.
+The BOQ is created in exactly two places, `finalize` and `sample-project`, and both enforce the gate. BOQ readers (PDFs, client page, office pages) only read what was stored.
 
-Until these land, `parseDxfToGeometry` callers remain unprotected: the parser can flag the problem, but the app does not stop on it.
+**Legacy rows (`unit` is null).** Existing finalized projects keep their BOQ untouched (nothing is cleared or backfilled; they are not marked verified). Their unit status is "legacy/unverified": `finalize` returns 409 and prices nothing, so an unfinalized legacy project cannot get a BOQ until the drawing is re-uploaded with a confirmed unit (legacy rows have no stored DXF, so `cad-unit` cannot be used for them). The panel shows "Drawing units not verified" with that instruction.
+
+**Manual edits.** `PATCH geometry` marks the geometry as edited; `cad-unit` then requires an explicit `replaceEditedGeometry: true`. The panel applies the same prompt to unsaved edits.
+
+**Not handled.** DXF blobs of deleted demo organisations and of deleted projects are not removed (the repo has no blob-deletion practice; only a replaced DXF is deleted). Confirming a unit re-reads the file, so it cannot preserve manual corrections (by design: the user must choose to discard them). The `parseDxfToGeometry()` wrapper remains for compatibility but no application code path uses it any more.
 
 ## Limitations
 
 * Plausibility is a size heuristic: a 40 x 30 unitless drawing is genuinely feet *or* metres; very large, very small, multi-building, and fragment drawings can fall outside the ranges (see above).
 * No layer filtering; extents include every drawn LINE/POLYLINE/CIRCLE/ARC.
 * Label areas ("Kitchen 240 sq ft"), `$MEASUREMENT`, and `Lead.coveredAreaSqFt` are not used as independent cues.
-* An explicit header is trusted even when wrong; only an implausible size produces a warning.
+* An explicit header is trusted even when wrong, unless the resulting size is implausible (then confirmation is required). A wrong header that still gives a plausible size is not caught.
 * Paper space, block/INSERT scaling and per-viewport scales are not examined.
-* The web app does not yet enforce confirmation (section above).

@@ -42,7 +42,7 @@ const STEPS = [
   {
     icon: FileUp,
     title: "Upload a plan",
-    text: "Drop in a DXF drawing. Units are detected automatically.",
+    text: "Drop in a DXF drawing. Units are read from the file, and you confirm them when it doesn't say.",
   },
   {
     icon: Ruler,

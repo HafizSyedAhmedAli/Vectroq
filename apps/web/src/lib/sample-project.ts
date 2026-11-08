@@ -1,12 +1,19 @@
 import { prisma } from "@vectroq/db";
 import type { Organization } from "@vectroq/db";
-import { parseDxfToGeometry } from "@vectroq/cad-parser";
+import { parseDxf } from "@vectroq/cad-parser";
 import { estimateFromGeometry } from "@vectroq/rate-cards";
 import { resolveOrgRules, type BOQResult } from "@vectroq/shared-types";
 import { getRateCardWithBasis, RateUnavailableError } from "@/lib/rate-sets";
 import { toRateBasisInfo } from "@/lib/rate-basis";
+import { buildUnitState, evaluateUnitGate } from "@/lib/cad-unit";
 
 export const SAMPLE_PLAN_PATH = "/samples/sample-house-plan.dxf";
+
+// The bundled sample declares no $INSUNITS, but it is genuinely millimetres: its
+// own annotations read "SIMPLE 12m x 10m HOUSE PLAN", "12000 mm OVERALL WIDTH" and
+// "10000 mm OVERALL DEPTH" and its walls span 12000 x 10000. We know this, so we
+// confirm it explicitly (a person did not, but the file's owner is us).
+const SAMPLE_PLAN_UNIT = "millimetre" as const;
 
 /**
  * Creates a sample lead + project, parses the bundled sample plan, and prices
@@ -16,7 +23,11 @@ export async function createSampleProject(org: Organization, origin: string) {
   const res = await fetch(`${origin}${SAMPLE_PLAN_PATH}`);
   if (!res.ok) throw new Error("Sample plan is missing.");
   const rules = resolveOrgRules(org.rules);
-  const geometry = parseDxfToGeometry(await res.text(), rules.construction);
+  const { geometry, meta } = parseDxf(await res.text(), {
+    construction: rules.construction,
+    confirmedUnit: SAMPLE_PLAN_UNIT,
+  });
+  const unitState = buildUnitState(meta);
 
   const city = "Karachi";
   const lead = await prisma.lead.create({
@@ -51,11 +62,16 @@ export async function createSampleProject(org: Organization, origin: string) {
       fileName: "sample-house-plan.dxf",
       format: "dxf",
       geometry: geometry as unknown as object,
+      // Persisted like any upload. No dxfBlobKey: the sample is not stored in
+      // blob storage (re-upload the DXF to change its unit).
+      unit: unitState as unknown as object,
     },
   });
 
   let priced = false;
   try {
+    // Same confirmation rule as /finalize: never price an unconfirmed drawing.
+    if (!evaluateUnitGate(unitState).ok) return { projectId: project.id, priced };
     const resolved = await getRateCardWithBasis(org.id, city, "B", rules);
     const result = estimateFromGeometry({
       geometry,

@@ -25,7 +25,9 @@ interface UnitDef {
  * reference. 0 = unitless. Codes in KNOWN_UNSUPPORTED are valid DXF units that
  * we deliberately do not convert (a house plan is not drawn in miles or
  * angstroms); they raise UNIT_UNSUPPORTED. Anything else (negative, > 24,
- * fractional, non-numeric) is malformed: UNIT_METADATA_INVALID.
+ * non-numeric/NaN, or a non-number) is malformed: UNIT_METADATA_INVALID.
+ * Note: the installed dxf-parser coerces group 70 to an integer, so a
+ * fractional value in the file (e.g. 2.5) arrives as 2 and cannot be detected.
  */
 export const UNIT_DEFS: readonly UnitDef[] = [
   { unit: "inch", insunits: 1, feetPerUnit: 1 / 12, legacyFeetPerUnit: 1 / 12 },
@@ -112,6 +114,24 @@ export function isPlausibleFootprint(widthFt: number, heightFt: number): boolean
     area >= PLAUSIBILITY.minAreaSqFt &&
     area <= PLAUSIBILITY.maxAreaSqFt
   );
+}
+
+/**
+ * Parses a unit choice coming from outside (a form field, JSON body): a unit
+ * name ("metre") or an $INSUNITS code ("6" or 6). Throws on anything else.
+ */
+export function parseUnitChoice(input: unknown): UnitChoice {
+  if (typeof input === "number") {
+    unitDefFor(input);
+    return input;
+  }
+  if (typeof input === "string") {
+    const t = input.trim().toLowerCase();
+    const choice = /^\d+$/.test(t) ? Number(t) : (t as KnownUnit);
+    unitDefFor(choice);
+    return choice;
+  }
+  throw new Error(`Unsupported drawing unit "${String(input)}".`);
 }
 
 /** Resolves a user choice to a unit definition, or throws. */
@@ -356,6 +376,19 @@ export function resolveUnits(input: ResolveUnitsInput): UnitResolution {
       "UNIT_USER_CONFIRMED",
       `Drawing unit confirmed by the user: ${confirmedDef.unit}s.${overridden}`,
     );
+    if (full) {
+      const kc = confirmedDef.feetPerUnit;
+      const fits =
+        isPlausibleFootprint(full.width * kc, full.height * kc) ||
+        (core !== undefined && isPlausibleFootprint(core.width * kc, core.height * kc));
+      if (!fits) {
+        w(
+          "warning",
+          "UNIT_CONFIRMED_IMPLAUSIBLE",
+          `With the confirmed unit (${confirmedDef.unit}s) the drawing measures ${f1(full.width * kc)} x ${f1(full.height * kc)} ft, which is not a typical building footprint. The confirmed unit was used as chosen; double-check it if the quantities look wrong.`,
+        );
+      }
+    }
     const suggestedUnit: UnitName | undefined =
       header.kind === "valid" ? header.def.unit : suggested?.unit;
     return {
@@ -374,30 +407,38 @@ export function resolveUnits(input: ResolveUnitsInput): UnitResolution {
     };
   }
 
-  // 2. Explicit header.
+  // 2. Explicit header. Trusted when the size is plausible. If the drawing then
+  // measures as a non-building, the header is used provisionally but a person
+  // must confirm it (safety over silently pricing a possibly wrong unit).
   if (header.kind === "valid") {
     const k = header.def.feetPerUnit;
-    let confidence: UnitConfidence = "high";
+    let implausible = false;
     if (full && !isPlausibleFootprint(full.width * k, full.height * k)) {
-      const core2 = core && isPlausibleFootprint(core.width * k, core.height * k);
-      if (!core2) {
-        confidence = "medium";
-        w(
-          "warning",
-          "UNIT_HEADER_IMPLAUSIBLE",
-          `$INSUNITS says ${header.def.unit}s, but the drawing then measures ${f1(full.width * k)} x ${f1(full.height * k)} ft, which is not a typical building footprint. The header was used as declared; check the units if the quantities look wrong.`,
-        );
-      }
+      const coreFits =
+        core !== undefined && isPlausibleFootprint(core.width * k, core.height * k);
+      implausible = !coreFits;
+    }
+    if (implausible && full) {
+      w(
+        "warning",
+        "UNIT_HEADER_IMPLAUSIBLE",
+        `$INSUNITS says ${header.def.unit}s, but the drawing then measures ${f1(full.width * k)} x ${f1(full.height * k)} ft, which is not a typical building footprint.`,
+      );
+      w(
+        "warning",
+        "UNIT_CONFIRMATION_REQUIRED",
+        `Please confirm the drawing unit. The header (${header.def.unit}s) was used provisionally, but the resulting size is implausible; it must not be priced until a unit is confirmed.`,
+      );
     }
     return {
       unit: {
         feetPerUnit: k,
         source: "header",
-        confidence,
+        confidence: implausible ? "low" : "high",
         confirmed: false,
         unit: header.def.unit,
         insunits: header.def.insunits,
-        needsConfirmation: false,
+        needsConfirmation: implausible,
         ...base,
       },
       warnings,

@@ -7,7 +7,7 @@ const db = vi.hoisted(() => ({
 }));
 const parse = vi.fn(), estimate = vi.fn(), getRate = vi.fn();
 vi.mock("@vectroq/db", () => ({ prisma: db }));
-vi.mock("@vectroq/cad-parser", () => ({ parseDxfToGeometry: (...a: unknown[]) => parse(...a) }));
+vi.mock("@vectroq/cad-parser", () => ({ parseDxf: (...a: unknown[]) => parse(...a) }));
 vi.mock("@vectroq/rate-cards", () => ({ estimateFromGeometry: (a: unknown) => estimate(a) }));
 vi.mock("@/lib/rate-sets", async (orig) => ({
   ...(await orig<typeof import("@/lib/rate-sets")>()),
@@ -20,10 +20,12 @@ import { RateUnavailableError } from "@/lib/rate-sets";
 
 const org = { id: "o1", rules: null } as never;
 const geometry = { rooms: [] };
+const confirmedUnit = { feetPerUnit: 1 / 304.8, source: "user", confidence: "high", confirmed: true, needsConfirmation: false, unit: "millimetre" };
+const parsed = (unit: object = confirmedUnit) => ({ geometry, meta: { parserVersion: "t", unit, warnings: [{ code: "UNIT_USER_CONFIRMED", severity: "info", message: "m" }], stats: {} } });
 
 beforeEach(() => {
   Object.values(db).forEach((t) => Object.values(t).forEach((f) => f.mockReset()));
-  parse.mockReset().mockReturnValue(geometry);
+  parse.mockReset().mockReturnValue(parsed());
   estimate.mockReset(); getRate.mockReset();
   db.lead.create.mockResolvedValue({ id: "L1" });
   db.project.create.mockResolvedValue({ id: "P1" });
@@ -74,5 +76,26 @@ describe("createSampleProject", () => {
   it("rethrows unexpected errors", async () => {
     getRate.mockImplementation(() => { throw new Error("boom"); });
     await expect(createSampleProject(org, "http://h")).rejects.toThrow("boom");
+  });
+
+  it("parses with the unit confirmed as millimetres and persists that unit (the sample is genuinely mm)", async () => {
+    getRate.mockImplementation(() => { throw new RateUnavailableError("Karachi", "B", "none"); });
+    await createSampleProject(org, "http://h");
+    expect(parse.mock.calls[0][1]).toMatchObject({ confirmedUnit: "millimetre" });
+    const data = db.cadFile.create.mock.calls[0][0].data;
+    expect(data.unit.unit).toMatchObject({ unit: "millimetre", source: "user", confirmed: true });
+    expect(data.unit.warnings[0].code).toBe("UNIT_USER_CONFIRMED");
+    expect(data.dxfBlobKey).toBeUndefined();
+  });
+
+  it("does NOT price when the parser reports an unconfirmed unit (same rule as finalize)", async () => {
+    parse.mockReturnValue(parsed({ ...confirmedUnit, source: "plausibility", confirmed: false, needsConfirmation: true }));
+    getRate.mockResolvedValue({ card: {}, basis: "X" });
+    estimate.mockReturnValue({ total: 99 });
+    await expect(createSampleProject(org, "http://h")).resolves.toEqual({ projectId: "P1", priced: false });
+    expect(getRate).not.toHaveBeenCalled();
+    expect(estimate).not.toHaveBeenCalled();
+    expect(db.cadFile.update).not.toHaveBeenCalled();
+    expect(db.project.update).not.toHaveBeenCalled();
   });
 });

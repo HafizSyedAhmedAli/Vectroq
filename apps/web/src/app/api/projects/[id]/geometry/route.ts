@@ -5,6 +5,7 @@ import { Prisma, prisma } from "@vectroq/db";
 import { getCurrentOrg } from "@/lib/org";
 import { guard } from "@/lib/auth/guard";
 import { audit } from "@/lib/audit";
+import { readUnitState, withGeometryEdited } from "@/lib/cad-unit";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -38,9 +39,26 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
   const clearedTotal =
     (cadFile.boq as { total?: number } | null | undefined)?.total ?? null;
 
+  // Only walls/rooms/openings are accepted from the browser. A client-supplied
+  // `meta` (or anything else) is dropped, and the unit state and original-DXF
+  // key are never taken from the body. An edit never confirms a unit.
+  const { walls, rooms, openings } = geometry;
+  const clean: Geometry = { walls, rooms, openings: openings ?? [] };
+
+  const data: Record<string, unknown> = {
+    geometry: clean as unknown as object,
+    boq: Prisma.JsonNull,
+  };
+  const unitState = readUnitState(cadFile.unit);
+  if (unitState) {
+    // Same unit decision, plus a note that the geometry now has manual edits so
+    // a later unit change cannot silently discard them.
+    data.unit = withGeometryEdited(unitState) as unknown as object;
+  }
+
   const updated = await prisma.cadFile.update({
     where: { projectId },
-    data: { geometry: geometry as unknown as object, boq: Prisma.JsonNull },
+    data,
   });
 
   await audit(g.auth, "GEOMETRY_EDITED", "Project", projectId, {
@@ -49,5 +67,9 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     clearedBoqTotal: clearedTotal,
   });
 
-  return NextResponse.json(updated);
+  const { dxfBlobKey: _key, unit: _unit, ...rest } = updated as typeof updated & {
+    dxfBlobKey?: string | null;
+    unit?: unknown;
+  };
+  return NextResponse.json(rest);
 }

@@ -24,6 +24,7 @@ import { CompanyIllustration } from "@/components/CompanyIllustration";
 import { requirePage } from "@/lib/org";
 import { ShareLinkPanel } from "@/components/ShareLinkPanel";
 import { hasRole } from "@/lib/auth/roles";
+import { publicUnitState, readUnitState } from "@/lib/cad-unit";
 
 export const dynamic = "force-dynamic";
 
@@ -211,6 +212,11 @@ export default async function OfficeProjectPage({
             initialBoq={
               project.cadFile?.boq
                 ? (project.cadFile.boq as unknown as BOQResult)
+                : null
+            }
+            initialUnit={
+              project.cadFile
+                ? publicUnitState(readUnitState(project.cadFile.unit))
                 : null
             }
             initialFileName={project.cadFile?.fileName ?? null}

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveOrgRules } from "@vectroq/shared-types";
-import { parseDxfToGeometry } from "@vectroq/cad-parser";
+import { parseDxf, parseUnitChoice, type UnitChoice } from "@vectroq/cad-parser";
 import { Prisma, prisma } from "@vectroq/db";
 import { guard } from "@/lib/auth/guard";
 import { checkFileContent } from "@/lib/upload-guard";
 import { audit } from "@/lib/audit";
+import { buildUnitState, publicUnitState } from "@/lib/cad-unit";
+import { deleteCadDxf, saveCadDxf } from "@/lib/cad-dxf-store";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -55,14 +57,29 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
     );
   }
 
+  // Optional unit chosen by the user at upload time. Validated here (422);
+  // it is applied by the parser, never copied into stored state directly.
+  let confirmedUnit: UnitChoice | undefined;
+  const unitField = formData.get("unit");
+  if (typeof unitField === "string" && unitField.trim() !== "") {
+    try {
+      confirmedUnit = parseUnitChoice(unitField);
+    } catch (err) {
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Invalid drawing unit." },
+        { status: 422 },
+      );
+    }
+  }
+
   const dxfText = await file.text();
 
-  let geometry;
+  let parsed;
   try {
-    geometry = parseDxfToGeometry(
-      dxfText,
-      resolveOrgRules(g.auth.org.rules).construction,
-    );
+    parsed = parseDxf(dxfText, {
+      construction: resolveOrgRules(g.auth.org.rules).construction,
+      confirmedUnit,
+    });
   } catch (err) {
     return NextResponse.json(
       {
@@ -71,6 +88,25 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       { status: 422 },
     );
   }
+  const { geometry, meta } = parsed;
+  const unitState = buildUnitState(meta);
+
+  // Keep the untouched original so a later unit confirmation can re-parse it.
+  let dxfBlobKey: string;
+  try {
+    dxfBlobKey = await saveCadDxf(projectId, dxfText);
+  } catch (err) {
+    console.error("Could not store the original DXF", err);
+    return NextResponse.json(
+      { error: "Could not store the original drawing. Please try again." },
+      { status: 502 },
+    );
+  }
+
+  const previous = await prisma.cadFile.findUnique({
+    where: { projectId },
+    select: { dxfBlobKey: true },
+  });
 
   const cadFile = await prisma.cadFile.upsert({
     where: { projectId },
@@ -79,13 +115,18 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       fileName: file.name,
       format: "dxf",
       geometry: geometry as unknown as object,
+      unit: unitState as unknown as object,
+      dxfBlobKey,
     },
     update: {
       fileName: file.name,
       geometry: geometry as unknown as object,
+      unit: unitState as unknown as object,
+      dxfBlobKey,
       boq: Prisma.JsonNull,
     },
   });
+  await deleteCadDxf(previous?.dxfBlobKey);
 
   await prisma.project.update({
     where: { id: projectId },
@@ -95,8 +136,19 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   await audit(g.auth, "CAD_UPLOADED", "Project", projectId, {
     fileName: file.name,
     rooms: geometry.rooms.length,
+    unit: unitState.unit.unit ?? "unknown",
+    unitSource: unitState.unit.source,
+    unitNeedsConfirmation: publicUnitState(unitState)?.needsConfirmation,
     note: "Any saved BOQ was cleared",
   });
 
-  return NextResponse.json(cadFile, { status: 200 });
+  // The blob key is internal; the browser gets the unit decision instead.
+  const { dxfBlobKey: _key, unit: _unit, ...rest } = cadFile as typeof cadFile & {
+    dxfBlobKey?: string | null;
+    unit?: unknown;
+  };
+  return NextResponse.json(
+    { ...rest, unitState: publicUnitState(unitState) },
+    { status: 200 },
+  );
 }
