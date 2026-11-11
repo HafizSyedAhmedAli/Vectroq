@@ -8,8 +8,10 @@ import { POST } from "./route";
 vi.mock("@vectroq/db", () => ({
   prisma: {
     project: { findFirst: vi.fn(), update: vi.fn() },
-    cadFile: { findUnique: vi.fn(), update: vi.fn() },
+    cadFile: { findUnique: vi.fn(), updateMany: vi.fn() },
     rateSet: { findFirst: vi.fn().mockResolvedValue(null) },
+    // Interactive transaction: the callback runs against the same mock client.
+    $transaction: vi.fn(),
   },
 }));
 
@@ -130,15 +132,11 @@ function arrange(city: string, unit: unknown = CONFIRMED_UNIT, boq: unknown = nu
     geometry: GEOMETRY,
     unit,
     boq,
+    revision: 3,
+    dxfBlobKey: "cad-dxf/p1-abc.dxf",
   });
-  (prisma.cadFile.update as any).mockImplementation(({ data }: any) =>
-    Promise.resolve({
-      id: "cad_1",
-      projectId: "p1",
-      geometry: GEOMETRY,
-      ...data,
-    }),
-  );
+  (prisma.$transaction as any).mockImplementation((fn: any) => fn(prisma));
+  (prisma.cadFile.updateMany as any).mockResolvedValue({ count: 1 });
 }
 
 describe("POST /api/projects/:id/finalize", () => {
@@ -162,7 +160,7 @@ describe("POST /api/projects/:id/finalize", () => {
 
     const res = await POST(req() as any, ctx("p1"));
     expect(res.status).toBe(404);
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
   });
 
   it("502s with a clear message and saves nothing when no rates exist (no placeholder fallback)", async () => {
@@ -176,7 +174,7 @@ describe("POST /api/projects/:id/finalize", () => {
 
     expect(res.status).toBe(502);
     expect(json.error).toMatch(/multan/i);
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
     expect(prisma.project.update).not.toHaveBeenCalled();
   });
 
@@ -202,10 +200,15 @@ describe("POST /api/projects/:id/finalize", () => {
       isFallback: false,
       origin: "csr",
     });
-    expect(prisma.cadFile.update).toHaveBeenCalledWith({
-      where: { projectId: "p1" },
-      data: { boq: json.boq },
+    expect(prisma.cadFile.updateMany).toHaveBeenCalledWith({
+      where: { projectId: "p1", revision: 3 },
+      data: { boq: json.boq, revision: { increment: 1 } },
     });
+    // The BOQ and the FINALIZED status are written in one transaction.
+    expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    // Server-internal fields never reach the browser.
+    expect(json.dxfBlobKey).toBeUndefined();
+    expect(json.unit).toBeUndefined();
     expect(prisma.project.update).toHaveBeenCalledWith({
       where: { id: "p1" },
       data: { status: "FINALIZED" },
@@ -244,7 +247,7 @@ describe("POST /api/projects/:id/finalize", () => {
     const expectNothingPriced = () => {
       expect(estimateFromGeometry).not.toHaveBeenCalled();
       expect(getRateCardWithBasis).not.toHaveBeenCalled();
-      expect(prisma.cadFile.update).not.toHaveBeenCalled();
+      expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
       expect(prisma.project.update).not.toHaveBeenCalled();
       expect(audit).not.toHaveBeenCalled();
     };

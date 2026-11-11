@@ -376,11 +376,13 @@ export function resolveUnits(input: ResolveUnitsInput): UnitResolution {
       "UNIT_USER_CONFIRMED",
       `Drawing unit confirmed by the user: ${confirmedDef.unit}s.${overridden}`,
     );
+    let confirmedFits = true;
     if (full) {
       const kc = confirmedDef.feetPerUnit;
       const fits =
         isPlausibleFootprint(full.width * kc, full.height * kc) ||
         (core !== undefined && isPlausibleFootprint(core.width * kc, core.height * kc));
+      confirmedFits = fits;
       if (!fits) {
         w(
           "warning",
@@ -395,7 +397,9 @@ export function resolveUnits(input: ResolveUnitsInput): UnitResolution {
       unit: {
         feetPerUnit: confirmedDef.feetPerUnit,
         source: "user",
-        confidence: "high",
+        // Same rule as an implausible explicit header: a size that fails the
+        // plausibility check is low confidence, even though the person chose it.
+        confidence: confirmedFits ? "high" : "low",
         confirmed: true,
         unit: confirmedDef.unit,
         insunits: confirmedDef.insunits,

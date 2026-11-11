@@ -219,6 +219,7 @@ export default async function OfficeProjectPage({
                 ? publicUnitState(readUnitState(project.cadFile.unit))
                 : null
             }
+            initialRevision={project.cadFile?.revision ?? null}
             initialFileName={project.cadFile?.fileName ?? null}
             updatedLabel={
               project.cadFile

@@ -6,7 +6,8 @@ import { POST } from "./route";
 vi.mock("@vectroq/db", () => ({
   prisma: {
     project: { findFirst: vi.fn(), update: vi.fn() },
-    cadFile: { findUnique: vi.fn(), update: vi.fn() },
+    cadFile: { findUnique: vi.fn(), updateMany: vi.fn() },
+    $transaction: vi.fn(),
   },
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
@@ -26,10 +27,17 @@ import { audit } from "@/lib/audit";
 import { readCadDxf } from "@/lib/cad-dxf-store";
 
 const ctx = (id: string) => ({ params: Promise.resolve({ id }) });
-const req = (body: unknown) =>
+// The revision the browser loaded; every confirm request must send it back.
+const REV = 7;
+const req = (body: unknown, expectedRevision: number | null = REV) =>
   new Request("http://localhost/api/projects/p1/cad-unit", {
     method: "POST",
-    body: typeof body === "string" ? body : JSON.stringify(body),
+    body:
+      typeof body === "string"
+        ? body
+        : JSON.stringify(
+            expectedRevision === null ? body : { ...(body as object), expectedRevision },
+          ),
   });
 
 // Unitless 40 x 30 closed room on WALLS: genuinely ambiguous (feet or metres).
@@ -47,12 +55,22 @@ const suggested = {
 
 function arrange(over: Record<string, unknown> = {}) {
   (prisma.project.findFirst as any).mockResolvedValue({ id: "p1" });
-  (prisma.cadFile.findUnique as any).mockResolvedValue({
+  const row = {
     id: "cad_1", projectId: "p1", geometry: { walls: [], rooms: [], openings: [] },
-    boq: { total: 5 }, unit: suggested, dxfBlobKey: "cad-dxf/p1-abc.dxf", ...over,
-  });
+    boq: { total: 5 }, unit: suggested, dxfBlobKey: "cad-dxf/p1-abc.dxf", revision: REV, ...over,
+  };
+  let written: Record<string, unknown> | null = null;
+  // First read returns the row as loaded; the read-back after the conditional
+  // write returns the row with the written data applied.
+  (prisma.cadFile.findUnique as any).mockImplementation(() =>
+    Promise.resolve(written ? { ...row, ...written, revision: (row.revision as number) + 1 } : row),
+  );
   (readCadDxf as any).mockResolvedValue(DXF);
-  (prisma.cadFile.update as any).mockImplementation(({ data }: any) => Promise.resolve({ id: "cad_1", ...data }));
+  (prisma.$transaction as any).mockImplementation((fn: any) => fn(prisma));
+  (prisma.cadFile.updateMany as any).mockImplementation(({ data }: any) => {
+    written = data;
+    return Promise.resolve({ count: 1 });
+  });
 }
 
 describe("POST /api/projects/:id/cad-unit", () => {
@@ -62,7 +80,26 @@ describe("POST /api/projects/:id/cad-unit", () => {
     (guard as any).mockResolvedValueOnce({ ok: false, res: NextResponse.json({ error: "no" }, { status: 403 }) });
     const res = await POST(req({ unit: "foot" }) as any, ctx("p1"));
     expect(res.status).toBe(403);
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
+  });
+
+  it.each([undefined, "7", -1, 2.5, null])("400s without an integer expectedRevision (%j)", async (rev) => {
+    arrange();
+    const body = rev === undefined ? { unit: "foot" } : { unit: "foot", expectedRevision: rev };
+    const res = await POST(req(body, null) as any, ctx("p1"));
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe("CAD_FILE_REVISION_REQUIRED");
+    expect(readCadDxf).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("409s CAD_FILE_REVISION_CONFLICT when the row moved on since the browser loaded it, before reading the DXF", async () => {
+    arrange({ revision: REV + 1 });
+    const res = await POST(req({ unit: "metre" }) as any, ctx("p1"));
+    expect(res.status).toBe(409);
+    expect((await res.json()).code).toBe("CAD_FILE_REVISION_CONFLICT");
+    expect(readCadDxf).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
   });
 
   it("400s on a non-JSON body", async () => {
@@ -74,7 +111,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
     const res = await POST(req({ unit }) as any, ctx("p1"));
     expect(res.status).toBe(422);
     expect(readCadDxf).not.toHaveBeenCalled();
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
   });
 
   it("404s for a missing project or CAD file", async () => {
@@ -90,7 +127,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
     const res = await POST(req({ unit: "foot" }) as any, ctx("p1"));
     expect(res.status).toBe(409);
     expect((await res.json()).code).toBe("ORIGINAL_DXF_UNAVAILABLE");
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
   });
 
   it("409s ORIGINAL_DXF_UNAVAILABLE when the blob has disappeared", async () => {
@@ -98,7 +135,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
     (readCadDxf as any).mockResolvedValue(null);
     const res = await POST(req({ unit: "foot" }) as any, ctx("p1"));
     expect(res.status).toBe(409);
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
   });
 
   it("re-parses the ORIGINAL stored DXF with the chosen unit, replaces geometry, clears the BOQ", async () => {
@@ -109,11 +146,17 @@ describe("POST /api/projects/:id/cad-unit", () => {
     expect(readCadDxf).toHaveBeenCalledWith("cad-dxf/p1-abc.dxf");
     // 40 m = 131.23 ft: the geometry really was re-converted from the raw file
     expect(longest(json.geometry)).toBeCloseTo(40 * 3.280839895, 6);
-    const data = (prisma.cadFile.update as any).mock.calls[0][0].data;
+    const data = (prisma.cadFile.updateMany as any).mock.calls[0][0].data;
     expect(longest(data.geometry)).toBeCloseTo(40 * 3.280839895, 6);
     expect(data.boq).toBe(Prisma.JsonNull);
     expect(data.unit.unit).toMatchObject({ unit: "metre", source: "user", confirmed: true, needsConfirmation: false });
     expect(data.unit.geometryEditedAt).toBeUndefined();
+    expect(prisma.cadFile.updateMany).toHaveBeenCalledWith({
+      where: { projectId: "p1", revision: REV },
+      data: expect.objectContaining({ revision: { increment: 1 } }),
+    });
+    expect(prisma.$transaction).toHaveBeenCalledTimes(1); // row + project status commit together
+    expect(json.revision).toBe(REV + 1);
     expect(prisma.project.update).toHaveBeenCalledWith({ where: { id: "p1" }, data: { status: "CAD_UPLOADED" } });
     expect(json.unitState).toMatchObject({ needsConfirmation: false, geometryEdited: false });
     expect(json.dxfBlobKey).toBeUndefined();
@@ -125,7 +168,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
     const res = await POST(req({ unit: "inch" }) as any, ctx("p1"));
     const json = await res.json();
     expect(longest(json.geometry)).toBeCloseTo(40 / 12, 9);
-    const data = (prisma.cadFile.update as any).mock.calls[0][0].data;
+    const data = (prisma.cadFile.updateMany as any).mock.calls[0][0].data;
     expect(data.unit.unit).toMatchObject({ unit: "inch", source: "user", suggestedUnit: "foot" });
   });
 
@@ -144,7 +187,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
       expect(res.status).toBe(409);
       expect((await res.json()).code).toBe("MANUAL_EDITS_WOULD_BE_LOST");
       expect(readCadDxf).not.toHaveBeenCalled();
-      expect(prisma.cadFile.update).not.toHaveBeenCalled();
+      expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
       expect(prisma.project.update).not.toHaveBeenCalled();
     });
 
@@ -158,7 +201,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
       arrange({ unit: edited });
       const res = await POST(req({ unit: "metre", replaceEditedGeometry: true }) as any, ctx("p1"));
       expect(res.status).toBe(200);
-      const data = (prisma.cadFile.update as any).mock.calls[0][0].data;
+      const data = (prisma.cadFile.updateMany as any).mock.calls[0][0].data;
       expect(data.unit.geometryEditedAt).toBeUndefined();
       expect(audit).toHaveBeenCalledWith(expect.anything(), "CAD_UNIT_CONFIRMED", "Project", "p1", expect.objectContaining({ discardedManualEdits: true }));
     });
@@ -172,7 +215,7 @@ describe("POST /api/projects/:id/cad-unit", () => {
       unitState: { unit: { feetPerUnit: 99, confirmed: true } },
       meta: { unit: { feetPerUnit: 99, confirmed: true } },
     }) as any, ctx("p1"));
-    const data = (prisma.cadFile.update as any).mock.calls[0][0].data;
+    const data = (prisma.cadFile.updateMany as any).mock.calls[0][0].data;
     expect(longest(data.geometry)).toBeCloseTo(40, 9);
     expect(data.unit.unit.feetPerUnit).toBe(1);
   });

@@ -215,8 +215,8 @@ describe("CadReviewPanel", () => {
     it("lets the user override the suggestion; the choice goes to the confirm endpoint and unlocks Calculate", async () => {
       const newGeo = { ...GEOMETRY, walls: [{ ...GEOMETRY.walls[0], length: 131.2 }] };
       mockFetchSequence([
-        { ok: true, json: { geometry: GEOMETRY, unitState: AMBIGUOUS } },
-        { ok: true, json: { geometry: newGeo, unitState: unitState({ source: "user", confirmed: true, unit: "metre", feetPerUnit: 3.28 }) } },
+        { ok: true, json: { geometry: GEOMETRY, unitState: AMBIGUOUS, revision: 4 } },
+        { ok: true, json: { geometry: newGeo, unitState: unitState({ source: "user", confirmed: true, unit: "metre", feetPerUnit: 3.28 }), revision: 5 } },
       ]);
       render(<CadReviewPanel projectId="p1" />);
       await upload();
@@ -228,7 +228,7 @@ describe("CadReviewPanel", () => {
       expect(await screen.findByTestId("unit-confirmed")).toHaveTextContent(/metres.*confirmed by you/i);
       const [url, init] = (fetch as any).mock.calls[1];
       expect(url).toBe("/api/projects/p1/cad-unit");
-      expect(JSON.parse(init.body)).toEqual({ unit: "metre", replaceEditedGeometry: false });
+      expect(JSON.parse(init.body)).toEqual({ unit: "metre", replaceEditedGeometry: false, expectedRevision: 4 });
       expect(calcBtn()).toBeEnabled();
       expect(screen.queryByTestId("unit-picker")).not.toBeInTheDocument();
     });
@@ -251,6 +251,7 @@ describe("CadReviewPanel", () => {
       render(<CadReviewPanel projectId="p1" initialGeometry={GEOMETRY as any} initialUnit={null} />);
       expect(screen.getByTestId("unit-legacy")).toHaveTextContent(/units not verified/i);
       expect(screen.getByTestId("unit-legacy")).toHaveTextContent(/re-upload/i);
+      expect(screen.getByTestId("unit-legacy")).toHaveTextContent(/including any manual corrections/i);
       expect(calcBtn()).toBeDisabled();
     });
 
@@ -263,8 +264,8 @@ describe("CadReviewPanel", () => {
 
     it("asks before discarding UNSAVED corrections, and only replaces them after an explicit decision", async () => {
       mockFetchSequence([
-        { ok: true, json: { geometry: GEOMETRY, unitState: AMBIGUOUS } },
-        { ok: true, json: { geometry: GEOMETRY, unitState: unitState({ source: "user", confirmed: true }) } },
+        { ok: true, json: { geometry: GEOMETRY, unitState: AMBIGUOUS, revision: 4 } },
+        { ok: true, json: { geometry: GEOMETRY, unitState: unitState({ source: "user", confirmed: true }), revision: 5 } },
       ]);
       render(<CadReviewPanel projectId="p1" />);
       await upload();
@@ -278,7 +279,63 @@ describe("CadReviewPanel", () => {
 
       await userEvent.click(screen.getByRole("button", { name: /replace my corrections and apply feet/i }));
       await screen.findByTestId("unit-confirmed");
-      expect(JSON.parse((fetch as any).mock.calls[1][1].body)).toEqual({ unit: "foot", replaceEditedGeometry: true });
+      expect(JSON.parse((fetch as any).mock.calls[1][1].body)).toEqual({ unit: "foot", replaceEditedGeometry: true, expectedRevision: 4 });
+    });
+
+    it("sends the revision it loaded, and the NEW revision from each response on the next request", async () => {
+      mockFetchSequence([
+        { ok: true, json: { geometry: GEOMETRY, unitState: AMBIGUOUS, revision: 4 } },
+        { ok: true, json: { geometry: GEOMETRY, unitState: unitState({ source: "user", confirmed: true }), revision: 5 } },
+        { ok: true, json: { geometry: GEOMETRY, unitState: unitState({ source: "user", confirmed: true }), revision: 6 } },
+      ]);
+      render(<CadReviewPanel projectId="p1" />);
+      await upload();
+      await userEvent.click(await screen.findByRole("button", { name: /confirm unit/i }));
+      await screen.findByTestId("unit-confirmed");
+      await userEvent.click(screen.getByRole("button", { name: /change unit/i }));
+      await userEvent.click(screen.getByRole("radio", { name: /^feet/i }));
+      await userEvent.click(screen.getByRole("button", { name: /confirm unit/i }));
+      await screen.findByTestId("unit-confirmed");
+      const sent = (fetch as any).mock.calls.slice(1).map((c: any[]) => JSON.parse(c[1].body).expectedRevision);
+      expect(sent).toEqual([4, 5]);
+    });
+
+    it("shows the server's revision-conflict message instead of overwriting, and does not change the unit state", async () => {
+      mockFetchSequence([
+        { ok: true, json: { geometry: GEOMETRY, unitState: AMBIGUOUS, revision: 4 } },
+        { ok: false, json: { error: "This drawing was changed somewhere else. Reload the page.", code: "CAD_FILE_REVISION_CONFLICT" } },
+      ]);
+      render(<CadReviewPanel projectId="p1" />);
+      await upload();
+      await userEvent.click(await screen.findByRole("button", { name: /confirm unit/i }));
+      expect(await screen.findByRole("alert")).toHaveTextContent(/changed somewhere else/i);
+      expect(screen.getByTestId("unit-picker")).toBeInTheDocument(); // still unconfirmed
+      expect(calcBtn()).toBeDisabled();
+    });
+
+    it("a confirmed but implausible unit is NOT an unqualified green tick: warning styling and the warning text", async () => {
+      const implausible = unitState(
+        { source: "user", confirmed: true, confidence: "low", unit: "metre", feetPerUnit: 3.28 },
+        { warnings: [{ code: "UNIT_CONFIRMED_IMPLAUSIBLE", severity: "warning", message: "At metres the drawing is 4000 ft wide, which is not a plausible building." }] },
+      );
+      render(<CadReviewPanel projectId="p1" initialGeometry={GEOMETRY as any} initialUnit={implausible as any} />);
+      const box = screen.getByTestId("unit-confirmed");
+      expect(box).toHaveAttribute("data-caution", "true");
+      expect(box).toHaveTextContent(/please double-check/i);
+      expect(screen.getByLabelText("Unit warnings")).toHaveTextContent(/not a plausible building/i);
+      expect(box.className).not.toMatch(/emerald/);
+    });
+
+    it("a clean confirmed unit keeps the plain confirmation", () => {
+      render(<CadReviewPanel projectId="p1" initialGeometry={GEOMETRY as any} initialUnit={CONFIRMED as any} />);
+      expect(screen.getByTestId("unit-confirmed")).not.toHaveAttribute("data-caution");
+      expect(screen.queryByLabelText("Unit warnings")).not.toBeInTheDocument();
+    });
+
+    it("tells the user that changing the unit deletes the saved BOQ, and that re-uploading discards corrections (legacy)", async () => {
+      render(<CadReviewPanel projectId="p1" initialGeometry={GEOMETRY as any} initialUnit={CONFIRMED as any} />);
+      await userEvent.click(screen.getByRole("button", { name: /change unit/i }));
+      expect(screen.getByTestId("unit-picker")).toHaveTextContent(/deletes any saved BOQ/i);
     });
 
     it("cancelling the discard prompt sends nothing", async () => {

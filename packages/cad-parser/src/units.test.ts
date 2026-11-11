@@ -280,6 +280,11 @@ describe("invalid or unsupported $INSUNITS (L)", () => {
     expect(meta.warnings.map((w) => w.code)).toEqual(["UNIT_METADATA_MISSING", "UNIT_USER_CONFIRMED", "UNIT_CONFIRMED_IMPLAUSIBLE"]);
   });
 
+  it("confidence is low for an implausible confirmed unit, matching an implausible explicit header; high otherwise", () => {
+    expect(sides(rectDxf(12, 10), "millimetre").meta.unit.confidence).toBe("low");
+    expect(sides(rectDxf(12, 10), "metre").meta.unit.confidence).toBe("high");
+  });
+
   it("a plausible confirmed unit raises no implausibility warning", () => {
     expect(sides(rectDxf(12, 10), "metre").meta.warnings.map((w) => w.code)).not.toContain("UNIT_CONFIRMED_IMPLAUSIBLE");
   });

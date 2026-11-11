@@ -25,6 +25,7 @@ interface ProjectWorkspaceProps {
   initialBoq: BOQResult | null;
   /** Server-saved unit decision; null = legacy drawing with unverified units. */
   initialUnit?: PublicUnitState | null;
+  initialRevision?: number | null;
   initialFileName?: string | null;
   updatedLabel?: string | null;
   livingFloor?: LivingFloor;
@@ -61,6 +62,7 @@ export function ProjectWorkspace({
   initialGeometry,
   initialBoq,
   initialUnit = null,
+  initialRevision = null,
   initialFileName = null,
   updatedLabel = null,
   livingFloor = "tile",
@@ -92,6 +94,7 @@ export function ProjectWorkspace({
           initialGeometry={initialGeometry}
           initialBoq={initialBoq}
           initialUnit={initialUnit}
+          initialRevision={initialRevision}
           initialFileName={initialFileName}
           showBoq={false}
           onGeometryChange={setGeometry}

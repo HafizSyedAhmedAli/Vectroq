@@ -3,7 +3,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { PATCH } from "./route";
 
 vi.mock("@vectroq/db", () => ({
-  prisma: { cadFile: { findFirst: vi.fn(), update: vi.fn() } },
+  prisma: {
+    cadFile: { findFirst: vi.fn(), findUnique: vi.fn(), updateMany: vi.fn() },
+    $transaction: vi.fn(),
+  },
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
 }));
 
@@ -43,11 +46,26 @@ const VALID_GEOMETRY = {
   openings: [],
 };
 
-function req(body: unknown) {
+// The revision the editor loaded; the route refuses a PATCH without it.
+const LOADED_REVISION = 5;
+
+function req(body: unknown, expectedRevision: number | undefined = LOADED_REVISION) {
   return new Request("http://localhost/api/projects/p1/geometry", {
     method: "PATCH",
-    body: JSON.stringify(body),
+    body: JSON.stringify(
+      body && typeof body === "object" && expectedRevision !== undefined
+        ? { ...body, expectedRevision }
+        : body,
+    ),
   });
+}
+
+// A successful conditional write: the transaction callback runs on the same
+// mock client, updateMany matches one row, and the row is read back.
+function arrangeWrite(row: Record<string, unknown>) {
+  (prisma.$transaction as any).mockImplementation((fn: any) => fn(prisma));
+  (prisma.cadFile.updateMany as any).mockResolvedValue({ count: 1 });
+  (prisma.cadFile.findUnique as any).mockResolvedValue({ id: "cad_1", ...row });
 }
 
 describe("PATCH /api/projects/:id/geometry", () => {
@@ -59,29 +77,57 @@ describe("PATCH /api/projects/:id/geometry", () => {
     expect(res.status).toBe(404);
   });
 
+  it("400s on a body that is not JSON (no unhandled 500)", async () => {
+    const res = await PATCH(
+      new Request("http://localhost/api/projects/p1/geometry", { method: "PATCH", body: "{nope" }) as any,
+      ctx("p1"),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("400s when openings is present but not an array", async () => {
+    const res = await PATCH(req({ ...VALID_GEOMETRY, openings: "x" }) as any, ctx("p1"));
+    expect(res.status).toBe(400);
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
+  });
+
+  it.each([undefined, "5", -1, 1.5, null])("requires an integer expectedRevision (%j)", async (rev) => {
+    (prisma.cadFile.findFirst as any).mockResolvedValue({ id: "cad_1", projectId: "p1", revision: LOADED_REVISION });
+    const body = { ...VALID_GEOMETRY, ...(rev === undefined ? {} : { expectedRevision: rev }) };
+    const res = await PATCH(
+      new Request("http://localhost/x", { method: "PATCH", body: JSON.stringify(body) }) as any,
+      ctx("p1"),
+    );
+    expect(res.status).toBe(400);
+    expect((await res.json()).code).toBe("CAD_FILE_REVISION_REQUIRED");
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
+  });
+
   it("400s on a malformed body", async () => {
     const res = await PATCH(req({ rooms: "nope" }) as any, ctx("p1"));
     expect(res.status).toBe(400);
-    expect(prisma.cadFile.update).not.toHaveBeenCalled();
+    expect(prisma.cadFile.updateMany).not.toHaveBeenCalled();
   });
 
   it("saves the corrected geometry and clears any stale BOQ", async () => {
     (prisma.cadFile.findFirst as any).mockResolvedValue({
       id: "cad_1",
       projectId: "p1",
+      revision: LOADED_REVISION,
     });
-    (prisma.cadFile.update as any).mockResolvedValue({
-      id: "cad_1",
-      geometry: VALID_GEOMETRY,
-      boq: null,
-    });
+    arrangeWrite({ geometry: VALID_GEOMETRY, boq: null, revision: LOADED_REVISION + 1 });
 
     const res = await PATCH(req(VALID_GEOMETRY) as any, ctx("p1"));
     expect(res.status).toBe(200);
-    expect(prisma.cadFile.update).toHaveBeenCalledWith({
-      where: { projectId: "p1" },
-      data: { geometry: VALID_GEOMETRY, boq: Prisma.JsonNull },
+    expect(prisma.cadFile.updateMany).toHaveBeenCalledWith({
+      where: { projectId: "p1", revision: LOADED_REVISION },
+      data: {
+        geometry: VALID_GEOMETRY,
+        boq: Prisma.JsonNull,
+        revision: { increment: 1 },
+      },
     });
+    expect((await res.json()).revision).toBe(LOADED_REVISION + 1);
   });
 
   describe("unit metadata is server-owned", () => {
@@ -90,10 +136,10 @@ describe("PATCH /api/projects/:id/geometry", () => {
       warnings: [{ code: "UNIT_AMBIGUOUS", severity: "warning", message: "m" }],
     };
     const arrange = (unit: unknown) => {
-      (prisma.cadFile.findFirst as any).mockResolvedValue({ id: "cad_1", projectId: "p1", unit, dxfBlobKey: "cad-dxf/p1-abc.dxf", boq: { total: 5 } });
-      (prisma.cadFile.update as any).mockImplementation(({ data }: any) => Promise.resolve({ id: "cad_1", dxfBlobKey: "cad-dxf/p1-abc.dxf", ...data }));
+      (prisma.cadFile.findFirst as any).mockResolvedValue({ id: "cad_1", projectId: "p1", unit, dxfBlobKey: "cad-dxf/p1-abc.dxf", boq: { total: 5 }, revision: LOADED_REVISION });
+      arrangeWrite({ dxfBlobKey: "cad-dxf/p1-abc.dxf", unit, revision: LOADED_REVISION + 1 });
     };
-    const sent = () => (prisma.cadFile.update as any).mock.calls[0][0].data;
+    const sent = () => (prisma.cadFile.updateMany as any).mock.calls[0][0].data;
 
     it("keeps the unit decision unchanged, never confirms it, and leaves the DXF key alone", async () => {
       arrange(UNIT_STATE);

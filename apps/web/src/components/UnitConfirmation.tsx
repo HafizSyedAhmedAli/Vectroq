@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, CircleCheck, Loader2, Ruler } from "lucide-react";
 import type { UnitCandidate, UnitName } from "@vectroq/shared-types";
 import type { PublicUnitState } from "@/lib/cad-unit";
@@ -56,6 +56,8 @@ export function UnitConfirmation({
   onCancelReplace,
 }: Props) {
   const [changing, setChanging] = useState(false);
+  // A new unit state from the server (a confirmation succeeded) closes the picker.
+  useEffect(() => setChanging(false), [state]);
   const suggested = state?.unit.unit && state.unit.unit !== "unknown" ? state.unit.unit : null;
   const [choice, setChoice] = useState<UnitName | null>(null);
   const selected = choice ?? suggested;
@@ -72,7 +74,8 @@ export function UnitConfirmation({
           <span className="font-semibold">Drawing units not verified.</span> This
           drawing was saved before unit checking existed. Any BOQ already saved
           is kept, but a new BOQ cannot be calculated until you re-upload the
-          DXF and confirm its unit.
+          DXF and confirm its unit. Re-uploading replaces the current drawing,
+          including any manual corrections you made to it.
         </p>
       </div>
     );
@@ -86,24 +89,49 @@ export function UnitConfirmation({
     suggested && !candidates.some((c) => c.unit === suggested) ? suggested : null;
 
   if (!showPicker) {
+    // A confirmed unit that the size check doubts (UNIT_CONFIRMED_IMPLAUSIBLE) or
+    // any other warning must not hide behind an unqualified green tick.
+    const caution = warnings.length > 0;
     return (
       <div
         data-testid="unit-confirmed"
-        className="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm text-emerald-900"
+        data-caution={caution ? "true" : undefined}
+        className={`rounded-xl border px-4 py-2.5 text-sm ${
+          caution
+            ? "border-amber-300 bg-amber-50 text-amber-900"
+            : "border-emerald-200 bg-emerald-50 text-emerald-900"
+        }`}
       >
-        <CircleCheck className="size-4 shrink-0" />
-        <span>
-          <span className="font-semibold">Drawing unit: {LABEL[state.unit.unit ?? "unknown"]}</span>{" "}
-          ({describeSource(state)})
-        </span>
-        <button
-          type="button"
-          onClick={() => setChanging(true)}
-          disabled={busy}
-          className="ml-auto cursor-pointer text-xs font-semibold underline disabled:cursor-not-allowed"
-        >
-          Change unit
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          {caution ? (
+            <AlertTriangle className="size-4 shrink-0" />
+          ) : (
+            <CircleCheck className="size-4 shrink-0" />
+          )}
+          <span>
+            <span className="font-semibold">Drawing unit: {LABEL[state.unit.unit ?? "unknown"]}</span>{" "}
+            ({describeSource(state)}
+            {caution ? "; please double-check" : ""})
+          </span>
+          <button
+            type="button"
+            onClick={() => setChanging(true)}
+            disabled={busy}
+            className="ml-auto cursor-pointer text-xs font-semibold underline disabled:cursor-not-allowed"
+          >
+            Change unit
+          </button>
+        </div>
+        {caution && (
+          <ul className="mt-2 space-y-1 text-xs" aria-label="Unit warnings">
+            {warnings.map((w, i) => (
+              <li key={`${w.code}-${i}`} className="flex gap-2">
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+                <span>{w.message}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }
@@ -125,7 +153,7 @@ export function UnitConfirmation({
           <p className="mt-0.5 text-amber-900/90">
             {needs
               ? "The drawing's unit could not be established with certainty. The numbers below are a guess from the drawing's size, not proof. A BOQ cannot be calculated until you confirm the unit."
-              : "Pick a different unit to re-read the original drawing."}
+              : "Pick a different unit to re-read the original drawing. This replaces the current geometry and deletes any saved BOQ; you will need to press “Calculate BOQ” again."}
           </p>
         </div>
       </div>

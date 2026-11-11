@@ -85,6 +85,9 @@ model CadFile {
   // Private-blob pathname of the original DXF, kept so a unit confirmation can
   // re-parse the untouched file. null for legacy rows and the bundled sample.
   dxfBlobKey String?
+  // Optimistic-concurrency counter. Every write to this row advances it, and every
+  // conditional write checks the value its caller loaded (409 CAD_FILE_REVISION_CONFLICT).
+  revision   Int      @default(0)
   uploadedAt DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

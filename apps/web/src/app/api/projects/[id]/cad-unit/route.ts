@@ -13,6 +13,13 @@ import {
   readUnitState,
 } from "@/lib/cad-unit";
 import { readCadDxf } from "@/lib/cad-dxf-store";
+import {
+  parseRevision,
+  revisionConflictResponse,
+  revisionRequiredResponse,
+  updateCadFileAtRevision,
+  withRevisionConflict,
+} from "@/lib/cad-revision";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -23,7 +30,11 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   if (!g.ok) return g.res;
   const { id: projectId } = await params;
 
-  let body: { unit?: unknown; replaceEditedGeometry?: unknown };
+  let body: {
+    unit?: unknown;
+    replaceEditedGeometry?: unknown;
+    expectedRevision?: unknown;
+  };
   try {
     body = await req.json();
   } catch {
@@ -52,6 +63,13 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       { error: "No CAD file uploaded for this project yet" },
       { status: 404 },
     );
+
+  // The revision the browser loaded; the edit check below and the final write
+  // are both pinned to it.
+  const expectedRevision = parseRevision(body?.expectedRevision);
+  if (expectedRevision === null) return revisionRequiredResponse();
+
+  if (cadFile.revision !== expectedRevision) return revisionConflictResponse();
 
   if (!cadFile.dxfBlobKey) {
     return NextResponse.json(
@@ -105,19 +123,32 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   }
   const unitState = buildUnitState(parsed.meta);
 
-  const updated = await prisma.cadFile.update({
-    where: { projectId },
-    data: {
-      geometry: parsed.geometry as unknown as object,
-      unit: unitState as unknown as object,
-      boq: Prisma.JsonNull, // any BOQ priced under another unit is stale
-    },
-  });
-  // The cleared BOQ means the project is no longer finalized.
-  await prisma.project.update({
-    where: { id: projectId },
-    data: { status: "CAD_UPLOADED" },
-  });
+  // One transaction: the conditional CadFile write and the status change commit
+  // together or not at all. The write only matches if the row is still at the
+  // revision this request read (so the edit check, the DXF it re-parsed and the
+  // geometry it replaces all belong to the same revision).
+  const result = await withRevisionConflict(() =>
+    prisma.$transaction(async (tx) => {
+      const row = await updateCadFileAtRevision(
+        tx,
+        projectId,
+        expectedRevision,
+        {
+          geometry: parsed.geometry as unknown as Prisma.InputJsonValue,
+          unit: unitState as unknown as Prisma.InputJsonValue,
+          boq: Prisma.JsonNull, // any BOQ priced under another unit is stale
+        },
+      );
+      // The cleared BOQ means the project is no longer finalized.
+      await tx.project.update({
+        where: { id: projectId },
+        data: { status: "CAD_UPLOADED" },
+      });
+      return row;
+    }),
+  );
+  if (result instanceof NextResponse) return result;
+  const updated = result;
 
   await audit(g.auth, "CAD_UNIT_CONFIRMED", "Project", projectId, {
     unit: unitState.unit.unit,

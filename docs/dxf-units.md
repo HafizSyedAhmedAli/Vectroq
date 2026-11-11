@@ -100,6 +100,45 @@ The BOQ is created in exactly two places, `finalize` and `sample-project`, and b
 
 **Not handled.** DXF blobs of deleted demo organisations and of deleted projects are not removed (the repo has no blob-deletion practice; only a replaced DXF is deleted). Confirming a unit re-reads the file, so it cannot preserve manual corrections (by design: the user must choose to discard them). The `parseDxfToGeometry()` wrapper remains for compatibility but no application code path uses it any more.
 
+## Concurrency (Phase 1B fixes)
+
+`CadFile.revision` is an integer (default 0, migration `20261109120000_add_cadfile_revision`)
+that **every** write to the row advances: geometry PATCH, unit confirmation, upload,
+and the BOQ write in finalize / sample project. A writer reads the row, remembers the
+revision, and writes with `updateMany WHERE projectId AND revision = <remembered>`;
+zero matched rows means someone else wrote first, and the request returns
+**409 `CAD_FILE_REVISION_CONFLICT`** without overwriting anything.
+
+- The browser receives `revision` in every CadFile response it edits from
+  (upload, PATCH, cad-unit, finalize) and must send it back as `expectedRevision`
+  on PATCH and `cad-unit` (400 `CAD_FILE_REVISION_REQUIRED` if missing).
+- **Why the conditional WHERE and not just a transaction:** under Postgres READ
+  COMMITTED an UPDATE locks the row and re-checks its WHERE against the newest committed
+  version, so a stale revision matches nothing. Reading inside a transaction alone would
+  not prevent the race.
+- **Finalize** prices from one snapshot (row + revision), then saves the BOQ *and* sets
+  `FINALIZED` in one transaction, only if the revision is unchanged; otherwise the stale
+  BOQ is discarded (409).
+- **cad-unit and upload** write the row and the project status in one transaction. Upload
+  stores the new blob first, deletes the *previous* blob only after the transaction
+  commits, and deletes the *new* blob if it does not (including a conflict).
+- **Unit gate is fail-closed** (`isTrustedUnit`): trusted only for `source: "user"` with
+  `confirmed: true`, or `source: "header"` with `confirmed: false`, each with
+  `needsConfirmation === false`, a known unit name (never `unknown`) and a positive
+  factor. Phase 0 shapes, `source: "none" | "plausibility" | "legacy"`, missing or
+  non-boolean flags, invented unit names all block (`untrusted-state`).
+- **Sample project** parses the bundled DXF without a unit first and only applies the
+  controlled millimetre confirmation if the parser itself reads it as millimetres at a
+  plausible size; otherwise it is stored unconfirmed and not priced.
+- Upload is rate limited (20/h per user, 60/h per organisation, 10/h for demo orgs);
+  expired-demo cleanup deletes the blobs after the rows.
+
+**Known limits.** Blobs orphaned by a crash between "blob saved" and "transaction
+result" (or by a failed best-effort delete) are not swept automatically; that needs a
+periodic job listing `cad-dxf/` and comparing with `CadFile.dxfBlobKey`. Project
+deletion has no route today; when one is added it must delete the blob. A geometry PATCH
+that clears a BOQ does not change `Project.status` (unchanged pre-existing behaviour).
+
 ## Limitations
 
 * Plausibility is a size heuristic: a 40 x 30 unitless drawing is genuinely feet *or* metres; very large, very small, multi-building, and fragment drawings can fall outside the ranges (see above).
