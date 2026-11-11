@@ -11,7 +11,8 @@ import { verifySamplePlanUnit, SAMPLE_PLAN_UNIT } from "./sample-project";
 import { buildUnitState, evaluateUnitGate } from "./cad-unit";
 
 const FILE = path.join(process.cwd(), "public/samples/sample-house-plan.dxf");
-const text = readFileSync(FILE, "utf8");
+// Git on Windows may check the file out with CRLF; the edits below assume LF.
+const text = readFileSync(FILE, "utf8").replace(/\r\n/g, "\n");
 const construction = undefined as never; // parser default rules
 
 describe("bundled sample-house-plan.dxf", () => {
