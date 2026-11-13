@@ -12,3 +12,5 @@ apps/web/public/lead-plans/
 
 coverage/
 test-results/
+playwright-report/
+blob-report/

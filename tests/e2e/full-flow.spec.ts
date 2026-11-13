@@ -29,8 +29,10 @@ test("owner signs up", async ({ page }) => {
 });
 
 test("a visitor submits the public request form", async ({ page }) => {
+  // The server rejects a lead submitted less than 4 s after the form opened
+  // (MIN_FILL_MS in bot-check.ts). Control the page clock instead of sleeping.
+  await page.clock.install();
   await page.goto(`/c/${slug}`);
-  await page.waitForTimeout(4500); // the form rejects anything submitted in under 4 s
 
   await page.getByLabel(/full name/i).fill(client);
   await page.getByLabel(/contact/i).fill("0300-1234567");
@@ -49,6 +51,9 @@ test("a visitor submits the public request form", async ({ page }) => {
   await page.getByRole("button", { name: /continue/i }).click();
 
   await page.getByRole("checkbox", { name: /agree to be contacted/i }).check();
+  // By now the form has hydrated and recorded when it opened. Jump the clock
+  // past the 4 s minimum so the submission is not treated as a bot.
+  await page.clock.fastForward(5000);
   await page.getByRole("button", { name: /submit project request/i }).click();
   await expect(page.getByText("Thank You!")).toBeVisible();
 });

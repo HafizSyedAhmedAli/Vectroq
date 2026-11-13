@@ -5,12 +5,14 @@
     "test": "pnpm -r run test",
     "test:watch": "pnpm -r run test:watch",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --headed",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report",
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck"
   },
   "devDependencies": {
-    "@playwright/test": "^1.48.0",
+    "@playwright/test": "^1.56.1",
     "@vitest/coverage-v8": "^2.1.9",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0",
