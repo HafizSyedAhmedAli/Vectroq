@@ -18,10 +18,15 @@ test.describe("demo", () => {
     await page.getByRole("button", { name: /start the demo/i }).click();
     await page.waitForURL("**/office/dashboard");
     await page.goto("/office");
-    await page
-      .getByRole("link", { name: /sample client/i })
-      .first()
-      .click();
+    const sampleLink = page.getByRole("link", { name: /sample client/i }).first();
+    const href = await sampleLink.getAttribute("href");
+    expect(href).toBeTruthy();
+    await sampleLink.click();
+    // Wait for the navigation itself. In `next dev` the project page is compiled
+    // on first visit, which can take longer than an assertion timeout.
+    await page.waitForURL(
+      (url) => url.pathname === new URL(href!, page.url()).pathname,
+    );
     await expect(
       page.getByRole("heading", { name: "Bill of Quantities" }),
     ).toBeVisible();

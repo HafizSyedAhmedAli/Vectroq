@@ -53,7 +53,11 @@ test('login with the new account works', async ({ page }) => {
 
 test('wrong password shows an error and stays on /login', async ({ page }) => {
   await login(page, user.email, 'definitely-wrong-password');
-  await expect(page.getByRole('alert')).toContainText('Wrong email or password.');
+  // Next.js also renders an empty role="alert" route announcer, so a bare
+  // getByRole('alert') matches two elements. Select the one with the message.
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'Wrong email or password.' }),
+  ).toBeVisible();
   await expect(page).toHaveURL(/\/login/);
 });
 

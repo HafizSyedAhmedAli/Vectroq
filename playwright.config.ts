@@ -24,7 +24,9 @@ export default defineConfig({
   workers: 1,
   retries: isCI ? 2 : 0,
 
-  timeout: 60_000,
+  // `next dev` compiles each route on its first visit, so a test that opens a
+  // heavy page for the first time needs more headroom than against a build.
+  timeout: useProdServer ? 60_000 : 120_000,
   expect: { timeout: 10_000 },
 
   reporter: [["list"], ["html", { open: "never" }]],

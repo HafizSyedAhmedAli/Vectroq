@@ -122,7 +122,17 @@ pnpm --filter @vectroq/web build
 E2E_PROD=1 pnpm test:e2e          # PowerShell: $env:E2E_PROD="1"; pnpm test:e2e
 ```
 
-## Things that can make a re-run fail
+## Things that can make a run fail
+
+- **First visit is slow in dev mode.** `next dev` compiles each route the first
+  time it is opened, so the first run (and the first visit to a heavy page such as
+  a project) takes much longer than against a build. The tests wait for navigation
+  and responses rather than sleeping, and dev mode gets a 120 s per-test budget
+  (60 s against a build). A run of the whole suite takes several minutes in dev mode.
+- **Turnstile keys in `apps/web/.env`.** If `TURNSTILE_SECRET_KEY` is set, the
+  public request form needs a real Turnstile token, which the test cannot produce,
+  and `full-flow.spec.ts` fails with HTTP 400 from `/api/leads` (the failure message
+  shows the status and body). Leave the key unset for E2E.
 
 - **Rate limits.** All requests from your machine share one IP bucket. Signup is
   limited to 5 per hour (a full run does 3) and demo start to 10 per hour (a run
