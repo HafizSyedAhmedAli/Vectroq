@@ -5,6 +5,7 @@
     "test": "pnpm -r run test",
     "test:watch": "pnpm -r run test:watch",
     "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --headed",
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck"
   },
