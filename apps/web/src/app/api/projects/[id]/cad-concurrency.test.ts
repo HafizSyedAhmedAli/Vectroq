@@ -40,6 +40,15 @@ vi.mock("@vectroq/db", () => {
   const prisma: Record<string, any> = {
     project: {
       findFirst: async () => clone(state.project),
+      updateMany: async ({ where, data }: any) => {
+        if (ctl.failProjectUpdate) throw new Error("project write failed");
+        if (state.project.id !== where.id || (where.status && state.project.status !== where.status))
+          return { count: 0 };
+        const prev = state.project;
+        ctl.journal?.push(() => { state.project = prev; });
+        state.project = { ...state.project, ...data };
+        return { count: 1 };
+      },
       update: async ({ data }: any) => {
         if (ctl.failProjectUpdate) throw new Error("project write failed");
         const prev = state.project;
@@ -182,6 +191,34 @@ describe("stale geometry PATCH", () => {
     expect(row().revision).toBe(1);
     expect((await res.json()).revision).toBe(1);
     expect(row().unit.geometryEditedAt).toBeDefined();
+  });
+});
+
+describe("geometry PATCH on a FINALIZED project (regression)", () => {
+  it("clears the BOQ and demotes FINALIZED to CAD_UPLOADED together", async () => {
+    seed(trusted, { boq: { total: 5 } });
+    h.state.project.status = "FINALIZED";
+    expect((await patch(geo(41), 0)).status).toBe(200);
+    expect(row().boq).toBeNull();
+    expect(h.state.project.status).toBe("CAD_UPLOADED");
+  });
+
+  it("leaves any other status exactly as it was", async () => {
+    seed(trusted);
+    h.state.project.status = "NEW";
+    expect((await patch(geo(41), 0)).status).toBe(200);
+    expect(h.state.project.status).toBe("NEW");
+  });
+
+  it("is atomic: if the status write fails, the BOQ is NOT cleared and the revision does not move", async () => {
+    seed(trusted, { boq: { total: 5 } });
+    h.state.project.status = "FINALIZED";
+    h.ctl.failProjectUpdate = true;
+    await expect(patch(geo(41), 0)).rejects.toThrow("project write failed");
+    expect(row().boq).toEqual({ total: 5 });
+    expect(row().revision).toBe(0);
+    expect(row().geometry.walls[0].length).toBe(40);
+    expect(h.state.project.status).toBe("FINALIZED");
   });
 });
 

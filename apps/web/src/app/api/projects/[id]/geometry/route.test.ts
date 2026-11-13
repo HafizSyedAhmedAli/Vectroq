@@ -5,6 +5,7 @@ import { PATCH } from "./route";
 vi.mock("@vectroq/db", () => ({
   prisma: {
     cadFile: { findFirst: vi.fn(), findUnique: vi.fn(), updateMany: vi.fn() },
+    project: { updateMany: vi.fn() },
     $transaction: vi.fn(),
   },
   Prisma: { JsonNull: Symbol("Prisma.JsonNull") },
@@ -128,6 +129,37 @@ describe("PATCH /api/projects/:id/geometry", () => {
       },
     });
     expect((await res.json()).revision).toBe(LOADED_REVISION + 1);
+  });
+
+  describe("invalidating the BOQ demotes a FINALIZED project (regression)", () => {
+    beforeEach(() => {
+      (prisma.cadFile.findFirst as any).mockResolvedValue({ id: "cad_1", projectId: "p1", revision: LOADED_REVISION, boq: { total: 9 } });
+      arrangeWrite({ geometry: VALID_GEOMETRY, boq: null, revision: LOADED_REVISION + 1 });
+      (prisma.project.updateMany as any).mockReset().mockResolvedValue({ count: 1 });
+    });
+
+    it("moves FINALIZED to CAD_UPLOADED in the same transaction, conditional on FINALIZED", async () => {
+      const res = await PATCH(req(VALID_GEOMETRY) as any, ctx("p1"));
+      expect(res.status).toBe(200);
+      expect(prisma.project.updateMany).toHaveBeenCalledWith({
+        where: { id: "p1", status: "FINALIZED" }, // any other status is left alone
+        data: { status: "CAD_UPLOADED" },
+      });
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not touch the project when the revision is stale (nothing was invalidated)", async () => {
+      const res = await PATCH(req(VALID_GEOMETRY, LOADED_REVISION - 1) as any, ctx("p1"));
+      expect(res.status).toBe(409);
+      expect(prisma.project.updateMany).not.toHaveBeenCalled();
+    });
+
+    it("does not touch the project when the conditional write loses the race", async () => {
+      (prisma.cadFile.updateMany as any).mockResolvedValue({ count: 0 });
+      const res = await PATCH(req(VALID_GEOMETRY) as any, ctx("p1"));
+      expect(res.status).toBe(409);
+      expect(prisma.project.updateMany).not.toHaveBeenCalled();
+    });
   });
 
   describe("unit metadata is server-owned", () => {

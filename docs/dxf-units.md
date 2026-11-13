@@ -133,11 +133,50 @@ zero matched rows means someone else wrote first, and the request returns
 - Upload is rate limited (20/h per user, 60/h per organisation, 10/h for demo orgs);
   expired-demo cleanup deletes the blobs after the rows.
 
+### Revision semantics
+
+`revision` is the version of the **row** a request saw, not a count of user edits.
+It advances on every write to `CadFile`, including the BOQ write in finalize. What it
+guarantees: a request can only write if nothing wrote since it read. Consequences:
+
+- Finalize prices one snapshot and saves only if the row is still at that revision.
+- After a finalize the revision has moved, so another tab that loaded the drawing
+  *before* the finalize gets a 409 on its next edit and must reload. Nothing is lost
+  (the BOQ and geometry are intact); it is deliberately conservative. Not advancing on
+  the BOQ write would also be safe, because every writer of geometry, unit or DXF also
+  clears the BOQ, but that is a behaviour change, so it is a decision, not a bug fix.
+- Every response the editor uses carries the new `revision` (upload, PATCH, cad-unit,
+  finalize) and the page load passes it in; the panel replaces its copy from each.
+- Clearing a BOQ always demotes a FINALIZED project to CAD_UPLOADED in the same
+  transaction: geometry PATCH, unit change and re-upload alike. Other statuses are
+  left unchanged.
+
+### Real-PostgreSQL integration test
+
+`cad-concurrency.test.ts` models the database in memory and proves the *routes'* logic.
+It does not prove PostgreSQL behaviour. `cad-concurrency.pg.test.ts` runs the real
+route handlers against a real PostgreSQL server through the real Prisma client
+(auth, audit, rate limit, blob storage and the rate-card lookup are the only fakes).
+It is skipped unless `TEST_DATABASE_URL` is set, and refuses databases whose name does
+not end in `_test`.
+
+```bash
+createdb vectroq_test
+DATABASE_URL=postgresql://localhost/vectroq_test \
+  pnpm --filter @vectroq/db exec prisma migrate deploy
+TEST_DATABASE_URL=postgresql://localhost/vectroq_test \
+  pnpm --filter web exec vitest run cad-concurrency.pg
+```
+
+It covers: a row-lock wait followed by the READ COMMITTED re-check of the conditional
+UPDATE; simultaneous unit confirmations; upload vs confirmation; finalize vs PATCH
+(deterministic and simultaneous); real rollback using a database trigger that fails the
+second write; and two first uploads racing on the unique `projectId`.
+
 **Known limits.** Blobs orphaned by a crash between "blob saved" and "transaction
 result" (or by a failed best-effort delete) are not swept automatically; that needs a
 periodic job listing `cad-dxf/` and comparing with `CadFile.dxfBlobKey`. Project
-deletion has no route today; when one is added it must delete the blob. A geometry PATCH
-that clears a BOQ does not change `Project.status` (unchanged pre-existing behaviour).
+deletion has no route today; when one is added it must delete the blob.
 
 ## Limitations
 

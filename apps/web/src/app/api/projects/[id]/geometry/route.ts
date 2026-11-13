@@ -80,17 +80,24 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     data.unit = withGeometryEdited(unitState) as unknown as object;
   }
 
-  // Conditional on the revision that was read and checked above. (This route has
-  // never changed Project.status; that is unchanged and listed as a known risk.)
+  // One transaction: the conditional CadFile write (the BOQ is cleared) and, if
+  // the project was FINALIZED, its demotion back to CAD_UPLOADED. A project must
+  // never read FINALIZED while its BOQ is gone. The status update is itself
+  // conditional on FINALIZED, so any other status is left exactly as it was.
   const result = await withRevisionConflict(() =>
-    prisma.$transaction((tx) =>
-      updateCadFileAtRevision(
+    prisma.$transaction(async (tx) => {
+      const row = await updateCadFileAtRevision(
         tx,
         projectId,
         expectedRevision,
         data as Parameters<typeof updateCadFileAtRevision>[3],
-      ),
-    ),
+      );
+      await tx.project.updateMany({
+        where: { id: projectId, status: "FINALIZED" },
+        data: { status: "CAD_UPLOADED" },
+      });
+      return row;
+    }),
   );
   if (result instanceof NextResponse) return result;
   const updated = result;
