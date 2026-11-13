@@ -369,6 +369,37 @@ describe.skipIf(!enabled)("CadFile revision protocol on a real PostgreSQL databa
     expect((await patch(41, 1)).status).toBe(200); // with the current revision the edit goes through
   });
 
+  it("the browser's own flow: upload -> confirm -> save -> finalize, each step using ONLY the revision the previous response returned", async () => {
+    await seed(trusted);
+    await db.cadFile.deleteMany({ where: { projectId } }); // a project with no drawing yet
+    h.blobs.clear();
+
+    const up = await upload(DXF); // first upload
+    expect(up.status).toBe(200);
+    const upBody = await up.json();
+    expect(typeof upBody.revision).toBe("number"); // the panel stores this
+    expect(upBody.dxfBlobKey).toBeUndefined();
+    expect(upBody.unitState.needsConfirmation).toBe(true);
+
+    const conf = await confirm("foot", upBody.revision);
+    expect(conf.status).toBe(200);
+    const confBody = await conf.json();
+    expect(confBody.revision).toBe(upBody.revision + 1);
+
+    const saved = await patch(41, confBody.revision);
+    expect(saved.status).toBe(200);
+    const savedBody = await saved.json();
+    expect(savedBody.revision).toBe(confBody.revision + 1);
+
+    const fin = await finalize();
+    expect(fin.status).toBe(200);
+    const finBody = await fin.json();
+    expect(finBody.revision).toBe(savedBody.revision + 1);
+
+    const reup = await upload(DXF2); // re-upload returns the revision too
+    expect(typeof (await reup.json()).revision).toBe("number");
+  });
+
   it("finalize advances the revision by exactly one and returns it", async () => {
     await seed(trusted);
     const res = await finalize();
