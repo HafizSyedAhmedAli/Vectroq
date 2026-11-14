@@ -306,7 +306,7 @@ Email provider order: SMTP, then Resend, then (development only) print to the co
 ```bash
 pnpm test                                  # unit tests in every package
 pnpm typecheck                             # TypeScript check in every package
-pnpm test:e2e                              # Playwright (needs the dev server on :3000 and a database)
+pnpm e2e:db:up && pnpm test:e2e            # Playwright (starts its own server; needs Docker, see tests/e2e/README.md)
 pnpm --filter @vectroq/web build           # production build
 pnpm --filter @vectroq/boq-engine test     # one package
 
@@ -318,7 +318,7 @@ pnpm --filter @vectroq/web import-rates -- data/pakistan-2026.csv \
 # add --shared instead of --org to load the shared default library
 ```
 
-**End-to-end tests** live in `tests/e2e` (public pages, auth, security, demo flow, office smoke test, the full intake-to-project flow, and the public intake form). See `tests/e2e/README.md`. They need a running app and a throwaway Postgres database, because `auth.spec.ts`, `office-smoke.spec.ts` and `full-flow.spec.ts` create a new account on every run. `lead-intake.spec.ts` needs `E2E_ORG_SLUG`. `playwright.config.ts` currently points at a Chrome install on Windows (`executablePath`); remove that line, or run `pnpm exec playwright install chromium`, on other machines.
+**End-to-end tests** live in `tests/e2e` (public pages, auth, security, demo flow, office smoke test, the full intake-to-project flow, the public intake form, and the CAD upload / unit / geometry / BOQ regression specs). They run against a throwaway Postgres database that the harness resets and seeds itself. See `tests/e2e/README.md` for setup, and the **Continuous integration** section there for what GitHub Actions runs.
 
 ### Data model
 

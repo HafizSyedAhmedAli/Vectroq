@@ -39,13 +39,21 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: isCI ? 2 : 0,
+  // A committed `test.only` must fail CI instead of quietly shrinking the suite.
+  forbidOnly: isCI,
 
   // `next dev` compiles each route on its first visit, so a test that opens a
   // heavy page for the first time needs more headroom than against a build.
   timeout: useProdServer ? 60_000 : 120_000,
   expect: { timeout: 10_000 },
 
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: [
+    ["list"],
+    ["html", { open: "never" }],
+    // CI also writes machine-readable results, so the workflow can fail on any
+    // skipped test and report flaky (retried) ones. See .github/scripts.
+    ...(isCI ? ([["json", { outputFile: "e2e-results.json" }]] as const) : []),
+  ],
 
   webServer: [
     {

@@ -177,3 +177,77 @@ Failure traces/screenshots/videos go to `test-results/`, report to `playwright-r
   (existing behaviour), so W1 checks it after a reload only.
 - Revisions are not shown in the UI; W4/W5 check them through the project API.
 - The lead for CAD tests is inserted directly into the test database, not through the public form.
+
+## Continuous integration (GitHub Actions)
+
+Workflow: `.github/workflows/ci.yml`. It runs on **pull requests to `main`** and on
+**pushes to `main`**; a newer push to the same ref cancels the run in progress.
+It needs **no repository secrets** (only the default read-only token). Every value
+it sets is public and throwaway: the database from `docker-compose.test.yml`
+(`vectroq_test`, name must end in `_test`) and Cloudflare's official Turnstile test
+site key. No Blob, Stripe, email or admin credentials exist in CI.
+
+| Job | Checks | Reproduce locally |
+|---|---|---|
+| Static checks | `pnpm typecheck`; `git diff --check` for the change | `pnpm typecheck` and `git diff --check` |
+| Unit tests | `pnpm test` (the PostgreSQL tests skip themselves here) | `pnpm test` |
+| PostgreSQL integration tests | Real migrations, then `cad-concurrency.pg.test.ts` against real Postgres; **fails if those tests were skipped** (`.github/scripts/assert-pg-ran.mjs`) | see below |
+| Playwright E2E | Production build, then the **whole** suite on Playwright's Chromium; **fails on any failed or skipped test**, warns on tests that only passed on retry (`.github/scripts/e2e-summary.mjs`) | see below |
+
+The four jobs run in parallel on separate runners, each with its own database.
+`forbidOnly` makes a committed `test.only` fail CI. Retries are 2 in CI; a test that
+fails then passes is listed as **Flaky** in the job summary, not hidden.
+
+**PostgreSQL job locally**
+
+```bash
+pnpm e2e:db:up
+DATABASE_URL=postgresql://postgres:test@localhost:54330/vectroq_test \
+DIRECT_URL=postgresql://postgres:test@localhost:54330/vectroq_test \
+  pnpm --filter @vectroq/db exec prisma migrate deploy
+TEST_DATABASE_URL=postgresql://postgres:test@localhost:54330/vectroq_test \
+  pnpm --filter @vectroq/web exec vitest run cad-concurrency.pg
+```
+
+```powershell
+pnpm e2e:db:up
+$env:DATABASE_URL = "postgresql://postgres:test@localhost:54330/vectroq_test"
+$env:DIRECT_URL = $env:DATABASE_URL
+pnpm --filter "@vectroq/db" exec prisma migrate deploy
+$env:TEST_DATABASE_URL = $env:DATABASE_URL
+pnpm --filter "@vectroq/web" exec vitest run cad-concurrency.pg
+```
+
+**E2E job locally (production server, like CI)**
+
+```bash
+pnpm e2e:db:up
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA \
+DATABASE_URL=postgresql://postgres:test@localhost:54330/vectroq_test \
+DIRECT_URL=postgresql://postgres:test@localhost:54330/vectroq_test \
+  pnpm --filter @vectroq/web build
+CI=1 pnpm test:e2e && node .github/scripts/e2e-summary.mjs e2e-results.json
+```
+
+```powershell
+pnpm e2e:db:up
+$env:NEXT_PUBLIC_TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
+$env:DATABASE_URL = "postgresql://postgres:test@localhost:54330/vectroq_test"
+$env:DIRECT_URL = $env:DATABASE_URL
+pnpm --filter "@vectroq/web" build
+$env:CI = "1"; pnpm test:e2e; node .github/scripts/e2e-summary.mjs e2e-results.json
+```
+
+(`CI=1` selects `next start`; without it the suite uses `next dev`. Unset
+`$env:CI`, `$env:DATABASE_URL`, `$env:DIRECT_URL` and the site key afterwards.)
+
+**Inspecting a failed run.** Open the run in the GitHub Actions tab, then the
+**Playwright E2E** job: the summary lists passed / failed / flaky / skipped, and the
+`playwright-report` artifact (kept 14 days) holds the HTML report, `test-results/`
+(traces, screenshots, videos of failures) and `e2e-results.json`. Unzip it, then
+`pnpm exec playwright show-report playwright-report` or
+`pnpm exec playwright show-trace test-results/<test>/trace.zip`. Database logs are
+printed at the end of a failed job.
+
+**CI limitations.** Needs internet from the runner (Turnstile test widget, Prisma and
+Playwright downloads). Actions are pinned to major versions (`@v4`), not commit SHAs.
