@@ -59,16 +59,6 @@ export default defineConfig({
       reuseExistingServer: false,
       env: serverEnv,
       timeout: 120_000,
-      env: useProdServer
-        ? {}
-        : {
-            // Dev mode only: a developer's real Turnstile keys in apps/web/.env would make
-            // every public-form submission fail (a test cannot solve the challenge).
-            // Empty values win over .env, so the form takes the "no keys" path.
-            // Production mode is untouched: it fails closed without a secret on purpose.
-            TURNSTILE_SECRET_KEY: "",
-            NEXT_PUBLIC_TURNSTILE_SITE_KEY: "",
-          },
     },
   ],
 
