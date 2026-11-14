@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // Needs a running app + database (see README.md).
 const stamp = Date.now();

@@ -1,4 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
+import {
+  E2E_BASE_URL,
+  appServerEnv,
+} from "./tests/e2e/support/env";
 
 const isCI = !!process.env.CI;
 
@@ -18,8 +22,14 @@ const chromePath = process.env.PW_CHROME_PATH;
 
 const isHeadedMode = process.argv.includes("--headed");
 
+// Fails here, before anything starts, unless E2E_DATABASE_URL is a local *_test
+// database. The harness never uses DATABASE_URL from your shell or .env.
+const serverEnv = appServerEnv();
+
 export default defineConfig({
   testDir: "./tests/e2e",
+  // Verifies the database, migrates, resets and seeds it (see tests/e2e/support).
+  globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: false,
   workers: 1,
   retries: isCI ? 2 : 0,
@@ -36,9 +46,12 @@ export default defineConfig({
       command: useProdServer
         ? "pnpm -F @vectroq/web start"
         : "pnpm -F @vectroq/web dev",
-      url: "http://localhost:3000",
+      url: E2E_BASE_URL,
       name: "Frontend",
-      reuseExistingServer: !isCI,
+      // Never reuse a server that is already running: its database and keys are
+      // unknown, so it could be pointed at a development database.
+      reuseExistingServer: false,
+      env: serverEnv,
       timeout: 120_000,
       env: useProdServer
         ? {}
@@ -54,7 +67,7 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: E2E_BASE_URL,
     // Failure artifacts land in test-results/ and playwright-report/ (both git-ignored).
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
@@ -62,8 +75,11 @@ export default defineConfig({
   },
 
   projects: [
+    // Signs up the deterministic owner once and saves its session.
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
     {
       name: "chromium",
+      dependencies: ["setup"],
       use: {
         ...devices["Desktop Chrome"],
         launchOptions: {
