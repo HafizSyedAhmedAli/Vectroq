@@ -22,6 +22,12 @@ const chromePath = process.env.PW_CHROME_PATH;
 
 const isHeadedMode = process.argv.includes("--headed");
 
+// Shared by every project, so PW_CHROME_PATH applies to the setup project too.
+const launchOptions = {
+  slowMo: isHeadedMode ? 500 : 0,
+  ...(chromePath ? { executablePath: chromePath } : {}),
+};
+
 // Fails here, before anything starts, unless E2E_DATABASE_URL is a local *_test
 // database. The harness never uses DATABASE_URL from your shell or .env.
 const serverEnv = appServerEnv();
@@ -76,16 +82,17 @@ export default defineConfig({
 
   projects: [
     // Signs up the deterministic owner once and saves its session.
-    { name: "setup", testMatch: /.*\.setup\.ts/ },
+    {
+      name: "setup",
+      testMatch: /.*\.setup\.ts/,
+      use: { ...devices["Desktop Chrome"], launchOptions },
+    },
     {
       name: "chromium",
       dependencies: ["setup"],
       use: {
         ...devices["Desktop Chrome"],
-        launchOptions: {
-          slowMo: isHeadedMode ? 500 : 0,
-          ...(chromePath ? { executablePath: chromePath } : {}),
-        },
+        launchOptions,
       },
     },
   ],
