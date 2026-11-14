@@ -128,6 +128,32 @@ the browser and the server to `challenges.cloudflare.com`. Without it
 | `demo-flow` | starts demo companies (priced from the seed) |
 | `lead-intake` | uses the seeded owner company; **no longer skipped** |
 | `authenticated` | checks the saved session works |
+| `cad-upload` | W1: upload, parse, display, stored original, reload |
+| `cad-unit` | W2: confirm / change unit; W3: finalize refused until confirmed |
+| `cad-geometry` | W4: geometry edit persists; W5: edit invalidates the BOQ |
+
+## CAD specs (W1-W5)
+
+Each test creates its **own** company, owner, lead and project, so tests share no
+data and run in any order. Set-up (not under test): real `POST /api/auth/signup`,
+a lead inserted into the verified test database (the only other route is the public
+form, which needs the Turnstile widget and internet), and real `POST /api/projects`.
+Under test: the real upload, unit, geometry and finalize routes, the parser, the
+E2E DXF folder store, and the project page. Every test checks the UI first and then
+reads what the server saved (`GET /api/projects/:id`) and, for W1, the stored file.
+
+Fixtures are the existing parser fixtures in `packages/cad-parser/fixtures/`,
+unchanged (no new fixture files):
+
+| Fixture | Unit | Used for |
+|---|---|---|
+| `sample-house.dxf` | header `$INSUNITS=2` (feet); needs no confirmation; 3 rooms, 12 walls | W1, W4, W5 |
+| `whole_house_simple_plan.dxf` | no header; parsed as millimetres by plausibility, **needs confirmation**; 7 rooms, 12 walls | W2, W3 |
+
+`apps/web/src/lib/e2e-cad-fixtures.test.ts` (Vitest) fails fast if those facts change.
+Exact geometry, unit maths and BOQ quantities stay in Vitest; the browser tests do
+not assert prices. Stored DXF files live in `.e2e-data/dxf` and are emptied at the
+start of every run.
 
 ## Other commands
 
@@ -147,4 +173,7 @@ Failure traces/screenshots/videos go to `test-results/`, report to `playwright-r
   uploads are blanked, not simulated; features needing them are untested.
 - Rate-limit isolation relies on the app trusting `X-Forwarded-For` (existing behaviour).
 - Specs run serially (1 worker) against one database.
-- CAD upload tests are not part of this phase; the storage seam is ready for them.
+- The project status badge is not refreshed by an upload until the page reloads
+  (existing behaviour), so W1 checks it after a reload only.
+- Revisions are not shown in the UI; W4/W5 check them through the project API.
+- The lead for CAD tests is inserted directly into the test database, not through the public form.

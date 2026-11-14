@@ -142,6 +142,7 @@ export default async function OfficeProjectPage({
               </span>
             )}
             <span
+              data-testid="project-status"
               className={`absolute right-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${status.cls}`}
             >
               {status.label}
