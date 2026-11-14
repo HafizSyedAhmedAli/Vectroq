@@ -1,8 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import {
-  E2E_BASE_URL,
-  appServerEnv,
-} from "./tests/e2e/support/env";
+import { E2E_BASE_URL, appServerEnv } from "./tests/e2e/support/env";
 
 const isCI = !!process.env.CI;
 
@@ -72,6 +69,11 @@ export default defineConfig({
 
   use: {
     baseURL: E2E_BASE_URL,
+    // The app animates scrolling (sticky header, "scroll to BOQ"). Playwright clicks
+    // while the page is still moving, so the sticky header or a table row covers the
+    // target and the click retries until the test times out. Reduced motion turns the
+    // animation off, so scrolling is instant and clicks are deterministic.
+    reducedMotion: "reduce",
     // Failure artifacts land in test-results/ and playwright-report/ (both git-ignored).
     trace: "retain-on-failure",
     screenshot: "only-on-failure",

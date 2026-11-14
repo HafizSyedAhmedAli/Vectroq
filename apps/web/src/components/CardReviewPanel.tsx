@@ -38,6 +38,7 @@ import Link from "next/link";
 import { BoqTable } from "./BoqTable";
 import { UnitConfirmation } from "./UnitConfirmation";
 import type { PublicUnitState } from "@/lib/cad-unit";
+import { scrollToId } from "@/lib/scroll";
 
 interface CadReviewPanelProps {
   projectId: string;
@@ -66,12 +67,7 @@ interface CadReviewPanelProps {
 }
 
 type Status =
-  | "idle"
-  | "uploading"
-  | "reviewing"
-  | "saving"
-  | "calculating"
-  | "confirming";
+  "idle" | "uploading" | "reviewing" | "saving" | "calculating" | "confirming";
 type DragState = { kind: "room" | "wall"; from: number } | null;
 
 function reorder<T>(items: T[], from: number, to: number): T[] {
@@ -139,7 +135,9 @@ export function CadReviewPanel({
 }: CadReviewPanelProps) {
   const [geometry, setGeometry] = useState<Geometry | null>(initialGeometry);
   const [boq, setBoq] = useState<BOQResult | null>(initialBoq);
-  const [unitState, setUnitState] = useState<PublicUnitState | null>(initialUnit);
+  const [unitState, setUnitState] = useState<PublicUnitState | null>(
+    initialUnit,
+  );
   const [revision, setRevision] = useState<number | null>(initialRevision);
   const [pendingReplace, setPendingReplace] = useState<UnitName | null>(null);
   const [drag, setDrag] = useState<DragState>(null);
@@ -347,7 +345,9 @@ export function CadReviewPanel({
         "Unit confirmed and the drawing re-read. Review the quantities, then press “Calculate BOQ”.",
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not apply the unit.");
+      setError(
+        err instanceof Error ? err.message : "Could not apply the unit.",
+      );
     } finally {
       setStatus("reviewing");
     }
@@ -387,11 +387,7 @@ export function CadReviewPanel({
         "BOQ calculated — scroll down to review the priced quantities.",
       );
       // Wait a tick so the BOQ card has rendered, then bring it into view.
-      setTimeout(() => {
-        document
-          .getElementById(boqAnchorId)
-          ?.scrollIntoView?.({ behavior: "smooth", block: "start" });
-      }, 150);
+      setTimeout(() => scrollToId(boqAnchorId), 150);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not calculate the BOQ.",
@@ -501,7 +497,8 @@ export function CadReviewPanel({
         ) : (
           <p className="self-center text-sm text-stone-500">
             Export the plan from AutoCAD as .dxf (.dwg is not supported yet).
-            Units are read from the file when it declares them; otherwise you will be asked to confirm the unit.
+            Units are read from the file when it declares them; otherwise you
+            will be asked to confirm the unit.
           </p>
         )}
       </div>
@@ -533,11 +530,7 @@ export function CadReviewPanel({
           {boq && (
             <button
               type="button"
-              onClick={() =>
-                document
-                  .getElementById(boqAnchorId)
-                  ?.scrollIntoView?.({ behavior: "smooth", block: "start" })
-              }
+              onClick={() => scrollToId(boqAnchorId)}
               className="cursor-pointer whitespace-nowrap font-semibold underline"
             >
               Jump to BOQ

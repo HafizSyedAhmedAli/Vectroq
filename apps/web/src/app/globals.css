@@ -3,8 +3,12 @@
 /* Dark mode is class-based: <html class="dark"> */
 @custom-variant dark (&:where(.dark, .dark *));
 
-html {
-  scroll-behavior: smooth;
+/* Smooth scrolling only for people who have not asked for reduced motion. It also
+   keeps the E2E browser (which requests reduced motion) from clicking mid-scroll. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @theme {
