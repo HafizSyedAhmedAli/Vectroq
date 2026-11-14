@@ -42,9 +42,9 @@ export async function saveCadDxf(projectId: string, dxfText: string): Promise<st
     if (!/^[A-Za-z0-9_-]+$/.test(projectId)) throw new Error("Unsafe project id for the E2E DXF store.");
     const key = `cad-dxf/${projectId}-${randomBytes(6).toString("hex")}.dxf`;
     const file = fsPath(backend.dir, key);
-    await mkdir(resolve(file, ".."), { recursive: true });
-    await writeFile(resolve(backend.dir, MARKER), "vectroq e2e dxf store\n");
-    await writeFile(file, dxfText, "utf8");
+    await mkdir(/*turbopackIgnore: true*/ resolve(file, ".."), { recursive: true });
+    await writeFile(/*turbopackIgnore: true*/ resolve(backend.dir, MARKER), "vectroq e2e dxf store\n");
+    await writeFile(/*turbopackIgnore: true*/ file, dxfText, "utf8");
     return key;
   }
   const blob = await put(`cad-dxf/${projectId}.dxf`, dxfText, {
@@ -60,7 +60,7 @@ export async function readCadDxf(key: string): Promise<string | null> {
   const backend = dxfStorageBackend();
   if (backend.kind === "filesystem") {
     try {
-      return await readFile(fsPath(backend.dir, key), "utf8");
+      return await readFile(/*turbopackIgnore: true*/ fsPath(backend.dir, key), "utf8");
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
       throw err;
@@ -77,7 +77,7 @@ export async function deleteCadDxf(key: string | null | undefined) {
   try {
     const backend = dxfStorageBackend();
     if (backend.kind === "filesystem") {
-      await unlink(fsPath(backend.dir, key)).catch((e) => {
+      await unlink(/*turbopackIgnore: true*/ fsPath(backend.dir, key)).catch((e) => {
         if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
       });
       return;

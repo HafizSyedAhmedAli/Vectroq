@@ -24,6 +24,6 @@ if (stats.expected + stats.unexpected + stats.flaky + stats.skipped === 0) {
   console.error("::error::No tests ran."); bad = true;
 }
 if (stats.unexpected > 0) { console.error(`::error::${stats.unexpected} test(s) failed.`); bad = true; }
-if (stats.skipped > 0) { console.error(`::error::${stats.skipped} test(s) were skipped. The suite must not skip silently.`); bad = true; }
+if (stats.skipped > 0) { console.error(`::error::${stats.skipped} test(s) were skipped or did not run (for example because an earlier setup test failed). The suite must not skip silently.`); bad = true; }
 if (stats.flaky > 0) console.warn(`::warning::${stats.flaky} test(s) only passed on retry (flaky). Investigate.`);
 process.exit(bad ? 1 : 0);
