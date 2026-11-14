@@ -11,14 +11,18 @@
     "build": "pnpm -r run build",
     "typecheck": "pnpm -r run typecheck",
     "e2e:db:up": "docker compose -f docker-compose.test.yml up -d --wait",
-    "e2e:db:down": "docker compose -f docker-compose.test.yml down"
+    "e2e:db:down": "docker compose -f docker-compose.test.yml down",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
+    "@types/node": "^20.17.6",
     "@vitest/coverage-v8": "^2.1.9",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.10.1",
     "typescript": "^5.6.0",
-    "vitest": "^2.1.0",
-    "@types/node": "^20.17.6"
+    "vitest": "^2.1.0"
   },
   "packageManager": "pnpm@10.25.0",
   "pnpm": {
@@ -29,5 +33,8 @@
       "prisma",
       "sharp"
     ]
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,css,yml,yaml}": "prettier --write --ignore-unknown"
   }
 }

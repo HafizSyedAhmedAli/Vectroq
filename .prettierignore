@@ -1,0 +1,19 @@
+node_modules
+.next
+.turbo
+coverage
+dist
+pnpm-lock.yaml
+next-env.d.ts
+# generated or test output
+test-results
+playwright-report
+blob-report
+e2e-results.json
+pg-results.json
+.e2e-data
+tests/e2e/.auth
+# database migrations are generated SQL
+packages/db/prisma/migrations
+# data fixtures
+*.dxf
