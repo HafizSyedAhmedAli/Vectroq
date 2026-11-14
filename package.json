@@ -9,7 +9,9 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
     "build": "pnpm -r run build",
-    "typecheck": "pnpm -r run typecheck"
+    "typecheck": "pnpm -r run typecheck",
+    "e2e:db:up": "docker compose -f docker-compose.test.yml up -d --wait",
+    "e2e:db:down": "docker compose -f docker-compose.test.yml down"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",

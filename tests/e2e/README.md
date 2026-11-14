@@ -1,144 +1,150 @@
 # E2E tests (Playwright)
 
-Browser tests for the whole app. They need a running app **and a real PostgreSQL
-database**. Use a throwaway database: the specs create accounts, companies, leads
-and projects, and nothing is cleaned up afterwards.
+Browser tests for the whole app. They need **Docker** (for a throwaway PostgreSQL)
+and an app server, which the config starts for you.
 
-## Specs
+The harness is built to be safe and repeatable:
 
-| File | Needs |
-|---|---|
-| `public-pages.spec.ts` | the app (the 404 check also needs the DB) |
-| `security.spec.ts` | the app + DB |
-| `auth.spec.ts` | the app + DB (signs up a new account every run) |
-| `demo-flow.spec.ts` | the app + DB (starts demo companies) |
-| `office-smoke.spec.ts` | the app + DB (signs up a new account every run) |
-| `full-flow.spec.ts` | the app + DB (signup, public request form, lead to project) |
-| `lead-intake.spec.ts` | the app + DB + `E2E_ORG_SLUG`; **skipped** when it is not set |
+- It uses its **own** database (`E2E_DATABASE_URL`) and refuses to run unless that
+  is a local database whose name ends in `_test`. It never reads `DATABASE_URL`
+  from your shell or `apps/web/.env`.
+- Every run migrates, **empties and re-seeds** that database first, so no run
+  depends on leftovers.
+- The app server is started with its own environment (test DB, test DXF storage,
+  Turnstile test keys, all external service keys blank). Your real keys in
+  `apps/web/.env` are never used and never changed.
 
 ## Prerequisites
 
-- Node.js 20 or newer, and pnpm 10.25 (see `packageManager` in `package.json`)
-- Docker (only for the ready-made test database below; any PostgreSQL works)
-- `pnpm install` run at the repository root
+- Node.js 20+, pnpm 10.25, `pnpm install` at the repo root
+- Docker (Docker Desktop on Windows)
+- A browser: `pnpm exec playwright install chromium`, or set `PW_CHROME_PATH`
+- Internet access (Cloudflare Turnstile test widget, see below)
+- **Stop any dev server on port 3000.** The harness never reuses a running server
+  (its database would be unknown). Use `E2E_PORT=3100` to run on another port,
+  but Next.js allows only one `next dev` per checkout.
 
-## 1. Database
-
-The repo ships a throwaway PostgreSQL 17 in `docker-compose.test.yml`. Its data
-lives in tmpfs, so **stopping it wipes everything**, which is the easiest way to get
-a clean database.
-
-```bash
-docker compose -f docker-compose.test.yml up -d --wait
-```
-
-That gives you `postgresql://postgres:test@localhost:54330/vectroq_test`. The
-Prisma schema needs both `DATABASE_URL` and `DIRECT_URL`. Create `apps/web/.env`
-(copy `apps/web/.env.example`) and set:
-
-```
-DATABASE_URL=postgresql://postgres:test@localhost:54330/vectroq_test
-DIRECT_URL=postgresql://postgres:test@localhost:54330/vectroq_test
-```
-
-Then apply the migrations (the variables must be set in your shell for this command;
-Git Bash / WSL shown, PowerShell below):
+## Quick start
 
 ```bash
-export DATABASE_URL=postgresql://postgres:test@localhost:54330/vectroq_test
-export DIRECT_URL=$DATABASE_URL
-pnpm --filter @vectroq/db exec prisma migrate deploy
+pnpm e2e:db:up      # starts postgres on localhost:54330 (db vectroq_test)
+pnpm test:e2e       # migrate + reset + seed + run everything
 ```
 
-```powershell
-$env:DATABASE_URL = "postgresql://postgres:test@localhost:54330/vectroq_test"
-$env:DIRECT_URL = $env:DATABASE_URL
-pnpm --filter "@vectroq/db" exec prisma migrate deploy
-```
-
-To start again from a **clean environment**: `docker compose -f docker-compose.test.yml down`,
-then repeat the steps above.
-
-## 2. Browser
-
-Playwright uses its own managed Chromium by default:
-
-```bash
-pnpm exec playwright install chromium
-```
-
-To use a browser you already have instead (for example Chrome on Windows), set
-`PW_CHROME_PATH` to its executable:
+PowerShell (Chrome instead of the managed Chromium):
 
 ```powershell
 $env:PW_CHROME_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+pnpm e2e:db:up
+pnpm test:e2e
 ```
+
+Git Bash: `export PW_CHROME_PATH=/usr/bin/google-chrome` (optional), then the same two commands.
+
+## Running the suite twice on clean environments
 
 ```bash
-export PW_CHROME_PATH=/usr/bin/google-chrome
+pnpm e2e:db:down && pnpm e2e:db:up && pnpm test:e2e   # run 1, brand-new database
+pnpm e2e:db:down && pnpm e2e:db:up && pnpm test:e2e   # run 2, another brand-new database
 ```
 
-## 3. Run
+PowerShell: use `;` instead of `&&` (`pnpm e2e:db:down; pnpm e2e:db:up; pnpm test:e2e`).
+Re-running `pnpm test:e2e` without recreating the container also starts clean,
+because the run itself resets the database.
 
-The config starts the app for you (and reuses one already running on port 3000
-when not in CI).
+## Environment variables
 
-| Command | What it does |
-|---|---|
-| `pnpm test:e2e` | Run everything, headless |
-| `pnpm test:e2e:ui` | Open Playwright UI mode |
-| `pnpm test:e2e:headed` | Run with a visible browser (slowed down) |
-| `pnpm test:e2e:report` | Open the last HTML report |
-| `pnpm exec playwright test tests/e2e/auth.spec.ts` | One spec |
-| `E2E_ORG_SLUG=<slug> pnpm test:e2e` | Also run `lead-intake.spec.ts` (PowerShell: `$env:E2E_ORG_SLUG="<slug>"`) |
-
-On failure, traces, screenshots and videos are kept in `test-results/`, and the
-HTML report is in `playwright-report/` (both are git-ignored). Open a trace with
-`pnpm exec playwright show-trace test-results/<test>/trace.zip`.
-
-## Local development mode vs CI production mode
-
-| | Local (default) | CI, or `E2E_PROD=1` |
+| Variable | Default | Purpose |
 |---|---|---|
-| App command | `next dev` | `next start` |
-| Build needed first | no | **yes**: `pnpm --filter @vectroq/web build` |
-| `NODE_ENV` | development | production |
-| Server already on :3000 | reused | never reused (CI) |
-| Retries | 0 | 2 |
+| `E2E_DATABASE_URL` | `postgresql://postgres:test@localhost:54330/vectroq_test` | Test database. Must be local and end in `_test`, or nothing runs. |
+| `E2E_PORT` | `3000` | App port |
+| `E2E_DXF_STORAGE_DIR` | `.e2e-data/dxf` | Folder standing in for Vercel Blob (git-ignored) |
+| `E2E_ORG_SLUG` | `e2e-owner-co` | Company used by `lead-intake.spec.ts` |
+| `E2E_PROD` | unset | `1` = test `next start` (needs a build, see below) |
+| `PW_CHROME_PATH` | unset | Use an installed browser |
 
-Production mode is what ships, and it behaves differently in ways the tests can
-see:
+Set by the harness for the app server (you do not set these): `VECTROQ_E2E=1`,
+`E2E_DXF_STORAGE=filesystem`, `E2E_DXF_STORAGE_DIR`, `DATABASE_URL`, `DIRECT_URL`,
+`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and blank
+`BLOB_READ_WRITE_TOKEN`, `PLANS_READ_WRITE_TOKEN`, `RESEND_API_KEY`, `SMTP_*`,
+`STRIPE_*`, `PLATFORM_ADMIN_EMAILS`, `CRON_SECRET`.
 
-- Session cookies are `secure`.
-- Turnstile **fails closed** when `TURNSTILE_SECRET_KEY` is not set, so the public
-  request form step in `full-flow.spec.ts` is rejected unless Turnstile keys are
-  configured. Development mode skips the check.
+## Database lifecycle
 
-The build is never run by the test command, so it is not repeated on every run.
-To try production mode locally:
+`global-setup.ts` runs `prisma migrate deploy`, connects, asks the server for
+`current_database()` (must end in `_test`), truncates every table except Prisma's
+migration history, then seeds. If any check fails, nothing is deleted.
+Data from a failed run stays in the database until the next run starts.
 
-```bash
-pnpm --filter @vectroq/web build
-E2E_PROD=1 pnpm test:e2e          # PowerShell: $env:E2E_PROD="1"; pnpm test:e2e
-```
+## Pricing seed
 
-## Things that can make a run fail
+`support/seed.ts` upserts three **shared** approved rate sets (Karachi, categories
+A/B/C), ids `e2e-rateset-karachi-a|b|c`, `approvedBy = "e2e-seed"`. All values are
+invented, not market prices. They make new projects price (the demo sample is
+Karachi / B). Nothing in the app's production code carries these numbers.
 
-- **First visit is slow in dev mode.** `next dev` compiles each route the first
-  time it is opened, so the first run (and the first visit to a heavy page such as
-  a project) takes much longer than against a build. The tests wait for navigation
-  and responses rather than sleeping, and dev mode gets a 120 s per-test budget
-  (60 s against a build). A run of the whole suite takes several minutes in dev mode.
-- **Turnstile keys in `apps/web/.env`.** If `TURNSTILE_SECRET_KEY` is set, the
-  public request form needs a real Turnstile token, which the test cannot produce,
-  and `full-flow.spec.ts` fails with HTTP 400 from `/api/leads` (the failure message
-  shows the status and body). Leave the key unset for E2E.
+## DXF storage (E2E-only)
 
-- **Rate limits.** All requests from your machine share one IP bucket. Signup is
-  limited to 5 per hour (a full run does 3) and demo start to 10 per hour (a run
-  does 3). A second run within the hour can get HTTP 429. Start from a clean
-  database (see Database above), or clear the counters:
-  `docker compose -f docker-compose.test.yml exec pgtest psql -U postgres -d vectroq_test -c 'TRUNCATE "RateLimit"'`
-- **No rates are seeded.** The existing specs do not price a BOQ, so they do not
-  need any. Pricing tests will need a rate set (planned).
-- **Free plan.** New companies are on the Free plan (3 projects a month).
+`apps/web/src/lib/cad-dxf-store.ts` wraps the three blob operations (save, read,
+delete). Production uses Vercel Blob. The folder backend is used **only** when
+`VECTROQ_E2E=1`, `E2E_DXF_STORAGE=filesystem` and `E2E_DXF_STORAGE_DIR` are all set
+**and** `DATABASE_URL`/`DIRECT_URL` are local `*_test` databases **and** no
+`VERCEL*` variable is present. If `E2E_DXF_STORAGE` is set but those conditions are
+not met, uploads throw; they never fall back to Blob or to disk silently. The real
+upload route, validation and parsing run unchanged. Not covered: org logos and
+lead plan files still use Blob (their tokens are blank under E2E).
+
+## Rate-limit isolation
+
+Limits are keyed by client IP (`X-Forwarded-For`). `fixtures.ts` gives every test
+its own address in `2001:db8::/32`, so tests cannot exhaust each other and a new
+run cannot inherit old counters. No production code or limit changed, and there is
+no bypass endpoint. Import `test`/`expect` from `./fixtures`, not `@playwright/test`.
+
+## Authentication
+
+The `setup` project (`auth.setup.ts`) signs up `e2e.owner@example.com` / company
+`E2E Owner Co` (slug `e2e-owner-co`) through the real UI and saves
+`tests/e2e/.auth/owner.json` (git-ignored). Use it with
+`test.use({ storageState: OWNER_STATE })` (see `authenticated.spec.ts`). Specs that
+test signup/login still create their own accounts.
+
+## Turnstile
+
+The app server gets Cloudflare's official always-pass **test** keys (public values,
+not secrets), so the real verification code runs. This needs internet access from
+the browser and the server to `challenges.cloudflare.com`. Without it
+`full-flow.spec.ts` (public form) fails; it is not skipped. Production mode
+(`E2E_PROD=1`): the site key is baked in at build time, so build with
+`NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA pnpm --filter @vectroq/web build`.
+
+## Specs
+
+| File | Notes |
+|---|---|
+| `auth.setup.ts` | `setup` project: creates owner + session |
+| `public-pages`, `security` | app (+ DB for 404 and rate-limit checks) |
+| `auth`, `office-smoke`, `full-flow` | sign up their own accounts |
+| `demo-flow` | starts demo companies (priced from the seed) |
+| `lead-intake` | uses the seeded owner company; **no longer skipped** |
+| `authenticated` | checks the saved session works |
+
+## Other commands
+
+`pnpm test:e2e:ui`, `pnpm test:e2e:headed`, `pnpm test:e2e:report`,
+`pnpm exec playwright test tests/e2e/auth.spec.ts` (setup still runs first).
+Failure traces/screenshots/videos go to `test-results/`, report to `playwright-report/`.
+
+## Dev vs production server
+
+`next dev` by default (compiles routes on first visit; 120 s per-test budget).
+`E2E_PROD=1` or `CI` uses `next start` after `pnpm --filter @vectroq/web build`
+(60 s budget, secure cookies, Turnstile fails closed without a secret).
+
+## Known limitations
+
+- Needs Docker and internet (Turnstile). Email, Stripe and Blob-backed logo/plan
+  uploads are blanked, not simulated; features needing them are untested.
+- Rate-limit isolation relies on the app trusting `X-Forwarded-For` (existing behaviour).
+- Specs run serially (1 worker) against one database.
+- CAD upload tests are not part of this phase; the storage seam is ready for them.

@@ -1,11 +1,17 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
-// Requires an existing company; set E2E_ORG_SLUG to its public form slug
-// (create one by signing up, the slug is shown on the signup form).
-const slug = process.env.E2E_ORG_SLUG;
+import { E2E_OWNER } from './support/env';
+
+// Runs against the owner company the `setup` project creates (E2E_OWNER.slug), so
+// it no longer needs any manual set-up and is never skipped. To point it at a
+// different company, set E2E_ORG_SLUG; an explicitly empty value is an error
+// rather than a silent skip.
+const slug = process.env.E2E_ORG_SLUG ?? E2E_OWNER.slug;
 
 test.describe('public lead intake /c/[slug]', () => {
-  test.skip(!slug, 'Set E2E_ORG_SLUG to run intake tests');
+  test.beforeAll(() => {
+    if (!slug) throw new Error('E2E_ORG_SLUG is set but empty. Unset it to use the default company.');
+  });
 
   test('intake page renders the first step', async ({ page }) => {
     await page.goto(`/c/${slug}`);
