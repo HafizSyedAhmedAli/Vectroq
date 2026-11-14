@@ -1,0 +1,19 @@
+# Throwaway PostgreSQL for the real-database concurrency tests.
+# Not used by the app. Data lives in tmpfs, so `down` wipes it.
+services:
+  pgtest:
+    image: postgres:17-alpine
+    container_name: vectroq-pgtest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: vectroq_test        # the test suite only runs against names ending in _test
+    ports:
+      - "54330:5432"                   # 54330 so it won't clash with a local postgres on 5432
+    tmpfs:
+      - /var/lib/postgresql/data       # fast, and always starts empty
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vectroq_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 20

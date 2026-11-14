@@ -32,11 +32,11 @@ Open `/demo` and press **Start the demo**. You get a private demo company with a
 
 Every company is an **organization**. All leads, projects, drawings, rates and settings belong to one organization and are only visible to its members.
 
-| Role | Can do |
-|---|---|
-| **Owner** | Everything: team and invitations, branding, business rules, billing, audit log, plus all Estimator actions |
+| Role          | Can do                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Owner**     | Everything: team and invitations, branding, business rules, billing, audit log, plus all Estimator actions                     |
 | **Estimator** | Create projects, upload and correct drawings, calculate BOQs, manage rates, create client share links, load the sample project |
-| **Viewer** | Read-only access to projects, BOQs and rates |
+| **Viewer**    | Read-only access to projects, BOQs and rates                                                                                   |
 
 - **Sign up** at `/signup` to create a company (you become its Owner). Email verification and password reset are built in.
 - **Confirm your email** using the banner in the office. Owners must confirm their email before they can invite teammates.
@@ -46,31 +46,31 @@ Every company is an **organization**. All leads, projects, drawings, rates and s
 
 ### Pages
 
-| Page | Address | Used by | Purpose |
-|---|---|---|---|
-| Landing page | `/` | Visitors | Product overview, sample BOQ, pricing, demo, sign-up and login |
-| Live demo | `/demo` | Visitors | Start a private 24-hour demo company |
-| Sign up / Log in | `/signup` · `/login` | Everyone | Create a company / sign in |
-| Password reset | `/forgot-password` · `/reset-password/<token>` | Everyone | Reset a password by email |
-| Email confirmation | `/verify-email/<token>` | Everyone | Confirm an email address |
-| Invitation | `/invite/<token>` | Invitee | Join a company |
-| Company intake form | `/c/<company slug>` | Customers | Submit a project request to that company |
-| Embeddable form | `/embed/<company slug>` | Customers | The same form for an `<iframe>` on the company's own site |
-| Dashboard | `/office/dashboard` | Team | Pipeline summary, onboarding checklist, pending leads, approved rate sets |
-| Projects | `/office` | Team | All projects, with search and filters |
-| Search | `/office/search?q=` | Team | Search projects, leads and rates by client, phone or city |
-| Leads | `/office/leads` | Team | Enquiries that don't have a project yet |
-| Project workspace | `/office/<project id>` | Team | Upload drawing, review, BOQ, 3D model, share link |
-| Printable BOQ | `/office/<project id>/boq` | Team | Print or download the BOQ as PDF |
-| Rates | `/office/rates` | Estimator+ | Import, review and approve rate schedules |
-| Business rules | `/office/rules` | Owner | Tax, labour, construction and material assumptions |
-| Settings | `/office/settings` | Owner | Company branding and the embed snippet |
-| Team | `/office/team` | Owner | Members, roles and invitations |
-| Billing | `/office/billing` | Owner | Plan, usage meters, upgrade and the Stripe billing portal |
-| Audit log | `/office/audit` | Owner | Who changed drawings, BOQs, rates and rules (latest 200 entries) |
-| Account | `/office/account` | Everyone | Change password, verify email |
-| Platform admin | `/office/admin` | Platform admins | Companies per plan, usage and limits. Returns 404 for everyone else |
-| Client page | `/client/<share token>` | Customer | 3D model, cost summary, PDF download (no sign-in) |
+| Page                | Address                                        | Used by         | Purpose                                                                   |
+| ------------------- | ---------------------------------------------- | --------------- | ------------------------------------------------------------------------- |
+| Landing page        | `/`                                            | Visitors        | Product overview, sample BOQ, pricing, demo, sign-up and login            |
+| Live demo           | `/demo`                                        | Visitors        | Start a private 24-hour demo company                                      |
+| Sign up / Log in    | `/signup` · `/login`                           | Everyone        | Create a company / sign in                                                |
+| Password reset      | `/forgot-password` · `/reset-password/<token>` | Everyone        | Reset a password by email                                                 |
+| Email confirmation  | `/verify-email/<token>`                        | Everyone        | Confirm an email address                                                  |
+| Invitation          | `/invite/<token>`                              | Invitee         | Join a company                                                            |
+| Company intake form | `/c/<company slug>`                            | Customers       | Submit a project request to that company                                  |
+| Embeddable form     | `/embed/<company slug>`                        | Customers       | The same form for an `<iframe>` on the company's own site                 |
+| Dashboard           | `/office/dashboard`                            | Team            | Pipeline summary, onboarding checklist, pending leads, approved rate sets |
+| Projects            | `/office`                                      | Team            | All projects, with search and filters                                     |
+| Search              | `/office/search?q=`                            | Team            | Search projects, leads and rates by client, phone or city                 |
+| Leads               | `/office/leads`                                | Team            | Enquiries that don't have a project yet                                   |
+| Project workspace   | `/office/<project id>`                         | Team            | Upload drawing, review, BOQ, 3D model, share link                         |
+| Printable BOQ       | `/office/<project id>/boq`                     | Team            | Print or download the BOQ as PDF                                          |
+| Rates               | `/office/rates`                                | Estimator+      | Import, review and approve rate schedules                                 |
+| Business rules      | `/office/rules`                                | Owner           | Tax, labour, construction and material assumptions                        |
+| Settings            | `/office/settings`                             | Owner           | Company branding and the embed snippet                                    |
+| Team                | `/office/team`                                 | Owner           | Members, roles and invitations                                            |
+| Billing             | `/office/billing`                              | Owner           | Plan, usage meters, upgrade and the Stripe billing portal                 |
+| Audit log           | `/office/audit`                                | Owner           | Who changed drawings, BOQs, rates and rules (latest 200 entries)          |
+| Account             | `/office/account`                              | Everyone        | Change password, verify email                                             |
+| Platform admin      | `/office/admin`                                | Platform admins | Companies per plan, usage and limits. Returns 404 for everyone else       |
+| Client page         | `/client/<share token>`                        | Customer        | 3D model, cost summary, PDF download (no sign-in)                         |
 
 `/request` simply redirects to the default company's intake form (`DEFAULT_ORG_SLUG`).
 
@@ -98,39 +98,39 @@ Check the **City**, **Service type** and **Category**, add optional **Meeting no
 
 Each company defines its own service types and categories on the **Business rules** page. The defaults:
 
-| Service type | Meaning | Default tax |
-|---|---|---|
-| 1 | Land & Build, Then Sell | **15%** |
-| 2 | Construction on Client's Plot | **10%** |
-| 3 | Client's Plot & Construction Cost | **5%** |
+| Service type | Meaning                           | Default tax |
+| ------------ | --------------------------------- | ----------- |
+| 1            | Land & Build, Then Sell           | **15%**     |
+| 2            | Construction on Client's Plot     | **10%**     |
+| 3            | Client's Plot & Construction Cost | **5%**      |
 
 | Category | Default label | Flooring in living areas | False ceiling (Rs/sq ft) |
-|---|---|---|---|
-| A | Premium | Marble | 350 |
-| B | Standard | Tiles | 275 |
-| C | Economy | Tiles | 200 |
+| -------- | ------------- | ------------------------ | ------------------------ |
+| A        | Premium       | Marble                   | 350                      |
+| B        | Standard      | Tiles                    | 275                      |
+| C        | Economy       | Tiles                    | 200                      |
 
 All of these are placeholders. Change them on **Business rules**; the defaults live in `packages/shared-types/src/org-rules.ts`.
 
 ### 3. Upload the drawing
 
-In the project workspace, choose a `.dxf` file (ASCII DXF, up to 10 MB). The system lists the rooms, walls, doors and windows it found. **Only `.dxf` is supported.** For a `.dwg`, use *Save As → AutoCAD DXF* first.
+In the project workspace, choose a `.dxf` file (ASCII DXF, up to 10 MB). The system lists the rooms, walls, doors and windows it found. **Only `.dxf` is supported.** For a `.dwg`, use _Save As → AutoCAD DXF_ first.
 
 Sample drawings:
 
-| File | Contents |
-|---|---|
+| File                                                       | Contents                                                                                                           |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `packages/cad-parser/fixtures/whole_house_simple_plan.dxf` | A 12 m × 10 m house: 7 rooms, 7 doors, 8 windows, in millimetres. Two halves of the house are not joined by a door |
-| `packages/cad-parser/fixtures/whole_house_connected.dxf` | The same house with the connecting door drawn |
-| `packages/cad-parser/fixtures/sample-house.dxf` | 3 rooms, 1 door, 1 window, in feet (closed polylines) |
-| `apps/web/public/samples/sample-house-plan.dxf` | The plan used by the demo and the "Load sample project" button |
+| `packages/cad-parser/fixtures/whole_house_connected.dxf`   | The same house with the connecting door drawn                                                                      |
+| `packages/cad-parser/fixtures/sample-house.dxf`            | 3 rooms, 1 door, 1 window, in feet (closed polylines)                                                              |
+| `apps/web/public/samples/sample-house-plan.dxf`            | The plan used by the demo and the "Load sample project" button                                                     |
 
 **How drawings should be prepared**
 
 - **Layers:** walls on `WALLS`, doors on `DOORS`, windows on `WINDOWS` (case-insensitive; singular also works).
 - **Walls:** draw each room as one closed polyline on `WALLS`, or draw straight horizontal/vertical lines that fully close each room.
 - **Doors and windows:** a line on its layer; the line length is the opening width. A door drawn as a leaf line plus a quarter-circle `ARC` on the door layer is read as a swinging door, so the 3D view shows which way it opens.
-- **Room names:** `TEXT` or `MTEXT` inside each room, on any layer other than the three above (layers starting with `DIM` are ignored). Names containing *bath*, *washroom*, *toilet* or *WC* become bathrooms; *kitchen* becomes a kitchen.
+- **Room names:** `TEXT` or `MTEXT` inside each room, on any layer other than the three above (layers starting with `DIM` are ignored). Names containing _bath_, _washroom_, _toilet_ or _WC_ become bathrooms; _kitchen_ becomes a kitchen.
 - **Units:** set in AutoCAD (inch, ft, mm, cm, m). If missing, a drawing wider than 500 units is assumed to be millimetres.
 - **Single storey only.**
 
@@ -138,7 +138,7 @@ Defaults used because a plan view can't provide them (editable per company under
 
 ### 4. Check and correct
 
-Edit room names, types and areas and wall lengths and heights, delete rows, or drag to re-order. Click **Save corrections**. Saving **clears any BOQ already calculated**. Make sure bathrooms are typed *Bathroom*, because that sets the sanitary count. If you press **Calculate BOQ** with unsaved edits, they are saved first.
+Edit room names, types and areas and wall lengths and heights, delete rows, or drag to re-order. Click **Save corrections**. Saving **clears any BOQ already calculated**. Make sure bathrooms are typed _Bathroom_, because that sets the sanitary count. If you press **Calculate BOQ** with unsaved edits, they are saved first.
 
 ### 5. Calculate the BOQ
 
@@ -149,7 +149,7 @@ The BOQ is grouped into Structure, Masonry & Plaster, Finishes, Services & Fixtu
 - Door and window openings are deducted from wall and plaster quantities.
 - Kitchens and bathrooms are always tiled. False ceiling only in dry rooms.
 - Steel defaults to 4 kg per sq ft of covered area.
-- *Not included by default (editable):* boundary wall and gate, water tank, boring and pump, utility connections, kitchen cabinets and appliances, light fixtures, furniture, consultant and approval fees.
+- _Not included by default (editable):_ boundary wall and gate, water tank, boring and pump, utility connections, kitchen cabinets and appliances, light fixtures, furniture, consultant and approval fees.
 - Foundation and electrical only appear if a rate set includes them.
 
 ### 6. 3D model, PDF and client page
@@ -169,18 +169,18 @@ Only flooring and false ceilings are priced in the BOQ. Furniture, finishes, tre
 
 - **Shared default library:** every company can price BOQs out of the box from a shared set of default rates. A company **overrides** a city and category by importing its own rates or adding them manually.
 - **Import a rate schedule (CSR):** upload a CSV with the columns `city,itemType,unit,unitRate`. Every city needs `brick`, `cement`, `sand` and `steelMaterial`. The whole file is validated first; if anything is wrong, nothing is saved. A template can be downloaded from the page. City names are matched against the built-in list of Pakistani cities (aliases such as "Benazirabad" are accepted).
-- **Drafts:** manual rate sets wait for review. Edit the rates if needed, enter your name under *Approved by*, then approve or reject.
+- **Drafts:** manual rate sets wait for review. Edit the rates if needed, enter your name under _Approved by_, then approve or reject.
 - **Labour rates** (masonry, plaster, shuttering, steel fixing, sanitary, tile and marble fixing, woodwork) are set per company on **Business rules**.
 
 `apps/web/data/pakistan-2026.csv` is **sample data** for trying the import. It is not a verified market price list. Companies should load their own rates before issuing real quotes.
 
 ### Plans and billing
 
-| Plan | Price | Projects per month | Team members | PDF footer |
-|---|---|---|---|---|
-| Starter (`FREE`) | Free | 3 | 1 | "Prepared with Vectroq" |
-| Pro | Rs 4,999 / month | Unlimited | 5 | Company branding only |
-| Business | Rs 14,999 / month | Unlimited | Unlimited | Company branding only |
+| Plan             | Price             | Projects per month | Team members | PDF footer              |
+| ---------------- | ----------------- | ------------------ | ------------ | ----------------------- |
+| Starter (`FREE`) | Free              | 3                  | 1            | "Prepared with Vectroq" |
+| Pro              | Rs 4,999 / month  | Unlimited          | 5            | Company branding only   |
+| Business         | Rs 14,999 / month | Unlimited          | Unlimited    | Company branding only   |
 
 - Owners upgrade on **Billing**, which opens Stripe Checkout. Plan changes, downgrades and cancellation happen in the Stripe billing portal. A cancelled plan stays active until the period ends.
 - Pending invitations count as seats.
@@ -190,19 +190,19 @@ Only flooring and false ceilings are priced in the BOQ. Furniture, finishes, tre
 
 ### Common problems
 
-| What you see | What to do |
-|---|---|
-| ".dwg files aren't supported yet" | Export the drawing as `.dxf` and upload that. |
-| "Could not parse this DXF file" | The file is damaged, binary, or not a real DXF. Re-export it as ASCII DXF. |
-| "No rooms were detected" | Check layer names and that each room's walls are closed, or correct rooms manually. |
-| Areas look 1000× too big or small | The drawing units are wrong. Fix them in AutoCAD and re-export. |
-| "No rates loaded for …" | Import rates for that city (or a nearby one) on the Rates page, or load the shared default library. |
-| BOQ disappeared | You saved corrections or uploaded a new drawing. Calculate it again. |
-| "The Starter plan allows 3 projects per month" | Upgrade on the Billing page, or wait for the next month. |
-| "Too many attempts. Try again in N minutes." | You hit a rate limit (login, sign-up, reset email or intake form). Wait and retry. |
-| Intake form says "We couldn't verify your submission" | The bot check failed. Reload the page and submit again after a few seconds. |
-| Verification or reset email never arrives | In development the email is printed in the server console. In production configure SMTP or Resend (see below). |
-| Client link says "no longer available" | The share link expired or was revoked. Create a new one. |
+| What you see                                          | What to do                                                                                                     |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| ".dwg files aren't supported yet"                     | Export the drawing as `.dxf` and upload that.                                                                  |
+| "Could not parse this DXF file"                       | The file is damaged, binary, or not a real DXF. Re-export it as ASCII DXF.                                     |
+| "No rooms were detected"                              | Check layer names and that each room's walls are closed, or correct rooms manually.                            |
+| Areas look 1000× too big or small                     | The drawing units are wrong. Fix them in AutoCAD and re-export.                                                |
+| "No rates loaded for …"                               | Import rates for that city (or a nearby one) on the Rates page, or load the shared default library.            |
+| BOQ disappeared                                       | You saved corrections or uploaded a new drawing. Calculate it again.                                           |
+| "The Starter plan allows 3 projects per month"        | Upgrade on the Billing page, or wait for the next month.                                                       |
+| "Too many attempts. Try again in N minutes."          | You hit a rate limit (login, sign-up, reset email or intake form). Wait and retry.                             |
+| Intake form says "We couldn't verify your submission" | The bot check failed. Reload the page and submit again after a few seconds.                                    |
+| Verification or reset email never arrives             | In development the email is printed in the server console. In production configure SMTP or Resend (see below). |
+| Client link says "no longer available"                | The share link expired or was revoked. Create a new one.                                                       |
 
 ---
 
@@ -267,25 +267,25 @@ pnpm --filter @vectroq/web dev      # http://localhost:3000
 
 ### Environment variables
 
-| File | Variable | Purpose |
-|---|---|---|
-| `packages/db/.env` | `DATABASE_URL` | Postgres connection string |
-| `packages/db/.env` | `DIRECT_URL` | Direct (non-pooled) connection used by migrations |
-| `apps/web/.env` | `DATABASE_URL` | Same connection string |
-| `apps/web/.env` | `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (company logos) |
-| `apps/web/.env` | `PLANS_READ_WRITE_TOKEN` | Vercel Blob token for the **private** store holding customer plot plans |
-| `apps/web/.env` | `DEFAULT_ORG_SLUG` | Company shown at `/request` (default `demo`) |
-| `apps/web/.env` | `APP_URL` | Public base URL used in emailed links (default: the request origin) |
-| `apps/web/.env` | `SMTP_USER`, `SMTP_PASS` | SMTP login (e.g. a Gmail app password). Optional `SMTP_HOST` (default `smtp.gmail.com`) and `SMTP_PORT` (default `465`) |
-| `apps/web/.env` | `RESEND_API_KEY` | Alternative to SMTP |
-| `apps/web/.env` | `EMAIL_FROM` | From address, e.g. `Vectroq <no-reply@yourdomain.com>` |
-| `apps/web/.env` | `STRIPE_SECRET_KEY` | Enables billing. Without it, upgrades are disabled |
-| `apps/web/.env` | `STRIPE_WEBHOOK_SECRET` | Signing secret for `/api/stripe/webhook` |
-| `apps/web/.env` | `STRIPE_PRICE_PRO`, `STRIPE_PRICE_BUSINESS` | Stripe price IDs of the two paid plans |
-| `apps/web/.env` | `PLATFORM_ADMIN_EMAILS` | Comma-separated emails allowed to open `/office/admin` |
-| `apps/web/.env` | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile on the intake form (see note below) |
-| `apps/web/.env` | `CRON_SECRET` | Bearer token Vercel Cron sends to `/api/cron/cleanup`. The route returns 401 without it |
-| `apps/web/.env` | `LEAD_IP_LIMIT` | Intake submissions allowed per IP per 10 minutes (default `8`) |
+| File               | Variable                                                 | Purpose                                                                                                                 |
+| ------------------ | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `packages/db/.env` | `DATABASE_URL`                                           | Postgres connection string                                                                                              |
+| `packages/db/.env` | `DIRECT_URL`                                             | Direct (non-pooled) connection used by migrations                                                                       |
+| `apps/web/.env`    | `DATABASE_URL`                                           | Same connection string                                                                                                  |
+| `apps/web/.env`    | `BLOB_READ_WRITE_TOKEN`                                  | Vercel Blob token (company logos)                                                                                       |
+| `apps/web/.env`    | `PLANS_READ_WRITE_TOKEN`                                 | Vercel Blob token for the **private** store holding customer plot plans                                                 |
+| `apps/web/.env`    | `DEFAULT_ORG_SLUG`                                       | Company shown at `/request` (default `demo`)                                                                            |
+| `apps/web/.env`    | `APP_URL`                                                | Public base URL used in emailed links (default: the request origin)                                                     |
+| `apps/web/.env`    | `SMTP_USER`, `SMTP_PASS`                                 | SMTP login (e.g. a Gmail app password). Optional `SMTP_HOST` (default `smtp.gmail.com`) and `SMTP_PORT` (default `465`) |
+| `apps/web/.env`    | `RESEND_API_KEY`                                         | Alternative to SMTP                                                                                                     |
+| `apps/web/.env`    | `EMAIL_FROM`                                             | From address, e.g. `Vectroq <no-reply@yourdomain.com>`                                                                  |
+| `apps/web/.env`    | `STRIPE_SECRET_KEY`                                      | Enables billing. Without it, upgrades are disabled                                                                      |
+| `apps/web/.env`    | `STRIPE_WEBHOOK_SECRET`                                  | Signing secret for `/api/stripe/webhook`                                                                                |
+| `apps/web/.env`    | `STRIPE_PRICE_PRO`, `STRIPE_PRICE_BUSINESS`              | Stripe price IDs of the two paid plans                                                                                  |
+| `apps/web/.env`    | `PLATFORM_ADMIN_EMAILS`                                  | Comma-separated emails allowed to open `/office/admin`                                                                  |
+| `apps/web/.env`    | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile on the intake form (see note below)                                                                |
+| `apps/web/.env`    | `CRON_SECRET`                                            | Bearer token Vercel Cron sends to `/api/cron/cleanup`. The route returns 401 without it                                 |
+| `apps/web/.env`    | `LEAD_IP_LIMIT`                                          | Intake submissions allowed per IP per 10 minutes (default `8`)                                                          |
 
 Email provider order: SMTP, then Resend, then (development only) print to the console. In production with no provider configured, sending throws.
 
@@ -306,7 +306,7 @@ Email provider order: SMTP, then Resend, then (development only) print to the co
 ```bash
 pnpm test                                  # unit tests in every package
 pnpm typecheck                             # TypeScript check in every package
-pnpm test:e2e                              # Playwright (needs the dev server on :3000 and a database)
+pnpm e2e:db:up && pnpm test:e2e            # Playwright (starts its own server; needs Docker, see tests/e2e/README.md)
 pnpm --filter @vectroq/web build           # production build
 pnpm --filter @vectroq/boq-engine test     # one package
 
@@ -318,7 +318,9 @@ pnpm --filter @vectroq/web import-rates -- data/pakistan-2026.csv \
 # add --shared instead of --org to load the shared default library
 ```
 
-**End-to-end tests** live in `tests/e2e` (public pages, auth, security, demo flow, office smoke test, the full intake-to-project flow, and the public intake form). See `tests/e2e/README.md`. They need a running app and a throwaway Postgres database, because `auth.spec.ts`, `office-smoke.spec.ts` and `full-flow.spec.ts` create a new account on every run. `lead-intake.spec.ts` needs `E2E_ORG_SLUG`. `playwright.config.ts` currently points at a Chrome install on Windows (`executablePath`); remove that line, or run `pnpm exec playwright install chromium`, on other machines.
+**End-to-end tests** live in `tests/e2e` (public pages, auth, security, demo flow, office smoke test, the full intake-to-project flow, the public intake form, and the CAD upload / unit / geometry / BOQ regression specs). They run against a throwaway Postgres database that the harness resets and seeds itself. See `tests/e2e/README.md` for setup, and the **Continuous integration** section there for what GitHub Actions runs.
+
+**Code formatting.** A Git pre-commit hook (Husky + lint-staged) runs Prettier on the files staged for each commit, and only those, then re-stages them. Files you did not touch are never reformatted. The hook is installed by `pnpm install` (the `prepare` script). Settings are Prettier's defaults (`.prettierrc.json`); generated files, migrations and `.dxf` fixtures are skipped (`.prettierignore`). To format by hand: `pnpm exec prettier --write <files>`. To skip the hook once (not recommended): `git commit --no-verify`. CI sets `HUSKY=0`, so it never installs hooks.
 
 ### Data model
 
@@ -364,35 +366,35 @@ org.rules ──► resolveOrgRules ──► tax %, labour, materials, notes
 
 ### API routes
 
-| Route | Min. role | Purpose |
-|---|---|---|
-| `POST /api/auth/signup` · `login` · `logout` | public | Create a company and Owner; start / end a session |
-| `POST /api/auth/forgot` · `reset` | public | Password reset by email |
-| `POST /api/auth/verify-email` · `verify-email/send` | public / Viewer | Confirm / resend email verification |
-| `POST /api/auth/change-password` | Viewer | Change own password |
-| `POST /api/invites/accept` | public (token) | Accept a team invitation |
-| `POST /api/demo/start` | public (rate limited) | Create a 24-hour demo company and sign in |
-| `POST /api/onboarding/sample-project` | Estimator | Create a sample client, project and priced BOQ |
-| `POST /api/leads` | public (rate limited, bot checked) | Save a lead (JSON, or multipart with `data` + optional `file`); returns a rough `estimate` |
-| `GET /api/leads/:id/plan` | Viewer | Download a lead's private plot plan |
-| `GET` · `POST /api/projects` | Viewer / Estimator | List / create projects (plan limit applies) |
-| `GET /api/projects/:id` | Viewer | One project with lead, CAD file and render |
-| `POST /api/projects/:id/cad-upload` | Estimator | Upload and parse a `.dxf` |
-| `PATCH /api/projects/:id/geometry` | Estimator | Save corrected geometry (clears the saved BOQ) |
-| `POST /api/projects/:id/finalize` | Estimator | Price the geometry and mark the project `FINALIZED` |
-| `GET /api/projects/:id/boq-pdf` | Viewer | Download the BOQ as PDF |
-| `POST` · `DELETE /api/projects/:id/share` | Estimator | Create / revoke the client share link |
-| `GET /api/share/:token/boq-pdf` | public (token) | PDF for a valid client link |
-| `POST /api/rate-sets` | Estimator | Create a manual draft rate set |
-| `POST /api/rate-sets/import` | Estimator | Import a CSR CSV |
-| `POST /api/rate-sets/:id/approve` · `reject` | Estimator | Approve (optionally with edited items) or reject a draft |
-| `GET` · `PATCH /api/org/rules` | Viewer / Owner | Read / update (or reset) business rules |
-| `PATCH /api/org` · `POST /api/org/logo` | Owner | Update branding / upload logo |
-| `PATCH` · `DELETE /api/team/members/:id` | Owner | Change role / remove a member |
-| `POST /api/team/invites` · `DELETE /api/team/invites/:id` | Owner | Create (plan seat limit applies) / revoke an invitation |
-| `POST /api/billing/checkout` · `portal` | Owner | Start Stripe Checkout / open the billing portal |
-| `POST /api/stripe/webhook` | public (Stripe signature) | Sync the plan from Stripe subscription events |
-| `GET /api/cron/cleanup` | `CRON_SECRET` | Delete old audit logs, expired sessions, rate-limit rows and expired demos |
+| Route                                                     | Min. role                          | Purpose                                                                                    |
+| --------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| `POST /api/auth/signup` · `login` · `logout`              | public                             | Create a company and Owner; start / end a session                                          |
+| `POST /api/auth/forgot` · `reset`                         | public                             | Password reset by email                                                                    |
+| `POST /api/auth/verify-email` · `verify-email/send`       | public / Viewer                    | Confirm / resend email verification                                                        |
+| `POST /api/auth/change-password`                          | Viewer                             | Change own password                                                                        |
+| `POST /api/invites/accept`                                | public (token)                     | Accept a team invitation                                                                   |
+| `POST /api/demo/start`                                    | public (rate limited)              | Create a 24-hour demo company and sign in                                                  |
+| `POST /api/onboarding/sample-project`                     | Estimator                          | Create a sample client, project and priced BOQ                                             |
+| `POST /api/leads`                                         | public (rate limited, bot checked) | Save a lead (JSON, or multipart with `data` + optional `file`); returns a rough `estimate` |
+| `GET /api/leads/:id/plan`                                 | Viewer                             | Download a lead's private plot plan                                                        |
+| `GET` · `POST /api/projects`                              | Viewer / Estimator                 | List / create projects (plan limit applies)                                                |
+| `GET /api/projects/:id`                                   | Viewer                             | One project with lead, CAD file and render                                                 |
+| `POST /api/projects/:id/cad-upload`                       | Estimator                          | Upload and parse a `.dxf`                                                                  |
+| `PATCH /api/projects/:id/geometry`                        | Estimator                          | Save corrected geometry (clears the saved BOQ)                                             |
+| `POST /api/projects/:id/finalize`                         | Estimator                          | Price the geometry and mark the project `FINALIZED`                                        |
+| `GET /api/projects/:id/boq-pdf`                           | Viewer                             | Download the BOQ as PDF                                                                    |
+| `POST` · `DELETE /api/projects/:id/share`                 | Estimator                          | Create / revoke the client share link                                                      |
+| `GET /api/share/:token/boq-pdf`                           | public (token)                     | PDF for a valid client link                                                                |
+| `POST /api/rate-sets`                                     | Estimator                          | Create a manual draft rate set                                                             |
+| `POST /api/rate-sets/import`                              | Estimator                          | Import a CSR CSV                                                                           |
+| `POST /api/rate-sets/:id/approve` · `reject`              | Estimator                          | Approve (optionally with edited items) or reject a draft                                   |
+| `GET` · `PATCH /api/org/rules`                            | Viewer / Owner                     | Read / update (or reset) business rules                                                    |
+| `PATCH /api/org` · `POST /api/org/logo`                   | Owner                              | Update branding / upload logo                                                              |
+| `PATCH` · `DELETE /api/team/members/:id`                  | Owner                              | Change role / remove a member                                                              |
+| `POST /api/team/invites` · `DELETE /api/team/invites/:id` | Owner                              | Create (plan seat limit applies) / revoke an invitation                                    |
+| `POST /api/billing/checkout` · `portal`                   | Owner                              | Start Stripe Checkout / open the billing portal                                            |
+| `POST /api/stripe/webhook`                                | public (Stripe signature)          | Sync the plan from Stripe subscription events                                              |
+| `GET /api/cron/cleanup`                                   | `CRON_SECRET`                      | Delete old audit logs, expired sessions, rate-limit rows and expired demos                 |
 
 ### Known limitations
 

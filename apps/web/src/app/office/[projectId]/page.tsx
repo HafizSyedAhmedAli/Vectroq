@@ -24,6 +24,7 @@ import { CompanyIllustration } from "@/components/CompanyIllustration";
 import { requirePage } from "@/lib/org";
 import { ShareLinkPanel } from "@/components/ShareLinkPanel";
 import { hasRole } from "@/lib/auth/roles";
+import { publicUnitState, readUnitState } from "@/lib/cad-unit";
 
 export const dynamic = "force-dynamic";
 
@@ -141,6 +142,7 @@ export default async function OfficeProjectPage({
               </span>
             )}
             <span
+              data-testid="project-status"
               className={`absolute right-3 top-3 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${status.cls}`}
             >
               {status.label}
@@ -213,6 +215,12 @@ export default async function OfficeProjectPage({
                 ? (project.cadFile.boq as unknown as BOQResult)
                 : null
             }
+            initialUnit={
+              project.cadFile
+                ? publicUnitState(readUnitState(project.cadFile.unit))
+                : null
+            }
+            initialRevision={project.cadFile?.revision ?? null}
             initialFileName={project.cadFile?.fileName ?? null}
             updatedLabel={
               project.cadFile

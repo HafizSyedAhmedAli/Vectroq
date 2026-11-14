@@ -34,16 +34,19 @@ describe.each(FIXTURES)("old vs new entry point: $name", ({ path }) => {
     );
   });
 
-  it("returns phase-0 meta: no warnings, legacy unit, counts match", () => {
+  // Phase 1 supersedes the Phase 0 assertion (legacy unit, no warnings). Geometry
+  // equality above is untouched; only the meta contract changed (docs/dxf-units.md).
+  it("returns phase-1 meta: explicit header is trusted, unitless is flagged, counts match", () => {
     const { geometry, meta } = parseDxf(text);
     expect(meta.parserVersion).toBe(PARSER_VERSION);
-    expect(meta.warnings).toEqual([]);
-    expect(meta.unit).toMatchObject({
-      source: "legacy",
-      confidence: "unknown",
-      confirmed: false,
-    });
     expect(meta.unit.feetPerUnit).toBeGreaterThan(0);
+    if (meta.unit.source === "header") {
+      expect(meta.unit).toMatchObject({ confidence: "high", confirmed: false, needsConfirmation: false });
+      expect(meta.warnings).toEqual([]);
+    } else {
+      expect(meta.unit).toMatchObject({ source: "plausibility", confirmed: false, needsConfirmation: true });
+      expect(meta.warnings.map((w) => w.code)).toEqual(["UNIT_METADATA_MISSING", "UNIT_CONFIRMATION_REQUIRED"]);
+    }
     expect(meta.stats).toMatchObject({
       walls: geometry.walls.length,
       rooms: geometry.rooms.length,

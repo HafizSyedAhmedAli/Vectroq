@@ -1,0 +1,161 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A newer push to the same PR/branch supersedes the run in progress.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUSKY: 0 # do not install git hooks on the runner
+  # Everything below is a public, throwaway value. No repository secret is used.
+  # The database is the one from docker-compose.test.yml; its name ends in _test,
+  # which tests/e2e and e2e-guard.ts require.
+  TEST_DB_URL: postgresql://postgres:test@localhost:54330/vectroq_test
+  # Cloudflare's documented always-pass Turnstile test key (public, not a secret).
+  TURNSTILE_TEST_SITE_KEY: 1x00000000000000000000AA
+
+jobs:
+  static:
+    name: Static checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # git diff --check needs the base commit
+      - uses: pnpm/action-setup@v4 # version comes from "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - name: Whitespace errors in this change (git diff --check)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          else
+            base="${{ github.event.before }}"
+          fi
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            echo "No base commit to compare with; skipping."
+          else
+            git diff --check "$base" "${{ github.sha }}"
+          fi
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # The PostgreSQL tests skip themselves here (no TEST_DATABASE_URL); the
+      # "pg" job runs them and fails if they did not.
+      - run: pnpm test
+
+  pg:
+    name: PostgreSQL integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Start the test database
+        run: pnpm e2e:db:up
+      - name: Refuse anything but a *_test database
+        run: |
+          case "$TEST_DB_URL" in
+            *localhost*/*_test) echo "ok: $(echo "$TEST_DB_URL" | sed 's#//[^@]*@#//***@#')" ;;
+            *) echo "::error::TEST_DB_URL is not a local *_test database"; exit 1 ;;
+          esac
+      - name: Apply the real Prisma migrations
+        run: pnpm --filter @vectroq/db exec prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.TEST_DB_URL }}
+          DIRECT_URL: ${{ env.TEST_DB_URL }}
+      - name: Run the PostgreSQL integration tests
+        run: >
+          pnpm --filter @vectroq/web exec vitest run cad-concurrency.pg
+          --reporter=default --reporter=json --outputFile.json=../../pg-results.json
+        env:
+          TEST_DATABASE_URL: ${{ env.TEST_DB_URL }}
+      - name: Fail if the PostgreSQL tests were skipped
+        run: node .github/scripts/assert-pg-ran.mjs pg-results.json
+      - name: Database logs (on failure)
+        if: failure()
+        run: docker compose -f docker-compose.test.yml logs --no-color pgtest
+      - name: Remove the test database
+        if: always()
+        run: pnpm e2e:db:down
+
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Install Playwright's Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Start the test database
+        run: pnpm e2e:db:up
+      # CI runs the production server (`next start`), so the app is built first.
+      # NEXT_PUBLIC_* values are baked in at build time, hence the test site key.
+      - name: Build the app
+        run: pnpm --filter @vectroq/web build
+        env:
+          DATABASE_URL: ${{ env.TEST_DB_URL }}
+          DIRECT_URL: ${{ env.TEST_DB_URL }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ env.TURNSTILE_TEST_SITE_KEY }}
+      # global-setup.ts verifies the database, migrates, resets and seeds it, and
+      # the config starts the server with the guarded E2E-only environment
+      # (filesystem DXF store, Turnstile test keys, blank external service keys).
+      - name: Run the full Playwright suite
+        run: pnpm test:e2e
+        env:
+          E2E_DATABASE_URL: ${{ env.TEST_DB_URL }}
+      - name: Test results (fails on any failed or skipped test)
+        if: always()
+        run: node .github/scripts/e2e-summary.mjs e2e-results.json
+      - name: Upload the Playwright report, traces, screenshots and videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+            e2e-results.json
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Database logs (on failure)
+        if: failure()
+        run: docker compose -f docker-compose.test.yml logs --no-color pgtest
+      - name: Remove the test database
+        if: always()
+        run: pnpm e2e:db:down

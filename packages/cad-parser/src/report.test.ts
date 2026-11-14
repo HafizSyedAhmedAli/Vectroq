@@ -52,4 +52,20 @@ describe("ParseReport", () => {
       new ParseReport().toMeta(unit, { rotationRad: 0.5 }).rotationRad,
     ).toBe(0.5);
   });
+
+  it("passes Phase 1 unit fields through unchanged, as copies", () => {
+    const rich = {
+      feetPerUnit: 0.0328084,
+      source: "plausibility",
+      confidence: "low",
+      confirmed: false,
+      unit: "centimetre",
+      insunits: 5,
+      needsConfirmation: true,
+      suggestedUnit: "centimetre",
+    } as const;
+    const m = new ParseReport().toMeta(rich);
+    expect(m.unit).toEqual(rich);
+    expect(m.unit).not.toBe(rich);
+  });
 });

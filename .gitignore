@@ -12,3 +12,11 @@ apps/web/public/lead-plans/
 
 coverage/
 test-results/
+playwright-report/
+blob-report/
+
+# e2e harness output
+.e2e-data/
+tests/e2e/.auth/
+e2e-results.json
+pg-results.json

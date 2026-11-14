@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ChangeEvent } from "react";
 import type {
+  UnitName,
   BOQResult,
   Geometry,
   Room,
@@ -35,6 +36,9 @@ import {
 } from "@/components/ui/native-select";
 import Link from "next/link";
 import { BoqTable } from "./BoqTable";
+import { UnitConfirmation } from "./UnitConfirmation";
+import type { PublicUnitState } from "@/lib/cad-unit";
+import { scrollToId } from "@/lib/scroll";
 
 interface CadReviewPanelProps {
   projectId: string;
@@ -42,6 +46,10 @@ interface CadReviewPanelProps {
    * throw away an earlier upload/correction/finalize. */
   initialGeometry?: Geometry | null;
   initialBoq?: BOQResult | null;
+  /** The server's saved unit decision for this drawing. null = legacy/unverified. */
+  initialUnit?: PublicUnitState | null;
+  /** CadFile.revision as loaded; sent back with every edit so stale writes are refused. */
+  initialRevision?: number | null;
   /** Called after a successful upload so the parent (which owns the
    * render-availability check) knows a CAD file now exists. */
   onGeometryUploaded?: () => void;
@@ -58,7 +66,8 @@ interface CadReviewPanelProps {
   onGeometryChange?: (g: Geometry | null) => void;
 }
 
-type Status = "idle" | "uploading" | "reviewing" | "saving" | "calculating";
+type Status =
+  "idle" | "uploading" | "reviewing" | "saving" | "calculating" | "confirming";
 type DragState = { kind: "room" | "wall"; from: number } | null;
 
 function reorder<T>(items: T[], from: number, to: number): T[] {
@@ -114,6 +123,8 @@ export function CadReviewPanel({
   projectId,
   initialGeometry = null,
   initialBoq = null,
+  initialUnit = null,
+  initialRevision = null,
   onGeometryUploaded,
   onBoqChange,
   showBoq = true,
@@ -124,6 +135,11 @@ export function CadReviewPanel({
 }: CadReviewPanelProps) {
   const [geometry, setGeometry] = useState<Geometry | null>(initialGeometry);
   const [boq, setBoq] = useState<BOQResult | null>(initialBoq);
+  const [unitState, setUnitState] = useState<PublicUnitState | null>(
+    initialUnit,
+  );
+  const [revision, setRevision] = useState<number | null>(initialRevision);
+  const [pendingReplace, setPendingReplace] = useState<UnitName | null>(null);
   const [drag, setDrag] = useState<DragState>(null);
   const [status, setStatus] = useState<Status>(
     initialGeometry ? "reviewing" : "idle",
@@ -140,7 +156,15 @@ export function CadReviewPanel({
   }, [geometry]);
 
   const busy =
-    status === "uploading" || status === "saving" || status === "calculating";
+    status === "uploading" ||
+    status === "saving" ||
+    status === "calculating" ||
+    status === "confirming";
+
+  // The server refuses to price an unconfirmed or legacy drawing (409); this
+  // only mirrors that so the button is not offered. It is not the protection.
+  const unitBlocked =
+    geometry !== null && (unitState === null || unitState.needsConfirmation);
 
   // Live seconds counter so a long price search never looks frozen.
   useEffect(() => {
@@ -173,6 +197,9 @@ export function CadReviewPanel({
       const body = await res.json();
       if (!res.ok) throw new Error(body.error ?? "Upload failed.");
       setGeometry(body.geometry as Geometry);
+      setUnitState((body.unitState as PublicUnitState | null) ?? null);
+      if (typeof body.revision === "number") setRevision(body.revision);
+      setPendingReplace(null);
       setFileName(file.name);
       setDirty(false);
       setStatus("reviewing");
@@ -247,10 +274,11 @@ export function CadReviewPanel({
     const res = await fetch(`/api/projects/${projectId}/geometry`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(current),
+      body: JSON.stringify({ ...current, expectedRevision: revision }),
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(body.error ?? "Could not save corrections.");
+    if (typeof body.revision === "number") setRevision(body.revision);
   }
 
   async function handleSaveCorrections() {
@@ -279,6 +307,52 @@ export function CadReviewPanel({
     }
   }
 
+  async function handleConfirmUnit(unit: UnitName, replaceEdits: boolean) {
+    // Unsaved edits would be lost too, so they need the same explicit decision.
+    if (!replaceEdits && (dirty || unitState?.geometryEdited)) {
+      setPendingReplace(unit);
+      return;
+    }
+    setStatus("confirming");
+    setError(null);
+    setNotice(null);
+    try {
+      const res = await fetch(`/api/projects/${projectId}/cad-unit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          unit,
+          replaceEditedGeometry: replaceEdits,
+          expectedRevision: revision,
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (body.code === "MANUAL_EDITS_WOULD_BE_LOST") {
+          setPendingReplace(unit);
+          return;
+        }
+        throw new Error(body.error ?? "Could not apply the unit.");
+      }
+      setGeometry(body.geometry as Geometry);
+      setUnitState((body.unitState as PublicUnitState | null) ?? null);
+      if (typeof body.revision === "number") setRevision(body.revision);
+      setPendingReplace(null);
+      setDirty(false);
+      setBoq(null); // the server cleared any BOQ priced under the old unit
+      onBoqChange?.(null);
+      setNotice(
+        "Unit confirmed and the drawing re-read. Review the quantities, then press “Calculate BOQ”.",
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Could not apply the unit.",
+      );
+    } finally {
+      setStatus("reviewing");
+    }
+  }
+
   async function handleCalculateBoq() {
     if (!geometry) return;
     setStatus("calculating");
@@ -296,22 +370,24 @@ export function CadReviewPanel({
         method: "POST",
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok)
+      if (!res.ok) {
+        if (body.code === "UNIT_CONFIRMATION_REQUIRED") {
+          // Server says the unit is not confirmed: show the picker/notice again.
+          setUnitState((body.unitState as PublicUnitState | null) ?? null);
+        }
         throw new Error(
           body.error ??
             "Could not calculate the BOQ. The request may have timed out — please try again.",
         );
+      }
+      if (typeof body.revision === "number") setRevision(body.revision);
       setBoq(body.boq as BOQResult);
       onBoqChange?.(body.boq as BOQResult);
       setNotice(
         "BOQ calculated — scroll down to review the priced quantities.",
       );
       // Wait a tick so the BOQ card has rendered, then bring it into view.
-      setTimeout(() => {
-        document
-          .getElementById(boqAnchorId)
-          ?.scrollIntoView?.({ behavior: "smooth", block: "start" });
-      }, 150);
+      setTimeout(() => scrollToId(boqAnchorId), 150);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not calculate the BOQ.",
@@ -421,7 +497,8 @@ export function CadReviewPanel({
         ) : (
           <p className="self-center text-sm text-stone-500">
             Export the plan from AutoCAD as .dxf (.dwg is not supported yet).
-            Units are detected automatically (mm, cm, m, ft).
+            Units are read from the file when it declares them; otherwise you
+            will be asked to confirm the unit.
           </p>
         )}
       </div>
@@ -453,11 +530,7 @@ export function CadReviewPanel({
           {boq && (
             <button
               type="button"
-              onClick={() =>
-                document
-                  .getElementById(boqAnchorId)
-                  ?.scrollIntoView?.({ behavior: "smooth", block: "start" })
-              }
+              onClick={() => scrollToId(boqAnchorId)}
               className="cursor-pointer whitespace-nowrap font-semibold underline"
             >
               Jump to BOQ
@@ -473,6 +546,17 @@ export function CadReviewPanel({
         >
           {error}
         </p>
+      )}
+
+      {geometry && (
+        <UnitConfirmation
+          state={unitState}
+          busy={busy}
+          hasManualEdits={dirty || unitState?.geometryEdited === true}
+          pendingReplace={pendingReplace}
+          onConfirm={handleConfirmUnit}
+          onCancelReplace={() => setPendingReplace(null)}
+        />
       )}
 
       {geometry && (
@@ -726,7 +810,12 @@ export function CadReviewPanel({
             </Button>
             <Button
               onClick={handleCalculateBoq}
-              disabled={busy}
+              disabled={busy || unitBlocked}
+              title={
+                unitBlocked
+                  ? "Confirm the drawing unit before calculating a BOQ"
+                  : undefined
+              }
               variant="outline"
               className="h-10 cursor-pointer gap-2 px-4 disabled:cursor-not-allowed"
             >
@@ -737,6 +826,11 @@ export function CadReviewPanel({
               )}
               {status === "calculating" ? "Calculating…" : "Calculate BOQ"}
             </Button>
+            {unitBlocked && (
+              <span className="text-xs font-medium text-amber-700">
+                Confirm the drawing unit to enable “Calculate BOQ”.
+              </span>
+            )}
             {dirty && status === "reviewing" && (
               <span className="text-xs font-medium text-amber-700">
                 Unsaved changes — they will be saved automatically when you

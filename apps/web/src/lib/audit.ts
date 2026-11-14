@@ -2,6 +2,7 @@ import { prisma, Prisma } from "@vectroq/db";
 
 export type AuditAction =
   | "CAD_UPLOADED"
+  | "CAD_UNIT_CONFIRMED"
   | "GEOMETRY_EDITED"
   | "BOQ_CALCULATED"
   | "SHARE_CREATED"

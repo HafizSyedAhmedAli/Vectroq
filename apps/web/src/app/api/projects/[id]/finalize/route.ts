@@ -12,6 +12,8 @@ import type {
 import { NextRequest, NextResponse } from "next/server";
 import { resolveOrgRules } from "@vectroq/shared-types";
 import { audit } from "@/lib/audit";
+import { evaluateUnitGate, publicUnitState } from "@/lib/cad-unit";
+import { commitBoqAtRevision, withRevisionConflict } from "@/lib/cad-revision";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -37,6 +39,22 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
       { error: "No CAD file uploaded for this project yet" },
       { status: 404 },
     );
+
+  // Server-side gate: no BOQ from a drawing whose unit is unconfirmed, and none
+  // from a legacy row whose unit was never verified. Runs before rates are
+  // fetched or estimateFromGeometry is called, and writes nothing.
+  const gate = evaluateUnitGate(cadFile.unit);
+  if (!gate.ok) {
+    return NextResponse.json(
+      {
+        error: gate.message,
+        code: "UNIT_CONFIRMATION_REQUIRED",
+        reason: gate.reason,
+        unitState: publicUnitState(gate.state),
+      },
+      { status: 409 },
+    );
+  }
 
   const previousTotal =
     (cadFile.boq as unknown as BOQResult | null)?.total ?? null;
@@ -82,14 +100,15 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
     rateBasis: toRateBasisInfo(resolved.basis, project.city),
   };
 
-  const updated = await prisma.cadFile.update({
-    where: { projectId },
-    data: { boq: boq as unknown as object },
-  });
-  await prisma.project.update({
-    where: { id: projectId },
-    data: { status: "FINALIZED" },
-  });
+  // Everything above was computed from `cadFile` as read at revision
+  // cadFile.revision. Save the BOQ and the FINALIZED status in one transaction,
+  // and only if the drawing is still at that revision; otherwise the stale BOQ
+  // is discarded (409) and nothing is written.
+  const result = await withRevisionConflict(() =>
+    commitBoqAtRevision(projectId, cadFile.revision, boq),
+  );
+  if (result instanceof NextResponse) return result;
+  const updated = result;
 
   await audit(g.auth, "BOQ_CALCULATED", "Project", projectId, {
     total: boq.total,
@@ -100,5 +119,7 @@ export async function POST(_req: NextRequest, { params }: RouteContext) {
     usedFallbackCity: boq.rateBasis?.isFallback ?? false,
   });
 
-  return NextResponse.json({ ...updated, boq });
+  // The blob key and raw unit record are server-internal.
+  const { dxfBlobKey: _key, unit: _unit, ...rest } = updated;
+  return NextResponse.json({ ...rest, boq });
 }

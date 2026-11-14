@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 
 // Needs a running app + database (see README.md).
 const stamp = Date.now();
@@ -32,8 +32,15 @@ test('signup creates a company and lands in the office', async ({ page }) => {
 test('logout returns to a logged-out state', async ({ page }) => {
   await login(page, user.email, user.password);
   await page.waitForURL('**/office/**');
-  await page.getByRole('button', { name: /account|profile|menu/i }).first().click().catch(() => {});
+  await page
+    .locator('[data-user-menu]')
+    .getByRole('button', { name: new RegExp(user.name) })
+    .click();
+  const loggedOut = page.waitForResponse(
+    (r) => r.url().endsWith('/api/auth/logout') && r.request().method() === 'POST',
+  );
   await page.getByRole('menuitem', { name: 'Log out' }).click();
+  expect((await loggedOut).ok()).toBe(true);
   await page.goto('/office');
   await expect(page).toHaveURL(/\/login/);
 });
@@ -46,7 +53,11 @@ test('login with the new account works', async ({ page }) => {
 
 test('wrong password shows an error and stays on /login', async ({ page }) => {
   await login(page, user.email, 'definitely-wrong-password');
-  await expect(page.getByRole('alert')).toContainText('Wrong email or password.');
+  // Next.js also renders an empty role="alert" route announcer, so a bare
+  // getByRole('alert') matches two elements. Select the one with the message.
+  await expect(
+    page.getByRole('alert').filter({ hasText: 'Wrong email or password.' }),
+  ).toBeVisible();
   await expect(page).toHaveURL(/\/login/);
 });
 

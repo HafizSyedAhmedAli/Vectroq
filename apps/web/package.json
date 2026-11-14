@@ -27,7 +27,6 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
     "@react-three/test-renderer": "^9.1.1",
     "@tailwindcss/postcss": "^4.3",
     "@testing-library/jest-dom": "^6.5.0",

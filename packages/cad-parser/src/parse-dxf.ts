@@ -7,6 +7,7 @@ import type {
 import DxfParser from "dxf-parser";
 import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
 import { ParseReport } from "./report";
+import { resolveUnits, type UnitChoice } from "./units";
 
 // $INSUNITS code -> feet per drawing unit
 const FEET_PER_UNIT: Record<number, number> = {
@@ -17,8 +18,15 @@ const FEET_PER_UNIT: Record<number, number> = {
   6: 3.28084, // m
 };
 
-/** Feet per drawing unit. Header wins; if absent, a drawing more than 500
- * units across is assumed to be millimetres (nobody draws a 500 ft house). */
+/**
+ * COMPATIBILITY WRAPPER, unchanged on purpose (audit probes U1-U3 pin it).
+ * Feet per drawing unit. Header wins; if absent, a drawing more than 500
+ * units across is assumed to be millimetres. That guess is unreliable (it takes
+ * the largest absolute coordinate, so metre/cm/offset drawings are misread).
+ * parseDxf() no longer uses it: it calls resolveUnits() from ./units, which
+ * reports ambiguity and needs user confirmation. Do not use this for new code.
+ * @deprecated use resolveUnits()
+ */
 export function feetPerUnit(insunits: unknown, maxExtent: number): number {
   const code = typeof insunits === "number" ? insunits : 0;
   if (FEET_PER_UNIT[code]) return FEET_PER_UNIT[code];
@@ -38,6 +46,11 @@ function scaleEntity(e: any, k: number): RawEntity {
 
 export interface ParseOptions {
   construction?: ConstructionDefaults;
+  /**
+   * A unit the user selected or confirmed (name or $INSUNITS code). It wins
+   * over the header and over any suggestion, and is the unit used to convert.
+   */
+  confirmedUnit?: UnitChoice;
 }
 
 export interface ParseResult {
@@ -47,8 +60,10 @@ export interface ParseResult {
 
 /**
  * Parses a DXF into geometry plus a parse report.
- * Phase 0: geometry is exactly what parseDxfToGeometry always returned; the
- * meta only records what the legacy code did. Nothing is detected or fixed yet.
+ * Units (Phase 1): resolved by resolveUnits(). If meta.unit.needsConfirmation
+ * is true (and not confirmed) the geometry is PROVISIONAL, built from a
+ * suggested unit, and must not feed a trusted BOQ. Pass opts.confirmedUnit to
+ * convert with the user's choice. Everything after unit scaling is unchanged.
  */
 export function parseDxf(
   dxfText: string,
@@ -74,11 +89,13 @@ export function parseDxf(
         }
       : e,
   );
-  const coords = normalised.flatMap((e) => [
-    ...(e.vertices ?? []).flatMap((v: any) => [Math.abs(v.x), Math.abs(v.y)]),
-  ]);
-  const maxExtent = coords.length ? Math.max(...coords) : 0;
-  const k = feetPerUnit((dxf.header as any)?.$INSUNITS, maxExtent);
+  const { unit, warnings } = resolveUnits({
+    header: (dxf.header as any) ?? undefined,
+    entities: normalised,
+    confirmed: opts.confirmedUnit,
+  });
+  for (const w of warnings) report.add(w.severity, w.code, w.message);
+  const k = unit.feetPerUnit;
   const geometry = dxfToGeometry(
     { entities: normalised.map((e) => scaleEntity(e, k)) },
     opts.construction,
@@ -89,12 +106,7 @@ export function parseDxf(
   report.stat("rooms", geometry.rooms.length);
   report.stat("openings", geometry.openings.length);
 
-  const meta = report.toMeta({
-    feetPerUnit: k,
-    source: "legacy",
-    confidence: "unknown",
-    confirmed: false,
-  });
+  const meta = report.toMeta(unit);
   return { geometry, meta };
 }
 
