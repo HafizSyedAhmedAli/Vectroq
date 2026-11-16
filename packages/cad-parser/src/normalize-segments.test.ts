@@ -991,10 +991,36 @@ describe("mergeCollinear: idempotency", () => {
 
 // ---------------------------------------------------------------- real fixtures (read-only)
 
-describe("mergeCollinear on existing fixture walls (not wired; read-only)", () => {
+describe("mergeCollinear on fixture walls (Mode A input rebuilt from the room outlines)", () => {
   const dir = join(__dirname, "../fixtures");
-  const wallsOf = (name: string) =>
+  const parsed = (name: string) =>
     parseDxf(readFileSync(join(dir, name), "utf8")).geometry;
+  // Stage 2 wires mergeCollinear into Mode A, so parsed Mode A walls are already
+  // merged. These Stage 1 tests need the PRE-merge edges (one per polygon edge,
+  // exactly what Mode A used to emit), so rebuild them from the room outlines.
+  const preMerge = (g: ReturnType<typeof parsed>) => ({
+    ...g,
+    walls: g.rooms.flatMap((r, ri) =>
+      r.shapes[0].flatMap((a, i, v) => {
+        const b = v[(i + 1) % v.length];
+        if (a.x === b.x && a.y === b.y) return [];
+        return [
+          {
+            id: `wall-${ri}-${i}`,
+            startX: a.x,
+            startY: a.y,
+            endX: b.x,
+            endY: b.y,
+            length: Math.hypot(b.x - a.x, b.y - a.y),
+            height: 10,
+            thickness: 0.75,
+          },
+        ];
+      }),
+    ),
+  });
+  const wallsOf = (name: string) =>
+    name === "sample-house.dxf" ? preMerge(parsed(name)) : parsed(name);
 
   const toInput = (
     g: ReturnType<typeof wallsOf>,

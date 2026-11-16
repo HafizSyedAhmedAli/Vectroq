@@ -8,21 +8,40 @@ import { resolve } from "node:path";
 import { parseDxf } from "@vectroq/cad-parser";
 
 const read = (f: string) =>
-  readFileSync(resolve(__dirname, "../../../../packages/cad-parser/fixtures", f), "utf8");
+  readFileSync(
+    resolve(__dirname, "../../../../packages/cad-parser/fixtures", f),
+    "utf8",
+  );
 
 describe("E2E CAD fixtures", () => {
   it("sample-house.dxf declares feet in its header and needs no confirmation", () => {
     const { geometry, meta } = parseDxf(read("sample-house.dxf"), {});
-    expect(meta.unit).toMatchObject({ unit: "foot", source: "header", confirmed: false, needsConfirmation: false });
-    expect([geometry.rooms.length, geometry.walls.length]).toEqual([3, 12]);
+    expect(meta.unit).toMatchObject({
+      unit: "foot",
+      source: "header",
+      confirmed: false,
+      needsConfirmation: false,
+    });
+    expect([geometry.rooms.length, geometry.walls.length]).toEqual([3, 10]);
   });
   it("whole_house_simple_plan.dxf has no unit header and needs confirmation", () => {
-    const { geometry, meta } = parseDxf(read("whole_house_simple_plan.dxf"), {});
-    expect(meta.unit).toMatchObject({ unit: "millimetre", source: "plausibility", needsConfirmation: true });
+    const { geometry, meta } = parseDxf(
+      read("whole_house_simple_plan.dxf"),
+      {},
+    );
+    expect(meta.unit).toMatchObject({
+      unit: "millimetre",
+      source: "plausibility",
+      needsConfirmation: true,
+    });
     expect([geometry.rooms.length, geometry.walls.length]).toEqual([7, 12]);
   });
   it("whole_house_simple_plan.dxf read as feet is flagged implausible once confirmed", () => {
-    const { meta } = parseDxf(read("whole_house_simple_plan.dxf"), { confirmedUnit: "foot" });
-    expect(meta.warnings.map((w) => w.code)).toContain("UNIT_CONFIRMED_IMPLAUSIBLE");
+    const { meta } = parseDxf(read("whole_house_simple_plan.dxf"), {
+      confirmedUnit: "foot",
+    });
+    expect(meta.warnings.map((w) => w.code)).toContain(
+      "UNIT_CONFIRMED_IMPLAUSIBLE",
+    );
   });
 });

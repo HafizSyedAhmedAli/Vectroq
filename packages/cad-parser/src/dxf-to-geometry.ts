@@ -16,6 +16,8 @@ import {
 import { Point2D, distance, pointInPolygon, polygonArea } from "./polygon";
 import { snapToWall } from "./place-openings";
 import { RawArc, swingFromArc } from "./door-swing";
+import { buildModeAWalls } from "./mode-a-walls";
+import type { ParseReport } from "./report";
 
 // --- Layer conventions this parser expects the CAD file to follow ---
 // A client's actual drawings may use different layer names; treat these
@@ -119,6 +121,8 @@ function layerKind(layer: string): "wall" | "door" | "window" | null {
 export function dxfToGeometry(
   dxf: RawDxfDocument,
   d: ConstructionDefaults = DEFAULT_CONSTRUCTION,
+  /** Optional. When given, Mode A reports shared-wall decisions into it. */
+  ctx: { report?: ParseReport } = {},
 ): Geometry {
   const roomPolylines = dxf.entities.filter(
     (e): e is RawPolylineEntity =>
@@ -195,35 +199,17 @@ export function dxfToGeometry(
     };
   }
 
-  const walls: Wall[] = [];
   const rooms: Room[] = [];
+  const outlines: Point2D[][] = [];
 
   roomPolylines.forEach((polyline, roomIndex) => {
     const vertices: Point2D[] = polyline.vertices.map((v) => ({
       x: v.x,
       y: v.y,
     }));
+    outlines.push(vertices);
 
-    // Each edge of the closed room outline becomes one wall segment. Note:
-    // a wall shared between two adjacent rooms is currently counted once
-    // per room it borders — confirm whether shared partition
-    // walls should be deduplicated before this feeds a client-facing BOQ.
-    for (let i = 0; i < vertices.length; i++) {
-      const start = vertices[i];
-      const end = vertices[(i + 1) % vertices.length];
-      if (start.x === end.x && start.y === end.y) continue; // closing point repeats the first vertex
-      walls.push({
-        id: `wall-${roomIndex}-${i}`,
-        startX: start.x,
-        startY: start.y,
-        endX: end.x,
-        endY: end.y,
-        length: distance(start, end),
-        height: d.wallHeightFt,
-        thickness: d.exteriorWallThicknessFt,
-      });
-    }
-
+    // Rooms come from the original outline, never from the merged walls below.
     const label = labels.find((l) =>
       pointInPolygon({ x: l.startPoint.x, y: l.startPoint.y }, vertices),
     );
@@ -246,6 +232,15 @@ export function dxfToGeometry(
       shapes: [vertices],
     });
   });
+
+  // Each edge of a closed room outline is a wall. A wall shared by two rooms is
+  // drawn by both outlines; buildModeAWalls represents each physical run once
+  // (INV-2) and leaves every other wall exactly as before.
+  const walls: Wall[] = buildModeAWalls(
+    outlines,
+    { height: d.wallHeightFt, thickness: d.exteriorWallThicknessFt },
+    ctx.report,
+  );
 
   const openings: Opening[] = [
     ...doorLines.map((line, i) =>
