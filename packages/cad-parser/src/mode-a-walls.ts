@@ -168,6 +168,37 @@ interface Edge {
 }
 
 /**
+ * One wall per non-degenerate polygon edge, id `wall-{polygon}-{edge}`: exactly
+ * what Mode A emitted before shared walls were merged. Openings are placed
+ * against these, not against the merged walls, so an opening's position and
+ * direction never depend on which duplicate the merge kept (a hinge-style door
+ * with no swing arc is centred by the wall's direction, so the choice matters).
+ */
+export function buildModeAEdgeWalls(
+  polygons: readonly (readonly Point2D[])[],
+  p: ModeAWallParams,
+): Wall[] {
+  return polygons.flatMap((v, poly) =>
+    v.flatMap((a, i) => {
+      const b = v[(i + 1) % v.length];
+      if (a.x === b.x && a.y === b.y) return []; // closing point repeats the first vertex
+      return [
+        {
+          id: `wall-${poly}-${i}`,
+          startX: a.x,
+          startY: a.y,
+          endX: b.x,
+          endY: b.y,
+          length: distance(a, b),
+          height: p.height,
+          thickness: p.thickness,
+        },
+      ];
+    }),
+  );
+}
+
+/**
  * Builds Mode A walls from closed room outlines.
  *
  * Without merging this is exactly the previous behaviour: one wall per

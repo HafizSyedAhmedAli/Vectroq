@@ -14,6 +14,7 @@ import {
   isSimplePolygon,
   signedArea2,
 } from "./mode-a-walls";
+import { mergeCollinear, type MergeInputSeg } from "./normalize-segments";
 import { snapToWall } from "./place-openings";
 import { parseDxf, parseDxfToGeometry } from "./parse-dxf";
 import { ParseReport } from "./report";
@@ -446,6 +447,80 @@ describe("H. mixed overlap groups (same-polygon members plus another polygon)", 
           expect(r.codes).toEqual([]);
         }
   });
+  it("provenance: the arms contribute only because each overlaps the room below's wall, never each other", () => {
+    const edgesOf = (polys: P[][]): MergeInputSeg[] =>
+      unmerged(polys).map((w) => {
+        const pi = Number(w.id.split("-")[1]);
+        return {
+          id: w.id,
+          x1: w.startX,
+          y1: w.startY,
+          x2: w.endX,
+          y2: w.endY,
+          thickness: 0.75,
+          side: interiorSide(polys[pi]) as "left" | "right",
+        };
+      });
+    const physicalEdge = (w: {
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+    }) =>
+      JSON.stringify([
+        Math.min(w.x1, w.x2),
+        Math.min(w.y1, w.y2),
+        Math.max(w.x1, w.x2),
+        Math.max(w.y1, w.y2),
+      ]);
+    const expected = [
+      JSON.stringify([0, 0, 4, 0]), // arm 1
+      JSON.stringify([6, 0, 10, 0]), // arm 2
+      JSON.stringify([0, 0, 10, 0]), // the room below's wall
+    ].sort();
+    for (const order of [0, 1])
+      for (const flipU of [false, true])
+        for (const flipQ of [false, true]) {
+          const a = flipU ? reversed(U) : U;
+          const b = flipQ ? reversed(below) : below;
+          const polys = order ? [b, a] : [a, b];
+          const input = edgesOf(polys);
+          const byId = new Map(input.map((e) => [e.id, e]));
+          const res = mergeCollinear(input);
+          const merged = res.segs.filter((s) => s.sources.length > 1);
+          expect(res.refusals).toEqual([]);
+          expect(merged).toHaveLength(1);
+          const srcs = merged[0].sources.map((id) => byId.get(id)!);
+          // exactly the three edges on y=0: two of the U, one of the room below
+          expect(srcs.map(physicalEdge).sort()).toEqual(expected);
+          const poly = (id: string) => Number(id.split("-")[1]);
+          const uIdx = order ? 1 : 0;
+          const fromU = merged[0].sources.filter((id) => poly(id) === uIdx);
+          expect(fromU).toHaveLength(2);
+          // the two U edges are disjoint along the line (they only touch the other room's wall)
+          const [e1, e2] = fromU.map((id) => byId.get(id)!);
+          const lo = (e: MergeInputSeg) => Math.min(e.x1, e.x2);
+          const hi = (e: MergeInputSeg) => Math.max(e.x1, e.x2);
+          expect(
+            Math.min(hi(e1), hi(e2)) - Math.max(lo(e1), lo(e2)),
+          ).toBeLessThan(0);
+          // the other room's single edge contains both arms
+          const q = srcs.find((e) => poly(e.id) !== uIdx)!;
+          expect(lo(q) <= Math.min(lo(e1), lo(e2))).toBe(true);
+          expect(hi(q) >= Math.max(hi(e1), hi(e2))).toBe(true);
+          // and the built walls are exactly the unmerged ones minus the absorbed edges
+          const built = buildModeAWalls(polys, { height: 10, thickness: 0.75 });
+          const absorbed = merged[0].sources.filter(
+            (id) => id !== merged[0].id,
+          );
+          expect(built.map((w) => w.id).sort()).toEqual(
+            input
+              .map((e) => e.id)
+              .filter((id) => !absorbed.includes(id))
+              .sort(),
+          );
+        }
+  });
   it("two overlapping edges of one polygon still dissolve the group: sliver room plus a room beside it stays as drawn", () => {
     // The sliver's top edge is on the same side of y=0.03 as the room above's
     // interior would be (and its edges overlap each other), so which edge the room
@@ -502,45 +577,47 @@ describe("J. openings on shared walls", () => {
   // Room 1 is 8 ft tall, room 2 is 12 ft tall; they share x=10 for y in 0..8.
   const r1 = rect(0, 0, 10, 8);
   const r2 = rect(10, 0, 20, 12);
-  const openingLines = [
-    line("DOORS", 10, 0.2, 10, 3.2), // near the bottom end of the shared run
-    line("DOORS", 10, 4.9, 10, 7.9), // near the end where the shared run stops
-    line("WINDOWS", 10, 9, 10, 11), // only room 2's own wall is there
+  const doorLines = [
+    line("DOORS", 10, 0.2, 10, 3.2), // along the wall, near the bottom end of the shared run
+    line("DOORS", 10, 4.9, 10, 7.9), // along the wall, near where the shared run stops
+    line("DOORS", 10, 3, 13, 3), // hinge-style leaf on the shared run (hinge on the wall, no arc)
+    line("DOORS", 13, 9, 10, 9), // hinge-style leaf where only room 2's wall is (leaf drawn from the tip)
     line("DOORS", 0, 2, 0, 5), // an unshared wall
   ];
+  const windowLines = [line("WINDOWS", 10, 9, 10, 11)]; // only room 2's own wall is there
 
   for (const [name, polys] of [
     ["room 1 first", [r1, r2]],
     ["room 2 first", [r2, r1]],
   ] as const)
-    it(`${name}: every opening keeps its position and sits on exactly one wall`, () => {
+    it(`${name}: openings are placed exactly as before merging, and sit on exactly one wall`, () => {
       const before = unmerged([...polys]);
       const g = dxfToGeometry({
-        entities: [...polys.map(poly), ...openingLines],
+        entities: [...polys.map(poly), ...doorLines, ...windowLines],
       });
       expect(g.walls).toHaveLength(7);
-      expect(g.openings).toHaveLength(4);
-      const doors = openingLines.filter((l) => l.layer === "DOORS").length;
-      expect(g.openings.filter((o) => o.type === "door")).toHaveLength(doors);
-      openingLines.forEach((l, i) => {
+      expect(g.openings).toHaveLength(doorLines.length + windowLines.length);
+      const lines = [...doorLines, ...windowLines];
+      lines.forEach((l, i) => {
         const [a, b] = l.vertices as P[];
-        const o = [
-          ...g.openings.filter((x) => x.type === "door"),
-          ...g.openings.filter((x) => x.type === "window"),
-        ].find(
-          (x) =>
-            x.id ===
-            (l.layer === "DOORS"
-              ? `door-${openingLines.slice(0, i).filter((m) => m.layer === "DOORS").length}`
-              : "window-0"),
-        )!;
+        const o = g.openings[i];
+        const { id, type, width, height, ...placed } = o;
+        expect(id).toBe(
+          i < doorLines.length ? `door-${i}` : `window-${i - doorLines.length}`,
+        );
+        expect(width).toBeCloseTo(Math.hypot(b.x - a.x, b.y - a.y), 12);
+        expect(height).toBe(type === "door" ? 7 : 4);
+        // Placement, angle and hinge data equal what snapToWall gives on the
+        // original per-edge walls: the pre-merge result, field for field.
         const old = snapToWall(a, b, before);
-        // same point on the same physical line
-        expect(o.x).toBeCloseTo(old.x!, 12);
-        expect(o.y).toBeCloseTo(old.y!, 12);
-        // the angle is that of the wall it now sits on: equal to the old angle or opposite
-        expect(Math.abs(Math.sin(o.angle! - old.angle!))).toBeLessThan(1e-12);
-        // and it lies on exactly one final wall
+        const { hingeX, hingeY, openAngle, ...rest } = old;
+        expect(placed).toEqual(
+          type === "door" ? old : rest, // windows never carry hinge data
+        );
+        void hingeX;
+        void hingeY;
+        void openAngle;
+        // The point lies on exactly one final wall (no duplicate, no orphan).
         const hosts = g.walls.filter((w) => {
           const dx = w.endX - w.startX,
             dy = w.endY - w.startY;
@@ -551,13 +628,28 @@ describe("J. openings on shared walls", () => {
           return Math.abs(cross) < 1e-9 && t >= -1e-9 && t <= 1 + 1e-9;
         });
         expect(hosts).toHaveLength(1);
-        expect(o.angle).toBeCloseTo(
-          Math.atan2(
-            hosts[0].endY - hosts[0].startY,
-            hosts[0].endX - hosts[0].startX,
-          ),
-          12,
+        // The angle is the original wall's direction, so it may be opposite
+        // to the merged wall's; it is always parallel to its host wall.
+        const hostAngle = Math.atan2(
+          hosts[0].endY - hosts[0].startY,
+          hosts[0].endX - hosts[0].startX,
         );
+        expect(Math.abs(Math.sin(o.angle! - hostAngle))).toBeLessThan(1e-12);
       });
     });
+
+  it("a door that was drawn along the wall lands at the same physical point whichever polygon comes first", () => {
+    const at = (polys: P[][]) =>
+      dxfToGeometry({
+        entities: [
+          ...polys.map(poly),
+          doorLines[0],
+          doorLines[1],
+          windowLines[0],
+        ],
+      }).openings.map((o) =>
+        [o.x, o.y, o.width, o.height].map((n) => Math.round(n! * 1e9) / 1e9),
+      );
+    expect(at([r2, r1])).toEqual(at([r1, r2]));
+  });
 });

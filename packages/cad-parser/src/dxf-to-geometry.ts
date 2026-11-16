@@ -16,7 +16,7 @@ import {
 import { Point2D, distance, pointInPolygon, polygonArea } from "./polygon";
 import { snapToWall } from "./place-openings";
 import { RawArc, swingFromArc } from "./door-swing";
-import { buildModeAWalls } from "./mode-a-walls";
+import { buildModeAEdgeWalls, buildModeAWalls } from "./mode-a-walls";
 import type { ParseReport } from "./report";
 
 // --- Layer conventions this parser expects the CAD file to follow ---
@@ -236,18 +236,21 @@ export function dxfToGeometry(
   // Each edge of a closed room outline is a wall. A wall shared by two rooms is
   // drawn by both outlines; buildModeAWalls represents each physical run once
   // (INV-2) and leaves every other wall exactly as before.
-  const walls: Wall[] = buildModeAWalls(
-    outlines,
-    { height: d.wallHeightFt, thickness: d.exteriorWallThicknessFt },
-    ctx.report,
-  );
+  const params = {
+    height: d.wallHeightFt,
+    thickness: d.exteriorWallThicknessFt,
+  };
+  const walls: Wall[] = buildModeAWalls(outlines, params, ctx.report);
+  // Openings snap to the original per-edge walls (as before shared walls were
+  // merged), so their placement and angle do not depend on the merge.
+  const edgeWalls = buildModeAEdgeWalls(outlines, params);
 
   const openings: Opening[] = [
     ...doorLines.map((line, i) =>
-      toOpening(line, i, "door", d.doorHeightFt, walls),
+      toOpening(line, i, "door", d.doorHeightFt, edgeWalls),
     ),
     ...windowLines.map((line, i) =>
-      toOpening(line, i, "window", d.windowHeightFt, walls),
+      toOpening(line, i, "window", d.windowHeightFt, edgeWalls),
     ),
   ];
 
