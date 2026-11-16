@@ -14,6 +14,7 @@ import {
   isSimplePolygon,
   signedArea2,
 } from "./mode-a-walls";
+import { snapToWall } from "./place-openings";
 import { parseDxf, parseDxfToGeometry } from "./parse-dxf";
 import { ParseReport } from "./report";
 
@@ -23,6 +24,30 @@ const baseline = (n: string) =>
   JSON.parse(
     readFileSync(join(__dirname, `../baselines/legacy/${n}.json`), "utf8"),
   ) as Geometry;
+/**
+ * What Mode A emitted before Stage 2: one wall per non-degenerate polygon edge,
+ * id wall-{polygon}-{vertex}. Rebuilt here so the tests have an independent
+ * "before" now that the legacy baseline holds the merged result.
+ */
+const unmerged = (polys: P[][]): Geometry["walls"] =>
+  polys.flatMap((v, pi) =>
+    v.flatMap((a, i) => {
+      const b = v[(i + 1) % v.length];
+      if (a.x === b.x && a.y === b.y) return [];
+      return [
+        {
+          id: `wall-${pi}-${i}`,
+          startX: a.x,
+          startY: a.y,
+          endX: b.x,
+          endY: b.y,
+          length: Math.hypot(b.x - a.x, b.y - a.y),
+          height: 10,
+          thickness: 0.75,
+        },
+      ];
+    }),
+  );
 const fixtureText = (n: string) => readFileSync(join(fixtures, n), "utf8");
 
 /** Rectangle CCW as (x0,y0)->(x1,y0)->(x1,y1)->(x0,y1), closed with a repeated first vertex. */
@@ -67,8 +92,8 @@ const key = (w: Geometry["walls"][number]) => [
 
 // ---------------------------------------------------------------- A
 describe("A. sample-house.dxf regression", () => {
-  const before = baseline("sample-house");
   const { geometry: g, meta } = parseDxf(fixtureText("sample-house.dxf"));
+  const before = { walls: unmerged(g.rooms.map((r) => r.shapes[0])) };
 
   it("12 walls / 158 ft become 10 walls / 138 ft", () => {
     expect(before.walls).toHaveLength(12);
@@ -97,7 +122,7 @@ describe("A. sample-house.dxf regression", () => {
     expect(g.walls.map((w) => w.height)).toEqual(Array(10).fill(10));
   });
   it("rooms are unchanged: Kitchen 240, Living Room 270, Bathroom 48, total 558", () => {
-    expect(g.rooms).toEqual(before.rooms);
+    expect(g.rooms).toEqual(baseline("sample-house").rooms);
     const area = (n: string) => g.rooms.find((r) => r.name === n)!.area;
     expect([area("Kitchen"), area("Living Room"), area("Bathroom")]).toEqual([
       240, 270, 48,
@@ -105,7 +130,27 @@ describe("A. sample-house.dxf regression", () => {
     expect(g.rooms.reduce((s, r) => s + r.area, 0)).toBe(558);
   });
   it("openings are unchanged: same count, dimensions, placement and door angle", () => {
-    expect(g.openings).toEqual(before.openings);
+    // literal values from the pre-Stage-2 output
+    expect(g.openings).toEqual([
+      {
+        id: "door-0",
+        type: "door",
+        width: 3,
+        height: 7,
+        x: 20,
+        y: 5.5,
+        angle: Math.PI / 2,
+      },
+      {
+        id: "window-0",
+        type: "window",
+        width: 4,
+        height: 4,
+        x: 0,
+        y: 5,
+        angle: -Math.PI / 2,
+      },
+    ]);
     expect(g.openings.filter((o) => o.type === "door")).toHaveLength(1);
     expect(g.openings.filter((o) => o.type === "window")).toHaveLength(1);
     expect(g.openings.find((o) => o.type === "door")!.angle).toBe(Math.PI / 2);
@@ -338,5 +383,181 @@ describe("G. Mode B is unchanged", () => {
         [],
       );
       expect(r.meta.stats.wallsMerged).toBeUndefined();
+    });
+});
+
+// ---------------------------------------------------------------- H
+describe("H. mixed overlap groups (same-polygon members plus another polygon)", () => {
+  // U-shaped room: its two arms put edges on y=0 either side of a notch (x 4..6).
+  // The room below covers y=0 from x=0 to 10, so one overlap group holds two edges
+  // of the U and one of the room below.
+  const U: P[] = [
+    { x: 0, y: 0 },
+    { x: 4, y: 0 },
+    { x: 4, y: 3 },
+    { x: 6, y: 3 },
+    { x: 6, y: 0 },
+    { x: 10, y: 0 },
+    { x: 10, y: 8 },
+    { x: 0, y: 8 },
+    { x: 0, y: 0 },
+  ];
+  const below = rect(0, -6, 10, 0);
+  const reversed = (v: P[]) =>
+    [...v.slice(0, -1)].reverse().concat({ ...v[v.length - 1] });
+  const physical = (g: Geometry) =>
+    g.walls
+      .map((w) =>
+        JSON.stringify([
+          Math.min(w.startX, w.endX),
+          Math.min(w.startY, w.endY),
+          Math.max(w.startX, w.endX),
+          Math.max(w.startY, w.endY),
+        ]),
+      )
+      .sort();
+
+  it("the wall below is drawn once; the arms are absorbed, never merged with each other", () => {
+    const before = unmerged([U, below]);
+    expect(before).toHaveLength(12);
+    const { g, codes } = run([U, below]);
+    expect(codes).toEqual([]);
+    expect(g.walls).toHaveLength(10);
+    expect(len(g)).toBe(66); // 74 ft of outline edges, 8 ft of arm edges duplicated the wall below
+    expect(g.walls.filter((w) => w.startY === 0 && w.endY === 0)).toHaveLength(
+      1,
+    );
+    // the notch's own side walls and the rest of both rooms are untouched
+    const notch = g.walls.filter(
+      (w) => w.startX === w.endX && w.startX >= 4 && w.startX <= 6,
+    );
+    expect(notch.map((w) => w.length)).toEqual([3, 3]);
+    expect(g.rooms.map((r) => r.area)).toEqual([74, 60]);
+  });
+  it("gives the same physical walls under every polygon order, winding and direction", () => {
+    const base = physical(run([U, below]).g);
+    for (const order of [0, 1])
+      for (const flipU of [false, true])
+        for (const flipQ of [false, true]) {
+          const a = flipU ? reversed(U) : U;
+          const b = flipQ ? reversed(below) : below;
+          const r = run(order ? [b, a] : [a, b]);
+          expect(physical(r.g)).toEqual(base);
+          expect(r.codes).toEqual([]);
+        }
+  });
+  it("two overlapping edges of one polygon still dissolve the group: sliver room plus a room beside it stays as drawn", () => {
+    // The sliver's top edge is on the same side of y=0.03 as the room above's
+    // interior would be (and its edges overlap each other), so which edge the room
+    // below shares a wall with is ambiguous. Nothing is merged and it is reported.
+    const sliver = rect(0, 0, 10, 0.03);
+    const q = rect(0, -5, 10, 0);
+    const { g, codes } = run([sliver, q]);
+    expect(g.walls).toHaveLength(8);
+    expect(len(g)).toBeCloseTo(2 * (10 + 0.03) + 30);
+    expect(codes.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------- I
+describe("I. tolerance boundaries between rooms drawn near each other", () => {
+  const gap = (d: number) => run([rect(0, 0, 10, 8), rect(10 + d, 0, 20, 8)]);
+  it("a gap within the 0.05 ft tolerance is the same wall: merged", () => {
+    for (const d of [0.04, 0.05]) {
+      const { g, codes } = gap(d);
+      expect(g.walls).toHaveLength(7);
+      expect(codes).toEqual([]);
+    }
+  });
+  it("a gap just past tolerance, up to the face-offset limit (1.125 ft), is refused and reported", () => {
+    for (const d of [0.06, 1.125]) {
+      const { g, codes } = gap(d);
+      expect(g.walls).toHaveLength(8);
+      expect(codes).toEqual(["WALL_FACE_OFFSET"]);
+    }
+  });
+  it("a gap beyond the limit is two separate walls and raises nothing", () => {
+    const { g, codes } = gap(1.2);
+    expect(g.walls).toHaveLength(8);
+    expect(codes).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------- J
+describe("J. openings on shared walls", () => {
+  const line = (
+    layer: string,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+  ): RawEntity => ({
+    type: "LINE",
+    layer,
+    vertices: [
+      { x: x1, y: y1 },
+      { x: x2, y: y2 },
+    ],
+  });
+  // Room 1 is 8 ft tall, room 2 is 12 ft tall; they share x=10 for y in 0..8.
+  const r1 = rect(0, 0, 10, 8);
+  const r2 = rect(10, 0, 20, 12);
+  const openingLines = [
+    line("DOORS", 10, 0.2, 10, 3.2), // near the bottom end of the shared run
+    line("DOORS", 10, 4.9, 10, 7.9), // near the end where the shared run stops
+    line("WINDOWS", 10, 9, 10, 11), // only room 2's own wall is there
+    line("DOORS", 0, 2, 0, 5), // an unshared wall
+  ];
+
+  for (const [name, polys] of [
+    ["room 1 first", [r1, r2]],
+    ["room 2 first", [r2, r1]],
+  ] as const)
+    it(`${name}: every opening keeps its position and sits on exactly one wall`, () => {
+      const before = unmerged([...polys]);
+      const g = dxfToGeometry({
+        entities: [...polys.map(poly), ...openingLines],
+      });
+      expect(g.walls).toHaveLength(7);
+      expect(g.openings).toHaveLength(4);
+      const doors = openingLines.filter((l) => l.layer === "DOORS").length;
+      expect(g.openings.filter((o) => o.type === "door")).toHaveLength(doors);
+      openingLines.forEach((l, i) => {
+        const [a, b] = l.vertices as P[];
+        const o = [
+          ...g.openings.filter((x) => x.type === "door"),
+          ...g.openings.filter((x) => x.type === "window"),
+        ].find(
+          (x) =>
+            x.id ===
+            (l.layer === "DOORS"
+              ? `door-${openingLines.slice(0, i).filter((m) => m.layer === "DOORS").length}`
+              : "window-0"),
+        )!;
+        const old = snapToWall(a, b, before);
+        // same point on the same physical line
+        expect(o.x).toBeCloseTo(old.x!, 12);
+        expect(o.y).toBeCloseTo(old.y!, 12);
+        // the angle is that of the wall it now sits on: equal to the old angle or opposite
+        expect(Math.abs(Math.sin(o.angle! - old.angle!))).toBeLessThan(1e-12);
+        // and it lies on exactly one final wall
+        const hosts = g.walls.filter((w) => {
+          const dx = w.endX - w.startX,
+            dy = w.endY - w.startY;
+          const cross = (o.x! - w.startX) * dy - (o.y! - w.startY) * dx;
+          const t =
+            ((o.x! - w.startX) * dx + (o.y! - w.startY) * dy) /
+            (w.length * w.length);
+          return Math.abs(cross) < 1e-9 && t >= -1e-9 && t <= 1 + 1e-9;
+        });
+        expect(hosts).toHaveLength(1);
+        expect(o.angle).toBeCloseTo(
+          Math.atan2(
+            hosts[0].endY - hosts[0].startY,
+            hosts[0].endX - hosts[0].startX,
+          ),
+          12,
+        );
+      });
     });
 });

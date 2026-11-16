@@ -15,8 +15,8 @@
       "startX": 20,
       "startY": 0,
       "endX": 20,
-      "endY": 12,
-      "length": 12,
+      "endY": 18,
+      "length": 18,
       "height": 10,
       "thickness": 0.75
     },
@@ -71,16 +71,6 @@
       "thickness": 0.75
     },
     {
-      "id": "wall-1-3",
-      "startX": 20,
-      "startY": 18,
-      "endX": 20,
-      "endY": 0,
-      "length": 18,
-      "height": 10,
-      "thickness": 0.75
-    },
-    {
       "id": "wall-2-0",
       "startX": 35,
       "startY": 0,
@@ -107,16 +97,6 @@
       "endX": 35,
       "endY": 8,
       "length": 6,
-      "height": 10,
-      "thickness": 0.75
-    },
-    {
-      "id": "wall-2-3",
-      "startX": 35,
-      "startY": 8,
-      "endX": 35,
-      "endY": 0,
-      "length": 8,
       "height": 10,
       "thickness": 0.75
     }

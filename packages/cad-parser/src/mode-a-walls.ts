@@ -13,7 +13,13 @@
 //    (counter-clockwise: interior on the left of each directed edge;
 //    clockwise: on the right), so a shared partition (opposite sides) can be
 //    told apart from duplicate/nested outlines (same side);
-//  - a guard so edges of the SAME polygon are never merged with each other;
+//  - a guard so edges of the SAME polygon are never merged with each other: a
+//    group is dissolved when two of its members from one polygon overlap each
+//    other along the wall line (a sliver outline whose opposite edges fall
+//    within the tolerance). Members of one polygon that are merely disjoint
+//    (for example the two arms of a U-shaped room on either side of a notch)
+//    are allowed in the same group, because each is absorbed by the OTHER
+//    polygon's wall that covers them and they are never merged with each other;
 //  - polygons that are not simple (self-touching or self-crossing) or have no
 //    area are left out of merging, because their interior side is not defined;
 //  - surfacing every refusal as a parse warning instead of discarding it.
@@ -122,6 +128,36 @@ const REFUSAL_CODE: Record<MergeRefusalReason, string> = {
 /** Cap so a pathological drawing cannot flood the report. */
 const MAX_REFUSAL_WARNINGS = 25;
 
+/** Overlap shorter than this (ft) along the wall line is treated as touching. */
+const TOUCH_EPS = 1e-6;
+
+/**
+ * True when two edges of the same polygon overlap each other (by more than a
+ * touch) along the merged wall's line. Projection uses the merged segment's
+ * direction, which is the leader's line, the same axis Stage 1 compares on.
+ */
+function samePolygonOverlap(
+  seg: { x1: number; y1: number; x2: number; y2: number },
+  members: readonly Edge[],
+): boolean {
+  const ux = seg.x2 - seg.x1;
+  const uy = seg.y2 - seg.y1;
+  const n = Math.hypot(ux, uy) || 1;
+  const iv = members.map((e) => {
+    const t1 = ((e.a.x - seg.x1) * ux + (e.a.y - seg.y1) * uy) / n;
+    const t2 = ((e.b.x - seg.x1) * ux + (e.b.y - seg.y1) * uy) / n;
+    return { poly: e.poly, lo: Math.min(t1, t2), hi: Math.max(t1, t2) };
+  });
+  for (let i = 0; i < iv.length; i++)
+    for (let j = i + 1; j < iv.length; j++)
+      if (
+        iv[i].poly === iv[j].poly &&
+        Math.min(iv[i].hi, iv[j].hi) - Math.max(iv[i].lo, iv[j].lo) > TOUCH_EPS
+      )
+        return true;
+  return false;
+}
+
 interface Edge {
   /** Index of the owning polygon. */
   poly: number;
@@ -148,8 +184,9 @@ export function buildModeAWalls(
 ): Wall[] {
   const edges: Edge[] = [];
   const eligiblePoly: boolean[] = [];
+  const sideOf = polygons.map((v) => interiorSide(v));
   polygons.forEach((v, poly) => {
-    const eligible = interiorSide(v) !== undefined && isSimplePolygon(v);
+    const eligible = sideOf[poly] !== undefined && isSimplePolygon(v);
     eligiblePoly.push(eligible);
     if (!eligible)
       report?.warning(
@@ -181,7 +218,6 @@ export function buildModeAWalls(
   const eligible = edges
     .map((_, k) => k)
     .filter((k) => eligiblePoly[edges[k].poly]);
-  const sideOf = polygons.map((v) => interiorSide(v));
   const input: MergeInputSeg[] = eligible.map((k) => {
     const e = edges[k];
     return {
@@ -191,13 +227,13 @@ export function buildModeAWalls(
       x2: e.b.x,
       y2: e.b.y,
       thickness: p.thickness,
-      ...(sideOf[e.poly] ? { side: sideOf[e.poly] } : {}),
+      side: sideOf[e.poly]!,
     };
   });
 
   const res = mergeCollinear(input);
 
-  // Accept a merge only when every contributor belongs to a different polygon.
+  // Accept a merge unless two contributors from the same polygon overlap each other.
   const replacement = new Map<number, Wall>(); // global edge index of first contributor -> merged wall
   const absorbed = new Set<number>();
   let removedCount = 0;
@@ -205,11 +241,15 @@ export function buildModeAWalls(
   for (const seg of res.segs) {
     if (seg.sourceIndices.length < 2) continue;
     const globals = seg.sourceIndices.map((li) => eligible[li]);
-    const polys = globals.map((g) => edges[g].poly);
-    if (new Set(polys).size !== polys.length) {
+    if (
+      samePolygonOverlap(
+        seg,
+        globals.map((g) => edges[g]),
+      )
+    ) {
       report?.warning(
         "WALL_SAME_POLYGON_OVERLAP",
-        `Walls ${seg.sources.join(", ")} overlap but belong to the same room outline, so they were not merged.`,
+        `Walls ${seg.sources.join(", ")} include two edges of one room outline that overlap each other, so none of them were merged.`,
         { kind: "wall", id: seg.id },
       );
       continue;
