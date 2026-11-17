@@ -104,7 +104,26 @@ export async function savedProject(page: Page, projectId: string) {
       revision: number;
       fileName: string;
       boq: null | { total: number };
-      geometry: { rooms: { name: string; area: number }[] };
+      geometry: {
+        walls: {
+          id: string;
+          startX: number;
+          startY: number;
+          endX: number;
+          endY: number;
+          length: number;
+        }[];
+        rooms: { name: string; area: number }[];
+        openings: {
+          id: string;
+          type: string;
+          x?: number;
+          y?: number;
+          width: number;
+          height: number;
+          angle?: number;
+        }[];
+      };
       unit: null | {
         unit: {
           unit: string;
