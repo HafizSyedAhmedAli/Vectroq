@@ -13,7 +13,7 @@ describe("parseDxfToGeometry (real dxf-parser, real DXF file)", () => {
 
   it("matches the hand-constructed fixture result", () => {
     expect(geometry.rooms).toHaveLength(3);
-    expect(geometry.walls).toHaveLength(12);
+    expect(geometry.walls).toHaveLength(10); // 12 edges, 2 shared walls drawn twice
     expect(geometry.openings).toHaveLength(2);
 
     const kitchen = geometry.rooms.find((r) => r.name === "Kitchen");

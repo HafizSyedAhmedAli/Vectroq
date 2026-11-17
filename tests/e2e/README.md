@@ -18,7 +18,10 @@ The harness is built to be safe and repeatable:
 
 - Node.js 20+, pnpm 10.25, `pnpm install` at the repo root
 - Docker (Docker Desktop on Windows)
-- A browser: `pnpm exec playwright install chromium`, or set `PW_CHROME_PATH`
+- A browser: nothing to set. The harness uses Playwright's Chromium if you ran
+  `pnpm exec playwright install chromium`, otherwise an installed Google Chrome or
+  Microsoft Edge (found in its standard location on Windows, macOS and Linux).
+  Set `PW_CHROME_PATH` only to force a specific browser.
 - Internet access (Cloudflare Turnstile test widget, see below)
 - **Stop any dev server on port 3000.** The harness never reuses a running server
   (its database would be unknown). Use `E2E_PORT=3100` to run on another port,
@@ -31,15 +34,9 @@ pnpm e2e:db:up      # starts postgres on localhost:54330 (db vectroq_test)
 pnpm test:e2e       # migrate + reset + seed + run everything
 ```
 
-PowerShell (Chrome instead of the managed Chromium):
-
-```powershell
-$env:PW_CHROME_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-pnpm e2e:db:up
-pnpm test:e2e
-```
-
-Git Bash: `export PW_CHROME_PATH=/usr/bin/google-chrome` (optional), then the same two commands.
+No browser setup is needed on a machine with Chrome or Edge installed. To force a
+different browser, set `PW_CHROME_PATH` (PowerShell:
+`$env:PW_CHROME_PATH = "C:\path\to\chrome.exe"`; Git Bash: `export PW_CHROME_PATH=...`).
 
 ## Running the suite twice on clean environments
 
@@ -54,14 +51,14 @@ because the run itself resets the database.
 
 ## Environment variables
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `E2E_DATABASE_URL` | `postgresql://postgres:test@localhost:54330/vectroq_test` | Test database. Must be local and end in `_test`, or nothing runs. |
-| `E2E_PORT` | `3000` | App port |
-| `E2E_DXF_STORAGE_DIR` | `.e2e-data/dxf` | Folder standing in for Vercel Blob (git-ignored) |
-| `E2E_ORG_SLUG` | `e2e-owner-co` | Company used by `lead-intake.spec.ts` |
-| `E2E_PROD` | unset | `1` = test `next start` (needs a build, see below) |
-| `PW_CHROME_PATH` | unset | Use an installed browser |
+| Variable              | Default                                                   | Purpose                                                                                                               |
+| --------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `E2E_DATABASE_URL`    | `postgresql://postgres:test@localhost:54330/vectroq_test` | Test database. Must be local and end in `_test`, or nothing runs.                                                     |
+| `E2E_PORT`            | `3000`                                                    | App port                                                                                                              |
+| `E2E_DXF_STORAGE_DIR` | `.e2e-data/dxf`                                           | Folder standing in for Vercel Blob (git-ignored)                                                                      |
+| `E2E_ORG_SLUG`        | `e2e-owner-co`                                            | Company used by `lead-intake.spec.ts`                                                                                 |
+| `E2E_PROD`            | unset                                                     | `1` = test `next start` (needs a build, see below)                                                                    |
+| `PW_CHROME_PATH`      | auto                                                      | Force a specific browser. Unset = Playwright's Chromium if installed, else system Chrome/Edge (`support/browser.ts`). |
 
 Set by the harness for the app server (you do not set these): `VECTROQ_E2E=1`,
 `E2E_DXF_STORAGE=filesystem`, `E2E_DXF_STORAGE_DIR`, `DATABASE_URL`, `DIRECT_URL`,
@@ -120,17 +117,17 @@ the browser and the server to `challenges.cloudflare.com`. Without it
 
 ## Specs
 
-| File | Notes |
-|---|---|
-| `auth.setup.ts` | `setup` project: creates owner + session |
-| `public-pages`, `security` | app (+ DB for 404 and rate-limit checks) |
-| `auth`, `office-smoke`, `full-flow` | sign up their own accounts |
-| `demo-flow` | starts demo companies (priced from the seed) |
-| `lead-intake` | uses the seeded owner company; **no longer skipped** |
-| `authenticated` | checks the saved session works |
-| `cad-upload` | W1: upload, parse, display, stored original, reload |
-| `cad-unit` | W2: confirm / change unit; W3: finalize refused until confirmed |
-| `cad-geometry` | W4: geometry edit persists; W5: edit invalidates the BOQ |
+| File                                | Notes                                                           |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `auth.setup.ts`                     | `setup` project: creates owner + session                        |
+| `public-pages`, `security`          | app (+ DB for 404 and rate-limit checks)                        |
+| `auth`, `office-smoke`, `full-flow` | sign up their own accounts                                      |
+| `demo-flow`                         | starts demo companies (priced from the seed)                    |
+| `lead-intake`                       | uses the seeded owner company; **no longer skipped**            |
+| `authenticated`                     | checks the saved session works                                  |
+| `cad-upload`                        | W1: upload, parse, display, stored original, reload             |
+| `cad-unit`                          | W2: confirm / change unit; W3: finalize refused until confirmed |
+| `cad-geometry`                      | W4: geometry edit persists; W5: edit invalidates the BOQ        |
 
 ## CAD specs (W1-W5)
 
@@ -145,10 +142,10 @@ reads what the server saved (`GET /api/projects/:id`) and, for W1, the stored fi
 Fixtures are the existing parser fixtures in `packages/cad-parser/fixtures/`,
 unchanged (no new fixture files):
 
-| Fixture | Unit | Used for |
-|---|---|---|
-| `sample-house.dxf` | header `$INSUNITS=2` (feet); needs no confirmation; 3 rooms, 12 walls | W1, W4, W5 |
-| `whole_house_simple_plan.dxf` | no header; parsed as millimetres by plausibility, **needs confirmation**; 7 rooms, 12 walls | W2, W3 |
+| Fixture                       | Unit                                                                                        | Used for   |
+| ----------------------------- | ------------------------------------------------------------------------------------------- | ---------- |
+| `sample-house.dxf`            | header `$INSUNITS=2` (feet); needs no confirmation; 3 rooms, 12 walls                       | W1, W4, W5 |
+| `whole_house_simple_plan.dxf` | no header; parsed as millimetres by plausibility, **needs confirmation**; 7 rooms, 12 walls | W2, W3     |
 
 `apps/web/src/lib/e2e-cad-fixtures.test.ts` (Vitest) fails fast if those facts change.
 Exact geometry, unit maths and BOQ quantities stay in Vitest; the browser tests do
@@ -187,12 +184,12 @@ it sets is public and throwaway: the database from `docker-compose.test.yml`
 (`vectroq_test`, name must end in `_test`) and Cloudflare's official Turnstile test
 site key. No Blob, Stripe, email or admin credentials exist in CI.
 
-| Job | Checks | Reproduce locally |
-|---|---|---|
-| Static checks | `pnpm typecheck`; `git diff --check` for the change | `pnpm typecheck` and `git diff --check` |
-| Unit tests | `pnpm test` (the PostgreSQL tests skip themselves here) | `pnpm test` |
-| PostgreSQL integration tests | Real migrations, then `cad-concurrency.pg.test.ts` against real Postgres; **fails if those tests were skipped** (`.github/scripts/assert-pg-ran.mjs`) | see below |
-| Playwright E2E | Production build, then the **whole** suite on Playwright's Chromium; **fails on any failed or skipped test**, warns on tests that only passed on retry (`.github/scripts/e2e-summary.mjs`) | see below |
+| Job                          | Checks                                                                                                                                                                                     | Reproduce locally                       |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- |
+| Static checks                | `pnpm typecheck`; `git diff --check` for the change                                                                                                                                        | `pnpm typecheck` and `git diff --check` |
+| Unit tests                   | `pnpm test` (the PostgreSQL tests skip themselves here)                                                                                                                                    | `pnpm test`                             |
+| PostgreSQL integration tests | Real migrations, then `cad-concurrency.pg.test.ts` against real Postgres; **fails if those tests were skipped** (`.github/scripts/assert-pg-ran.mjs`)                                      | see below                               |
+| Playwright E2E               | Production build, then the **whole** suite on Playwright's Chromium; **fails on any failed or skipped test**, warns on tests that only passed on retry (`.github/scripts/e2e-summary.mjs`) | see below                               |
 
 The four jobs run in parallel on separate runners, each with its own database.
 `forbidOnly` makes a committed `test.only` fail CI. Retries are 2 in CI; a test that

@@ -103,7 +103,7 @@ describe("polyline mode", () => {
     expect(r.rooms[0].area).toBe(50);
     expect(r.walls).toHaveLength(4);
   });
-  it("P3 shared walls are counted once per room (sample-house geometry)", () => {
+  it("P3 a wall shared by two rooms is one wall, not two (sample-house geometry)", () => {
     const r = g([
       P("WALLS", [
         [0, 0],
@@ -127,7 +127,7 @@ describe("polyline mode", () => {
         [35, 0],
       ]),
     ]);
-    expect(sum(r.walls.map((w) => w.length))).toBeCloseTo(158); // unique run = 138
+    expect(sum(r.walls.map((w) => w.length))).toBeCloseTo(138); // was 158 (shared walls double-counted); unique run = 138
   });
   it("P4 one WALLS polyline makes every WALLS line vanish", () => {
     const r = g([

@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULT_CONSTRUCTION, dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
+import {
+  DEFAULT_CONSTRUCTION,
+  dxfToGeometry,
+  type RawEntity,
+} from "./dxf-to-geometry";
 
 const entities: RawEntity[] = [
   {
@@ -94,8 +98,9 @@ describe("dxfToGeometry", () => {
   });
 
   it("turns each polyline edge into a wall segment", () => {
-    // 3 rooms x 4 edges each (closing vertex doesn't create a 5th)
-    expect(geometry.walls).toHaveLength(12);
+    // 3 rooms x 4 edges = 12 edges; the two shared edges (x=20, x=35) are each
+    // drawn by both neighbouring outlines and are now one wall (INV-2): 10 walls.
+    expect(geometry.walls).toHaveLength(10);
     expect(geometry.walls[0].length).toBeCloseTo(20);
     expect(geometry.walls[0].height).toBe(10);
     expect(geometry.walls[0].thickness).toBe(0.75);

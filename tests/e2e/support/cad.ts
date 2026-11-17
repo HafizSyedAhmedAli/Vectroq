@@ -18,7 +18,7 @@ import { openTestDb } from "./db";
  *
  *  sample-house.dxf (15 KB): header $INSUNITS=2 (feet). Parses as unit "foot",
  *    source "header", needsConfirmation false (so it can be priced at once).
- *    3 rooms (Kitchen, Living Room, Bathroom), 12 walls, 2 openings.
+ *    3 rooms (Kitchen, Living Room, Bathroom), 10 walls (12 outline edges, 2 shared), 2 openings.
  *
  *  whole_house_simple_plan.dxf (2.4 KB): no unit header. Parses as "millimetre",
  *    source "plausibility", needsConfirmation true. 7 rooms (first: "Bath 1"),
@@ -27,7 +27,7 @@ import { openTestDb } from "./db";
  *
  *  apps/web/src/lib/e2e-cad-fixtures.test.ts fails fast if these ever drift. */
 export const FIXTURE = {
-  headerFeet: { file: "sample-house.dxf", rooms: 3, walls: 12 },
+  headerFeet: { file: "sample-house.dxf", rooms: 3, walls: 10 },
   unitless: { file: "whole_house_simple_plan.dxf", rooms: 7, walls: 12 },
 } as const;
 
@@ -104,15 +104,43 @@ export async function savedProject(page: Page, projectId: string) {
       revision: number;
       fileName: string;
       boq: null | { total: number };
-      geometry: { rooms: { name: string; area: number }[] };
-      unit: null | { unit: { unit: string; source: string; confirmed: boolean; needsConfirmation: boolean } };
+      geometry: {
+        walls: {
+          id: string;
+          startX: number;
+          startY: number;
+          endX: number;
+          endY: number;
+          length: number;
+        }[];
+        rooms: { name: string; area: number }[];
+        openings: {
+          id: string;
+          type: string;
+          x?: number;
+          y?: number;
+          width: number;
+          height: number;
+          angle?: number;
+        }[];
+      };
+      unit: null | {
+        unit: {
+          unit: string;
+          source: string;
+          confirmed: boolean;
+          needsConfirmation: boolean;
+        };
+      };
       dxfBlobKey: string | null;
     };
   };
 }
 
 /** The stored original for a project in the E2E DXF folder (null when absent). */
-export function storedDxf(projectId: string): { file: string; text: string } | null {
+export function storedDxf(
+  projectId: string,
+): { file: string; text: string } | null {
   const dir = path.join(E2E_DXF_DIR, "cad-dxf");
   if (!fs.existsSync(dir)) return null;
   const name = fs.readdirSync(dir).find((f) => f.startsWith(`${projectId}-`));
