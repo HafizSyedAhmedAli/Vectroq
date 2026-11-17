@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { resolveBrowserPath } from "./tests/e2e/support/browser";
 import { E2E_BASE_URL, appServerEnv } from "./tests/e2e/support/env";
 
 const isCI = !!process.env.CI;
@@ -13,9 +14,9 @@ const isCI = !!process.env.CI;
 // deliberately not run here, so a build is never repeated on every test run.
 const useProdServer = isCI || process.env.E2E_PROD === "1";
 
-// Optional local override of the browser (e.g. a system Chrome). Unset = the
-// Chromium that `playwright install chromium` downloads.
-const chromePath = process.env.PW_CHROME_PATH;
+// Browser: PW_CHROME_PATH if set, else Playwright's own Chromium if installed,
+// else a system Chrome/Edge found in its standard location (see support/browser.ts).
+const chromePath = resolveBrowserPath();
 
 const isHeadedMode = process.argv.includes("--headed");
 
