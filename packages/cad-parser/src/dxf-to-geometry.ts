@@ -7,12 +7,8 @@ import type {
   RoomType,
   Wall,
 } from "@vectroq/shared-types";
-import {
-  dedupeSegments,
-  roomsFromWallSegments,
-  segmentsToWalls,
-  type Seg,
-} from "./line-plan";
+import { roomsFromWallSegments, segmentsToWalls } from "./line-plan";
+import { normalizeModeBSegments } from "./mode-b-walls";
 import { Point2D, distance, pointInPolygon, polygonArea } from "./polygon";
 import { snapToWall } from "./place-openings";
 import { RawArc, swingFromArc } from "./door-swing";
@@ -121,8 +117,16 @@ function layerKind(layer: string): "wall" | "door" | "window" | null {
 export function dxfToGeometry(
   dxf: RawDxfDocument,
   d: ConstructionDefaults = DEFAULT_CONSTRUCTION,
-  /** Optional. When given, Mode A reports shared-wall decisions into it. */
-  ctx: { report?: ParseReport } = {},
+  ctx: {
+    /** Optional. When given, shared-wall (Mode A) and wall-merge (Mode B) decisions are reported into it. */
+    report?: ParseReport;
+    /**
+     * False when the drawing's unit is not established (provisional geometry).
+     * Mode B then skips tolerance-based wall merging, because its tolerances are
+     * feet. Defaults to true: direct callers pass feet.
+     */
+    unitTrusted?: boolean;
+  } = {},
 ): Geometry {
   const roomPolylines = dxf.entities.filter(
     (e): e is RawPolylineEntity =>
@@ -163,32 +167,45 @@ export function dxfToGeometry(
   // Drawings made of separate wall LINEs (most real plans) instead of one
   // closed polyline per room.
   if (roomPolylines.length === 0 && wallLines.length > 0) {
-    const segs: Seg[] = dedupeSegments(
+    // Each physical wall run is one wall (INV-2): overlapping LINEs are merged
+    // (Stage 3a) unless the unit is not trustworthy, as the tolerances are feet.
+    const { wallSegs, legacySegs } = normalizeModeBSegments(
       wallLines.map((l) => ({
         x1: l.vertices[0].x,
         y1: l.vertices[0].y,
         x2: l.vertices[1].x,
         y2: l.vertices[1].y,
       })),
+      { merge: ctx.unitTrusted !== false, report: ctx.report },
     );
     const walls = segmentsToWalls(
-      segs,
+      wallSegs,
+      d.wallHeightFt,
+      d.exteriorWallThicknessFt,
+      d.partitionThicknessFt,
+    );
+    // Openings snap to the walls exactly as the pipeline built them before
+    // merging, so their position, angle and hinge never depend on which
+    // contributor of a merged wall came first. (Mode A does the same.)
+    const hostWalls = segmentsToWalls(
+      legacySegs,
       d.wallHeightFt,
       d.exteriorWallThicknessFt,
       d.partitionThicknessFt,
     );
     const openings: Opening[] = [
       ...doorLines.map((l, i) =>
-        toOpening(l, i, "door", d.doorHeightFt, walls, doorArcs),
+        toOpening(l, i, "door", d.doorHeightFt, hostWalls, doorArcs),
       ),
       ...windowLines.map((l, i) =>
-        toOpening(l, i, "window", d.windowHeightFt, walls, doorArcs),
+        toOpening(l, i, "window", d.windowHeightFt, hostWalls, doorArcs),
       ),
     ];
     return {
       walls,
+      // Room detection is unchanged by Stage 3a: it reads the pre-merge segments.
       rooms: roomsFromWallSegments(
-        segs,
+        legacySegs,
         labels.map((l) => ({
           x: l.startPoint.x,
           y: l.startPoint.y,
