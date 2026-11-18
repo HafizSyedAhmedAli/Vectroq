@@ -99,7 +99,7 @@ export function parseDxf(
   const geometry = dxfToGeometry(
     { entities: normalised.map((e) => scaleEntity(e, k)) },
     opts.construction,
-    { report },
+    { report, unitTrusted: !unit.needsConfirmation },
   );
 
   report.stat("entities", entities.length);

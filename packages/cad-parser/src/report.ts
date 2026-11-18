@@ -5,8 +5,14 @@ import type {
   ParseWarning,
 } from "@vectroq/shared-types";
 
-/** Bump when parsing behaviour changes. Phase 0 changes none. */
-export const PARSER_VERSION = "0.0.0-phase0";
+/**
+ * Bump when parsing behaviour changes. Nothing compares this string; it is only
+ * recorded in ParseMeta.
+ * 0.0.0-phase0  : Phase 0 (no behaviour change).
+ * 0.2.0-stage3a : Phase 2 Mode A shared-wall merge (Stage 2) and Mode B
+ *                 overlapping-wall-line merge (Stage 3a).
+ */
+export const PARSER_VERSION = "0.2.0-stage3a";
 
 type EntityRef = ParseWarning["entity"];
 
