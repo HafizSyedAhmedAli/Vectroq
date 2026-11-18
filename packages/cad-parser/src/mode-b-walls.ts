@@ -19,6 +19,8 @@ import type { ParseReport } from "./report";
 export const MODE_B_MERGE_OPTIONS: Required<MergeOptions> = {
   offsetTol: 0.05,
   angleTolRad: (0.5 * Math.PI) / 180,
+  // Collinear overlaps must STRICTLY exceed this (ft) to merge: 0.1 does not, 0.101 does.
+  // Shorter overlaps are kept as drawn, silently. A contained segment always merges.
   minOverlap: 0.1,
   faceOffsetMax: 1.125,
   ambiguousAngleMaxRad: (5 * Math.PI) / 180,
@@ -94,7 +96,7 @@ export function normalizeModeBSegments(
       const shown = res.skipped.slice(0, 5).map((s) => s.id);
       report.warning(
         "WALL_DEGENERATE_LINE",
-        `${res.skipped.length} wall line(s) have no length or an invalid coordinate (${shown.join(", ")}${res.skipped.length > shown.length ? ", ..." : ""}); they were left as drawn and not merged.`,
+        `${res.skipped.length} wall line(s) have no length or an invalid coordinate (${shown.join(", ")}${res.skipped.length > shown.length ? ", ..." : ""}). They were not merged and may remain in the geometry as zero-length or invalid walls.`,
       );
     }
 

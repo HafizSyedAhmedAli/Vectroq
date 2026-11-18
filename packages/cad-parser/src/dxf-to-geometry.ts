@@ -121,9 +121,11 @@ export function dxfToGeometry(
     /** Optional. When given, shared-wall (Mode A) and wall-merge (Mode B) decisions are reported into it. */
     report?: ParseReport;
     /**
-     * False when the drawing's unit is not established (provisional geometry).
-     * Mode B then skips tolerance-based wall merging, because its tolerances are
-     * feet. Defaults to true: direct callers pass feet.
+     * Opt-in. Mode B merges overlapping wall lines only when this is exactly
+     * true, because the merge tolerances are in feet and are meaningless on
+     * geometry whose unit is not established. false, undefined, or a missing
+     * ctx all skip merging (the previous exact-duplicate removal). parseDxf()
+     * passes `!unit.needsConfirmation`.
      */
     unitTrusted?: boolean;
   } = {},
@@ -168,7 +170,7 @@ export function dxfToGeometry(
   // closed polyline per room.
   if (roomPolylines.length === 0 && wallLines.length > 0) {
     // Each physical wall run is one wall (INV-2): overlapping LINEs are merged
-    // (Stage 3a) unless the unit is not trustworthy, as the tolerances are feet.
+    // (Stage 3a) only when the unit is explicitly trusted, as the tolerances are feet.
     const { wallSegs, legacySegs } = normalizeModeBSegments(
       wallLines.map((l) => ({
         x1: l.vertices[0].x,
@@ -176,7 +178,7 @@ export function dxfToGeometry(
         x2: l.vertices[1].x,
         y2: l.vertices[1].y,
       })),
-      { merge: ctx.unitTrusted !== false, report: ctx.report },
+      { merge: ctx.unitTrusted === true, report: ctx.report },
     );
     const walls = segmentsToWalls(
       wallSegs,

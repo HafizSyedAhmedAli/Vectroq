@@ -154,6 +154,9 @@ importers:
         specifier: workspace:*
         version: link:../shared-types
     devDependencies:
+      '@vectroq/cad-parser':
+        specifier: workspace:*
+        version: link:../cad-parser
       vitest:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@20.17.6)(jsdom@25.0.1)(lightningcss@1.32.0)
