@@ -264,6 +264,35 @@ describe("tolerance boundaries (feet, after unit scaling)", () => {
     expect(total(b)).toBe(10);
   });
 
+  it.each([
+    [0.099, 2],
+    [0.1, 2], // strictly greater than minOverlap is required
+    [0.101, 1],
+  ])(
+    "collinear overlap of %s ft gives %s wall(s) (minOverlap 0.1, strict)",
+    (ov, walls) => {
+      const { geometry, meta } = run([
+        W([0, 0], [5 + ov, 0]),
+        W([5, 0], [10, 0]),
+      ]);
+      expect(geometry.walls).toHaveLength(walls);
+      if (walls === 1) {
+        expect(ends(geometry)).toEqual([[0, 0, 10, 0]]);
+        expect(total(geometry)).toBe(10);
+        expect(meta.stats.wallsMerged).toBe(1);
+      } else {
+        // kept exactly as drawn: the short overlap is a known, silent limitation
+        expect(ends(geometry)).toEqual([
+          [0, 0, r6(5 + ov), 0],
+          [5, 0, 10, 0],
+        ]);
+        expect(total(geometry)).toBeCloseTo(10 + ov, 6);
+        expect(meta.stats.wallsMerged).toBeUndefined();
+        expect(meta.warnings).toEqual([]);
+      }
+    },
+  );
+
   it("angle: 0.49 degrees merges, 0.51 degrees is kept separate and reported as ambiguous", () => {
     // short walls so the angle, not the offset, is what decides
     const inside = run([W([0, 0], [2, 0]), W([0, 0], tilted(2, 0.49))]);
@@ -741,11 +770,66 @@ describe("unit trust", () => {
     expect(meta.stats.wallMergeSkippedUnitUnconfirmed).toBeUndefined();
   });
 
-  it("direct callers default to trusted feet", () => {
-    const g = dxfToGeometry({
-      entities: house.map(([a, b]) => W(a, b)),
-    } as never);
-    expect(g.walls).toHaveLength(4);
+  describe("merging is strictly opt-in (fails closed)", () => {
+    const entities = house.map(([a, b]) => W(a, b));
+    const legacy = dxfToGeometry({ entities } as never, undefined, {
+      unitTrusted: false,
+    });
+    const walls = (g: { walls: unknown[] }) => g.walls.length;
+
+    it("only an explicit unitTrusted: true merges", () => {
+      expect(
+        walls(
+          dxfToGeometry({ entities } as never, undefined, {
+            unitTrusted: true,
+          }),
+        ),
+      ).toBe(4);
+    });
+
+    it.each([
+      ["no context at all", () => dxfToGeometry({ entities } as never)],
+      [
+        "an empty context",
+        () => dxfToGeometry({ entities } as never, undefined, {}),
+      ],
+      [
+        "context with a report but no unitTrusted",
+        () =>
+          dxfToGeometry({ entities } as never, undefined, {
+            report: new ParseReport(),
+          }),
+      ],
+      [
+        "unitTrusted: undefined",
+        () =>
+          dxfToGeometry({ entities } as never, undefined, {
+            unitTrusted: undefined,
+          }),
+      ],
+      [
+        "unitTrusted: false",
+        () =>
+          dxfToGeometry({ entities } as never, undefined, {
+            unitTrusted: false,
+          }),
+      ],
+    ])("%s does not merge and equals the legacy geometry", (_n, call) => {
+      const g = call();
+      expect(walls(g)).toBe(5);
+      expect(g).toEqual(legacy);
+    });
+
+    it("an omitted flag records no merge stats and no merge warnings", () => {
+      const report = new ParseReport();
+      dxfToGeometry({ entities } as never, undefined, { report });
+      const meta = report.toMeta({} as never);
+      expect(meta.stats.wallsMerged).toBeUndefined();
+      expect(meta.warnings.filter((w) => w.code.startsWith("WALL_"))).toEqual(
+        [],
+      );
+      expect(meta.stats.wallMergeSkippedUnitUnconfirmed).toBe(1);
+    });
   });
 });
 

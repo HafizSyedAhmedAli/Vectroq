@@ -4,15 +4,14 @@
 // prices exactly as before. (The "before" side is the previous pipeline: unit
 // not trusted = no merging.)
 import { describe, expect, it } from "vitest";
+import { dxfToGeometry, ParseReport } from "@vectroq/cad-parser";
 import {
   brickCount,
   netWallArea,
   openingArea,
   plasterArea,
   wallFaceArea,
-} from "../../boq-engine/src/material-quantities";
-import { dxfToGeometry } from "./dxf-to-geometry";
-import { ParseReport } from "./report";
+} from "./index";
 
 type P = [number, number];
 const line = (layer: string, a: P, b: P) => ({
