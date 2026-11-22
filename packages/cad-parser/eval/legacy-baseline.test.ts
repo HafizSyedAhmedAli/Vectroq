@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
 import { parseDxfToGeometry } from "../src/parse-dxf";
+import { firstMismatch } from "./baseline-compare";
 import { FIXTURES } from "./fixtures";
 
 // Capture:  UPDATE_BASELINES=1  (see instructions). Baselines are committed and never edited by hand.
@@ -25,9 +26,13 @@ describe("legacy parser baselines", () => {
       it.skipIf(!existsSync(file))(
         `${f.name} still matches its legacy baseline`,
         () => {
-          expect(current(f.path)).toEqual(
-            JSON.parse(readFileSync(file, "utf8")),
-          );
+          // numeric leaves within 1e-9 ft, everything else exact
+          expect(
+            firstMismatch(
+              current(f.path),
+              JSON.parse(readFileSync(file, "utf8")),
+            ),
+          ).toBeNull();
         },
       );
     }

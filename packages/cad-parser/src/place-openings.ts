@@ -12,8 +12,26 @@ export interface Placement {
   openAngle?: number;
 }
 
-function nearestOnWalls(p: Point2D, walls: Wall[]) {
-  let best: { wall: Wall; px: number; py: number; dist: number } | null = null;
+interface WallHit {
+  wall: Wall;
+  px: number;
+  py: number;
+  dist: number;
+}
+
+/**
+ * Nearest wall to `p`. Walls whose distance is within `eps` of the single
+ * global minimum are tied; the first of them in array (source) order wins, as
+ * the original strict "<" scan did. `eps` only makes tie detection numerically
+ * stable; the wall's own drawn direction is never altered or canonicalized.
+ */
+function nearestOnWalls(
+  p: Point2D,
+  walls: Wall[],
+  eps: number,
+): WallHit | null {
+  const hits: WallHit[] = [];
+  let dmin = Infinity;
   for (const w of walls) {
     const dx = w.endX - w.startX;
     const dy = w.endY - w.startY;
@@ -26,9 +44,31 @@ function nearestOnWalls(p: Point2D, walls: Wall[]) {
     const px = w.startX + t * dx;
     const py = w.startY + t * dy;
     const dist = Math.hypot(p.x - px, p.y - py);
-    if (!best || dist < best.dist) best = { wall: w, px, py, dist };
+    hits.push({ wall: w, px, py, dist });
+    if (dist < dmin) dmin = dist;
   }
-  return best;
+  if (hits.length === 0) return null;
+  // lowest array index among the tied walls
+  return hits.find((h) => h.dist <= dmin + eps) ?? null;
+}
+
+/**
+ * Float-noise tolerance: 8 machine epsilons of the largest absolute coordinate
+ * involved (opening endpoints and every wall endpoint). It only decides which
+ * candidates count as tied; it never alters a coordinate.
+ */
+function snapEps(a: Point2D, b: Point2D, walls: Wall[]): number {
+  let m = Math.max(Math.abs(a.x), Math.abs(a.y), Math.abs(b.x), Math.abs(b.y));
+  for (const w of walls) {
+    m = Math.max(
+      m,
+      Math.abs(w.startX),
+      Math.abs(w.startY),
+      Math.abs(w.endX),
+      Math.abs(w.endY),
+    );
+  }
+  return 8 * Number.EPSILON * m;
 }
 
 function pointSegDist(p: Point2D, a: Point2D, b: Point2D): number {
@@ -67,6 +107,25 @@ function spanBlocked(from: Point2D, to: Point2D, walls: Wall[]): boolean {
  *   along the wall from it: along the wall's direction by default, or the way
  *   the door's arc says (`closedAngle`) when that does not cross a wall junction.
  *   The hinge and the leaf's open direction are returned for the 3D view.
+ *
+ * Determinism contract (Stage 3b-0):
+ *
+ * | Situation                                   | Behaviour                              |
+ * |---------------------------------------------|----------------------------------------|
+ * | Floating-point noise                        | Does not change the result             |
+ * | Swapping the opening's `a` and `b`          | Does not change candidate selection    |
+ * | Same-direction duplicate hosts              | Array-order independent                |
+ * | Opposite-direction coincident hosts         | First host in source order wins        |
+ * | Distinct equidistant hosts                  | First host in source order wins        |
+ * | No-arc / blocked-arc door default side      | Follows the selected host's drawn dir. |
+ * | Mode B reversed exact duplicate LINEs       | First LINE kept by dedupeSegments      |
+ *
+ * Hinge, leaf direction, flat-opening position and the position of an
+ * arc-informed, unblocked door do not depend on wall array order or direction.
+ * `angle` is the selected host's drawn direction, so it differs by pi when a
+ * different (opposite-direction) host is selected or the wall is reversed.
+ * Complete array-order independence is NOT claimed for opposite-direction
+ * coincident hosts: that would contradict the preserved legacy behaviour.
  */
 export function snapToWall(
   a: Point2D,
@@ -77,23 +136,44 @@ export function snapToWall(
   const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
   const width = Math.hypot(b.x - a.x, b.y - a.y);
 
-  const candidates = [mid, a, b]
-    .map((p, i) => ({ i, hit: nearestOnWalls(p, walls) }))
+  const eps = snapEps(a, b, walls);
+
+  // Fixed priority: midpoint first, then the endpoints in canonical
+  // lexicographic order, so swapping `a` and `b` cannot change the choice.
+  const aFirst = a.x < b.x || (a.x === b.x && a.y <= b.y);
+  const ordered = aFirst
+    ? [
+        { p: mid, kind: "mid" as const },
+        { p: a, kind: "a" as const },
+        { p: b, kind: "b" as const },
+      ]
+    : [
+        { p: mid, kind: "mid" as const },
+        { p: b, kind: "b" as const },
+        { p: a, kind: "a" as const },
+      ];
+  const candidates = ordered
+    .map((c) => ({ ...c, hit: nearestOnWalls(c.p, walls, eps) }))
     .filter((c) => c.hit !== null) as {
-    i: number;
-    hit: NonNullable<ReturnType<typeof nearestOnWalls>>;
+    p: Point2D;
+    kind: "mid" | "a" | "b";
+    hit: WallHit;
   }[];
   if (candidates.length === 0) return {};
 
-  // strict "<" keeps the midpoint on ties (windows lie on the wall)
-  const best = candidates.reduce((m, c) => (c.hit.dist < m.hit.dist ? c : m));
+  // Set-based: every candidate within eps of the single global minimum is
+  // tied; the first in priority order wins (windows lie on the wall, so the
+  // midpoint wins ties).
+  let dmin = Infinity;
+  for (const c of candidates) if (c.hit.dist < dmin) dmin = c.hit.dist;
+  const best = candidates.find((c) => c.hit.dist <= dmin + eps)!;
   const { wall, px, py } = best.hit;
   const angle = Math.atan2(wall.endY - wall.startY, wall.endX - wall.startX);
 
-  if (best.i === 0) return { x: px, y: py, angle };
+  if (best.kind === "mid") return { x: px, y: py, angle };
 
-  const hinge = best.i === 1 ? a : b;
-  const tip = best.i === 1 ? b : a;
+  const hinge = best.kind === "a" ? a : b;
+  const tip = best.kind === "a" ? b : a;
   const ux = Math.cos(angle);
   const uy = Math.sin(angle);
 
