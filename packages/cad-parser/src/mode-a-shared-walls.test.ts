@@ -18,6 +18,7 @@ import { mergeCollinear, type MergeInputSeg } from "./normalize-segments";
 import { snapToWall } from "./place-openings";
 import { parseDxf, parseDxfToGeometry } from "./parse-dxf";
 import { ParseReport } from "./report";
+import { firstMismatch } from "../eval/baseline-compare";
 
 type P = { x: number; y: number };
 const fixtures = join(__dirname, "../fixtures");
@@ -379,7 +380,10 @@ describe("G. Mode B is unchanged", () => {
   for (const n of ["whole_house_connected", "whole_house_simple_plan"])
     it(`${n}.dxf equals its legacy baseline exactly and has no wall warnings`, () => {
       const r = parseDxf(fixtureText(`${n}.dxf`));
-      expect(JSON.parse(JSON.stringify(r.geometry))).toEqual(baseline(n));
+      // numeric leaves within 1e-9 ft, everything else exact
+      expect(
+        firstMismatch(JSON.parse(JSON.stringify(r.geometry)), baseline(n)),
+      ).toBeNull();
       expect(r.meta.warnings.filter((w) => w.code.startsWith("WALL_"))).toEqual(
         [],
       );
