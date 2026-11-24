@@ -11,8 +11,12 @@ import type {
  * 0.0.0-phase0  : Phase 0 (no behaviour change).
  * 0.2.0-stage3a : Phase 2 Mode A shared-wall merge (Stage 2) and Mode B
  *                 overlapping-wall-line merge (Stage 3a).
+ * 0.2.0-stage3b : Phase 2 Stage 3b-0 (float-stable opening snap; eight window
+ *                 positions corrected) and Stage 3b (plans drawn rotated are
+ *                 rotated upright before geometry is built; the applied angle is
+ *                 ParseMeta.rotationRad).
  */
-export const PARSER_VERSION = "0.2.0-stage3a";
+export const PARSER_VERSION = "0.2.0-stage3b";
 
 type EntityRef = ParseWarning["entity"];
 

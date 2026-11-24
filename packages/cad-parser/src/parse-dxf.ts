@@ -6,6 +6,7 @@ import type {
 } from "@vectroq/shared-types";
 import DxfParser from "dxf-parser";
 import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
+import { normalizeOrientation } from "./normalize-orientation";
 import { ParseReport } from "./report";
 import { resolveUnits, type UnitChoice } from "./units";
 
@@ -96,18 +97,23 @@ export function parseDxf(
   });
   for (const w of warnings) report.add(w.severity, w.code, w.message);
   const k = unit.feetPerUnit;
-  const geometry = dxfToGeometry(
-    { entities: normalised.map((e) => scaleEntity(e, k)) },
-    opts.construction,
-    { report, unitTrusted: !unit.needsConfirmation },
+  // Stage 3b: rotate the (feet) entities upright before any wall, room or
+  // opening is built; Mode A and Mode B both read the normalized entities.
+  const { entities: oriented, rotationRad } = normalizeOrientation(
+    normalised.map((e) => scaleEntity(e, k)),
+    report,
   );
+  const geometry = dxfToGeometry({ entities: oriented }, opts.construction, {
+    report,
+    unitTrusted: !unit.needsConfirmation,
+  });
 
   report.stat("entities", entities.length);
   report.stat("walls", geometry.walls.length);
   report.stat("rooms", geometry.rooms.length);
   report.stat("openings", geometry.openings.length);
 
-  const meta = report.toMeta(unit);
+  const meta = report.toMeta(unit, { rotationRad });
   return { geometry, meta };
 }
 
