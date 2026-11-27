@@ -33,6 +33,71 @@ export function dedupeSegments(segs: Seg[]): Seg[] {
   return out;
 }
 
+/** One surviving segment of {@link dedupeWithAliases} and everything it absorbed. */
+export interface DedupeAlias {
+  /** Index into the input array of a duplicate dropped in favour of the representative. */
+  raw: number;
+  /**
+   * Largest endpoint distance (ft) between the dropped segment and its
+   * representative, matched in the better of the two directions. 0 for an
+   * exact or reversed duplicate; > 0 for a near-duplicate that fell into the
+   * same 0.01 ft rounding bucket.
+   */
+  offsetFt: number;
+}
+export interface DedupeWithAliases {
+  /** Identical to dedupeSegments(segs): same objects, same order. */
+  segs: Seg[];
+  /** segs[i] was input[repRaw[i]]. */
+  repRaw: number[];
+  /** Input index -> index into `segs` of the representative that now stands for it (never absent). */
+  rawToLegacy: number[];
+  /** Per surviving segment: the duplicates it absorbed, ascending by input index. */
+  aliases: DedupeAlias[][];
+}
+
+const endpointOffset = (a: Seg, b: Seg): number => {
+  const same = Math.max(
+    Math.hypot(a.x1 - b.x1, a.y1 - b.y1),
+    Math.hypot(a.x2 - b.x2, a.y2 - b.y2),
+  );
+  const flip = Math.max(
+    Math.hypot(a.x1 - b.x2, a.y1 - b.y2),
+    Math.hypot(a.x2 - b.x1, a.y2 - b.y1),
+  );
+  return Math.min(same, flip);
+};
+
+/**
+ * Same selection as {@link dedupeSegments} (which is left untouched), but also
+ * records which input index each survivor came from and which inputs it
+ * absorbed, so later stages can map a topology segment back to raw lines.
+ */
+export function dedupeWithAliases(segs: readonly Seg[]): DedupeWithAliases {
+  const seen = new Map<string, number>();
+  const out: Seg[] = [];
+  const repRaw: number[] = [];
+  const aliases: DedupeAlias[][] = [];
+  const rawToLegacy: number[] = new Array(segs.length);
+  segs.forEach((s, i) => {
+    const a = `${key(s.x1)},${key(s.y1)}`;
+    const b = `${key(s.x2)},${key(s.y2)}`;
+    const id = a < b ? `${a}|${b}` : `${b}|${a}`;
+    const at = seen.get(id);
+    if (at !== undefined) {
+      rawToLegacy[i] = at;
+      aliases[at].push({ raw: i, offsetFt: endpointOffset(out[at], s) });
+      return;
+    }
+    seen.set(id, out.length);
+    rawToLegacy[i] = out.length;
+    out.push(s);
+    repRaw.push(i);
+    aliases.push([]);
+  });
+  return { segs: out, repRaw, rawToLegacy, aliases };
+}
+
 export function segmentsToWalls(
   segs: Seg[],
   height: number,

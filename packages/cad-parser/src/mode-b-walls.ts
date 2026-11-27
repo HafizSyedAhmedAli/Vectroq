@@ -1,6 +1,11 @@
 // packages/cad-parser/src/mode-b-walls.ts
 // Phase 2 Stage 3a: wall uniqueness for Mode B (walls drawn as separate LINEs).
-import { dedupeSegments, type Seg } from "./line-plan";
+import {
+  dedupeWithAliases,
+  type DedupeWithAliases,
+  type Seg,
+} from "./line-plan";
+import type { TopoSegProv, WallProvenance } from "./provenance";
 import {
   mergeCollinear,
   type MergeInputSeg,
@@ -48,6 +53,50 @@ export interface ModeBSegments {
    * detected from them, so neither depends on how walls were merged.
    */
   legacySegs: Seg[];
+  /**
+   * Additive (Stage 3c-0): how raw WALLS lines, legacy segments and physical
+   * walls relate. Read-only diagnostics input; nothing in the pipeline uses it.
+   */
+  provenance: WallProvenance;
+}
+
+/** Builds the many-to-many provenance. `wallSources[w]` = raw indices behind wall w. */
+function buildProvenance(
+  rawCount: number,
+  d: DedupeWithAliases,
+  wallSources: number[][],
+  entityOfRaw: number[],
+): WallProvenance {
+  const wallOfRaw: number[][] = Array.from({ length: rawCount }, () => []);
+  wallSources.forEach((srcs, w) => srcs.forEach((r) => wallOfRaw[r].push(w)));
+  const legacy: TopoSegProv[] = d.segs.map((_, i) => {
+    const members = [d.repRaw[i], ...d.aliases[i].map((a) => a.raw)];
+    const walls = [...new Set(members.flatMap((r) => wallOfRaw[r]))].sort(
+      (a, b) => a - b,
+    );
+    return {
+      id: i,
+      rawRep: d.repRaw[i],
+      rawAliases: d.aliases[i].map((a) => a.raw),
+      aliasOffsets: d.aliases[i].map((a) => ({
+        raw: a.raw,
+        offsetFt: a.offsetFt,
+      })),
+      walls,
+      primaryWall: wallOfRaw[d.repRaw[i]][0] ?? -1,
+    };
+  });
+  const wallLegacy = wallSources.map((srcs) =>
+    [...new Set(srcs.map((r) => d.rawToLegacy[r]))].sort((a, b) => a - b),
+  );
+  return {
+    entityOfRaw,
+    rawToLegacy: d.rawToLegacy,
+    legacy,
+    wallRaw: wallSources.map((s) => [...s]),
+    wallLegacy,
+    wallIds: wallSources.map((_, i) => `wall-${i}`),
+  };
 }
 
 /**
@@ -65,15 +114,33 @@ export interface ModeBSegments {
  */
 export function normalizeModeBSegments(
   raw: Seg[],
-  opts: { merge: boolean; report?: ParseReport },
+  opts: {
+    merge: boolean;
+    report?: ParseReport;
+    /** Optional DXF entity index of each raw line (provenance only). */
+    entityIndices?: number[];
+  },
 ): ModeBSegments {
-  const legacySegs = dedupeSegments(raw);
+  const dd = dedupeWithAliases(raw);
+  const legacySegs = dd.segs;
+  const entityOfRaw = opts.entityIndices
+    ? [...opts.entityIndices]
+    : raw.map(() => -1);
   const { report } = opts;
   if (!opts.merge) {
     // A stat, not a warning: the unit-confirmation warning already tells the
     // user the geometry is provisional, and merging happens once it is confirmed.
     if (raw.length > 1) report?.stat("wallMergeSkippedUnitUnconfirmed", 1);
-    return { wallSegs: legacySegs, legacySegs };
+    // wallSegs === legacySegs: wall i is legacy i (representative + aliases).
+    const sources = dd.segs.map((_, i) => [
+      dd.repRaw[i],
+      ...dd.aliases[i].map((a) => a.raw),
+    ]);
+    return {
+      wallSegs: legacySegs,
+      legacySegs,
+      provenance: buildProvenance(raw.length, dd, sources, entityOfRaw),
+    };
   }
 
   const input: MergeInputSeg[] = raw.map((s, i) => ({
@@ -134,5 +201,14 @@ export function normalizeModeBSegments(
     }
   }
 
-  return { wallSegs, legacySegs };
+  return {
+    wallSegs,
+    legacySegs,
+    provenance: buildProvenance(
+      raw.length,
+      dd,
+      res.segs.map((s) => [...s.sourceIndices]),
+      entityOfRaw,
+    ),
+  };
 }

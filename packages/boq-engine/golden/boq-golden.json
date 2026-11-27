@@ -1,0 +1,2717 @@
+{
+  "baselineCommit": "10f8ad0223181fdfff9e0caaa7e86c9628fd6792",
+  "cases": {
+    "fixture:sample-house": {
+      "wallFaceArea": 1380,
+      "openingArea": 37,
+      "netWallArea": 1343,
+      "plasterArea": 2686,
+      "floorArea": 558,
+      "brickCount": 18131,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1343,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13430
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2686,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 26860
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 558,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5580
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 2.232,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 22.32
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 558,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5580
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 37,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 370
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 270,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 2700
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 558,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5580
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 558,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5580
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 558,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5580
+          },
+          {
+            "itemType": "paint",
+            "quantity": 3244,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 32440
+          },
+          {
+            "itemType": "brick",
+            "quantity": 18.131,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 181.31
+          },
+          {
+            "itemType": "cement",
+            "quantity": 199,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1990
+          },
+          {
+            "itemType": "sand",
+            "quantity": 866.25,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 8662.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 2.232,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 22.32
+          }
+        ],
+        "subtotal": 114588.45000000001,
+        "tax": 0,
+        "total": 114588.45000000001
+      }
+    },
+    "fixture:whole_house_simple_plan": {
+      "wallFaceArea": 2608.2677999999996,
+      "openingArea": 309.711296,
+      "netWallArea": 2298.5565039999997,
+      "plasterArea": 4597.113007999999,
+      "floorArea": 1291.73,
+      "brickCount": 24103,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 2298.5565039999997,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 22985.565039999998
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 4597.113007999999,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 45971.130079999995
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 5.16692,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 51.669200000000004
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 2,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 20
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 309.711296,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3097.11296
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 998.57,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9985.7
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "paint",
+            "quantity": 5888.843008,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 58888.43008
+          },
+          {
+            "itemType": "brick",
+            "quantity": 24.103,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 241.03000000000003
+          },
+          {
+            "itemType": "cement",
+            "quantity": 305,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 3050
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1274.74,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 12747.4
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 5.16692,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 51.669200000000004
+          }
+        ],
+        "subtotal": 221676.20655999996,
+        "tax": 0,
+        "total": 221676.20655999996
+      }
+    },
+    "fixture:whole_house_connected": {
+      "wallFaceArea": 2608.2678,
+      "openingArea": 354.3307199999999,
+      "netWallArea": 2253.93708,
+      "plasterArea": 4507.87416,
+      "floorArea": 1291.7300000000002,
+      "brickCount": 23635,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 2253.93708,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 22539.3708
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 4507.87416,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 45078.7416
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 1291.7300000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.300000000003
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 5.166920000000001,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 51.66920000000001
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 2,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 20
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 1291.7300000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.300000000003
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 354.3307199999999,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3543.3071999999993
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 915.0700000000003,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9150.700000000003
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 1291.7300000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.300000000003
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 1291.7300000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.300000000003
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 1291.7300000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.300000000003
+          },
+          {
+            "itemType": "paint",
+            "quantity": 5799.604160000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 57996.04160000001
+          },
+          {
+            "itemType": "brick",
+            "quantity": 23.635,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 236.35000000000002
+          },
+          {
+            "itemType": "cement",
+            "quantity": 299,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 2990
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1249.99,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 12499.9
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 5.166920000000001,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 51.66920000000001
+          }
+        ],
+        "subtotal": 218744.24959999998,
+        "tax": 0,
+        "total": 218744.24959999998
+      }
+    },
+    "fixture:web-sample-house-plan": {
+      "wallFaceArea": 2608.2677999999996,
+      "openingArea": 309.711296,
+      "netWallArea": 2298.5565039999997,
+      "plasterArea": 4597.113007999999,
+      "floorArea": 1291.73,
+      "brickCount": 24103,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 2298.5565039999997,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 22985.565039999998
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 4597.113007999999,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 45971.130079999995
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 5.16692,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 51.669200000000004
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 2,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 20
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 309.711296,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3097.11296
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 998.57,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9985.7
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 1291.73,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 12917.3
+          },
+          {
+            "itemType": "paint",
+            "quantity": 5888.843008,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 58888.43008
+          },
+          {
+            "itemType": "brick",
+            "quantity": 24.103,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 241.03000000000003
+          },
+          {
+            "itemType": "cement",
+            "quantity": 305,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 3050
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1274.74,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 12747.4
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 5.16692,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 51.669200000000004
+          }
+        ],
+        "subtotal": 221676.20655999996,
+        "tax": 0,
+        "total": 221676.20655999996
+      }
+    },
+    "modeB-house-closed-openings": {
+      "wallFaceArea": 1080,
+      "openingArea": 58,
+      "netWallArea": 1022,
+      "plasterArea": 2044,
+      "floorArea": 384,
+      "brickCount": 12009,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.009,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.09
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.55,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84276.31,
+        "tax": 0,
+        "total": 84276.31
+      }
+    },
+    "modeB-open-plan": {
+      "wallFaceArea": 690,
+      "openingArea": 12,
+      "netWallArea": 678,
+      "plasterArea": 1356,
+      "floorArea": 0,
+      "brickCount": 8689,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 678,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 6780
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1356,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13560
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 12,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 120
+          },
+          {
+            "itemType": "paint",
+            "quantity": 1356,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13560
+          },
+          {
+            "itemType": "brick",
+            "quantity": 8.689,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 86.89
+          },
+          {
+            "itemType": "cement",
+            "quantity": 98,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 980
+          },
+          {
+            "itemType": "sand",
+            "quantity": 423.39,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 4233.9
+          }
+        ],
+        "subtotal": 39320.79,
+        "tax": 0,
+        "total": 39320.79
+      }
+    },
+    "modeB-near-miss": {
+      "wallFaceArea": 856.9000000000001,
+      "openingArea": 14,
+      "netWallArea": 842.9000000000001,
+      "plasterArea": 1685.8000000000002,
+      "floorArea": 0,
+      "brickCount": 9935,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 842.9000000000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 8429
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1685.8000000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 16858
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 14,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 140
+          },
+          {
+            "itemType": "paint",
+            "quantity": 1685.8000000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 16858
+          },
+          {
+            "itemType": "brick",
+            "quantity": 9.935,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 99.35000000000001
+          },
+          {
+            "itemType": "cement",
+            "quantity": 118,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1180
+          },
+          {
+            "itemType": "sand",
+            "quantity": 500.35,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 5003.5
+          }
+        ],
+        "subtotal": 48567.85,
+        "tax": 0,
+        "total": 48567.85
+      }
+    },
+    "modeB-overlap-dups": {
+      "wallFaceArea": 960,
+      "openingArea": 58,
+      "netWallArea": 902,
+      "plasterArea": 1804,
+      "floorArea": 512,
+      "brickCount": 12177,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 902,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9020
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1804,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 18040
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 512,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5120
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 2.048,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 20.48
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 512,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5120
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 512,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5120
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 512,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5120
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 512,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5120
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 512,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 5120
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2316,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 23160
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.177,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 121.77
+          },
+          {
+            "itemType": "cement",
+            "quantity": 134,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1340
+          },
+          {
+            "itemType": "sand",
+            "quantity": 581.79,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 5817.9
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 2.048,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 20.48
+          }
+        ],
+        "subtotal": 88840.62999999999,
+        "tax": 0,
+        "total": 88840.62999999999
+      }
+    },
+    "modeB-jittered": {
+      "wallFaceArea": 1080.0652886684084,
+      "openingArea": 58.01742918817362,
+      "netWallArea": 1022.0478594802347,
+      "plasterArea": 2044.0957189604694,
+      "floorArea": 384,
+      "brickCount": 12010,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022.0478594802347,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220.478594802347
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044.0957189604694,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440.957189604695
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58.01742918817362,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580.1742918817363
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428.0957189604696,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280.9571896047
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.01,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.1
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.59,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.900000000001
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84279.28726589348,
+        "tax": 0,
+        "total": 84279.28726589348
+      }
+    },
+    "modeB-rotated-30": {
+      "wallFaceArea": 1080,
+      "openingArea": 58.00000000000001,
+      "netWallArea": 1022,
+      "plasterArea": 2044,
+      "floorArea": 384,
+      "brickCount": 12009,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58.00000000000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580.0000000000001
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.009,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.09
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.55,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84276.31,
+        "tax": 0,
+        "total": 84276.31
+      }
+    },
+    "modeB-rotated-90": {
+      "wallFaceArea": 1080,
+      "openingArea": 58,
+      "netWallArea": 1022,
+      "plasterArea": 2044,
+      "floorArea": 384,
+      "brickCount": 12009,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.009,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.09
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.55,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84276.31,
+        "tax": 0,
+        "total": 84276.31
+      }
+    },
+    "modeB-near-miss-rotated-17": {
+      "wallFaceArea": 856.8999999999999,
+      "openingArea": 14,
+      "netWallArea": 842.8999999999999,
+      "plasterArea": 1685.7999999999997,
+      "floorArea": 0,
+      "brickCount": 5690,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 842.8999999999999,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 8428.999999999998
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1685.7999999999997,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 16857.999999999996
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 14,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 140
+          },
+          {
+            "itemType": "paint",
+            "quantity": 1685.7999999999997,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 16857.999999999996
+          },
+          {
+            "itemType": "brick",
+            "quantity": 5.69,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 56.900000000000006
+          },
+          {
+            "itemType": "cement",
+            "quantity": 96,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 960
+          },
+          {
+            "itemType": "sand",
+            "quantity": 373,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 3730
+          }
+        ],
+        "subtotal": 47031.89999999999,
+        "tax": 0,
+        "total": 47031.89999999999
+      }
+    },
+    "modeB-house-untrusted-nounit": {
+      "wallFaceArea": 3543.3072,
+      "openingArea": 190.28871999999998,
+      "netWallArea": 3353.01848,
+      "plasterArea": 6706.03696,
+      "floorArea": 4133.06,
+      "brickCount": 39398,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 3353.01848,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 33530.1848
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 6706.03696,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 67060.3696
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 4133.06,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 41330.600000000006
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 16.53224,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 165.32240000000002
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 4133.06,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 41330.600000000006
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 190.28871999999998,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1902.8872
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 2066.5300000000007,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20665.300000000007
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 4133.06,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 41330.600000000006
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 4133.06,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 41330.600000000006
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 4133.06,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 41330.600000000006
+          },
+          {
+            "itemType": "paint",
+            "quantity": 10839.09696,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 108390.96960000001
+          },
+          {
+            "itemType": "brick",
+            "quantity": 39.398,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 393.98
+          },
+          {
+            "itemType": "cement",
+            "quantity": 466,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 4660
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1986.66,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 19866.600000000002
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 16.53224,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 165.32240000000002
+          }
+        ],
+        "subtotal": 463463.936,
+        "tax": 0,
+        "total": 463463.936
+      }
+    },
+    "modeB-near-miss-untrusted": {
+      "wallFaceArea": 2811.3517960000004,
+      "openingArea": 45.93176,
+      "netWallArea": 2765.4200360000004,
+      "plasterArea": 5530.840072000001,
+      "floorArea": 0,
+      "brickCount": 32594,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 2765.4200360000004,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 27654.200360000003
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 5530.840072000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 55308.400720000005
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 45.93176,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 459.31759999999997
+          },
+          {
+            "itemType": "paint",
+            "quantity": 5530.840072000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 55308.400720000005
+          },
+          {
+            "itemType": "brick",
+            "quantity": 32.594,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 325.94
+          },
+          {
+            "itemType": "cement",
+            "quantity": 385,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 3850
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1641.52,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 16415.2
+          }
+        ],
+        "subtotal": 159321.45940000002,
+        "tax": 0,
+        "total": 159321.45940000002
+      }
+    },
+    "modeB-overlap-untrusted": {
+      "wallFaceArea": 1837.1391663999998,
+      "openingArea": 95.14435999999998,
+      "netWallArea": 1741.9948063999998,
+      "plasterArea": 3483.9896127999996,
+      "floorArea": 1377.86,
+      "brickCount": 23517,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1741.9948063999998,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 17419.948063999997
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 3483.9896127999996,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 34839.89612799999
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 1377.86,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13778.599999999999
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 5.5114399999999995,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 55.114399999999996
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 1377.86,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13778.599999999999
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 95.14435999999998,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 951.4435999999998
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 1377.86,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13778.599999999999
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 1377.86,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13778.599999999999
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 1377.86,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13778.599999999999
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 1377.86,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 13778.599999999999
+          },
+          {
+            "itemType": "paint",
+            "quantity": 4861.8496128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 48618.496128
+          },
+          {
+            "itemType": "brick",
+            "quantity": 23.517,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 235.17
+          },
+          {
+            "itemType": "cement",
+            "quantity": 257,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 2570
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1123.59,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 11235.9
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 5.5114399999999995,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 55.114399999999996
+          }
+        ],
+        "subtotal": 198652.68272,
+        "tax": 0,
+        "total": 198652.68272
+      }
+    },
+    "modeA-two-rooms": {
+      "wallFaceArea": 960,
+      "openingArea": 37,
+      "netWallArea": 923,
+      "plasterArea": 1846,
+      "floorArea": 360,
+      "brickCount": 12461,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 923,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9230
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1846,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 18460
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.44,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 14.399999999999999
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 37,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 370
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 180,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1800
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2206,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 22060
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.461,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 124.61
+          },
+          {
+            "itemType": "cement",
+            "quantity": 137,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1370
+          },
+          {
+            "itemType": "sand",
+            "quantity": 595.35,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 5953.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.44,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 14.399999999999999
+          }
+        ],
+        "subtotal": 77406.90999999999,
+        "tax": 0,
+        "total": 77406.90999999999
+      }
+    },
+    "modeA-two-rooms-rotated": {
+      "wallFaceArea": 960,
+      "openingArea": 37.00000000000001,
+      "netWallArea": 923,
+      "plasterArea": 1846,
+      "floorArea": 360,
+      "brickCount": 12461,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 923,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9230
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1846,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 18460
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.44,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 14.399999999999999
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 37.00000000000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 370.00000000000006
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 180,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1800
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2206,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 22060
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.461,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 124.61
+          },
+          {
+            "itemType": "cement",
+            "quantity": 137,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1370
+          },
+          {
+            "itemType": "sand",
+            "quantity": 595.35,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 5953.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.44,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 14.399999999999999
+          }
+        ],
+        "subtotal": 77406.90999999999,
+        "tax": 0,
+        "total": 77406.90999999999
+      }
+    },
+    "modeA-two-rooms-untrusted": {
+      "wallFaceArea": 3149.6064000000006,
+      "openingArea": 121.39108000000002,
+      "netWallArea": 3028.2153200000007,
+      "plasterArea": 6056.430640000001,
+      "floorArea": 3875.007998016,
+      "brickCount": 40881,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 3028.2153200000007,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 30282.153200000008
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 6056.430640000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 60564.306400000016
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 3875.007998016,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 38750.07998016
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 15.500031992063999,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 155.00031992063998
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 3875.007998016,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 38750.07998016
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 121.39108000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1213.9108
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 1937.503999008,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 19375.03999008
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 3875.007998016,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 38750.07998016
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 3875.007998016,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 38750.07998016
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 3875.007998016,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 38750.07998016
+          },
+          {
+            "itemType": "paint",
+            "quantity": 9931.438638016001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 99314.38638016001
+          },
+          {
+            "itemType": "brick",
+            "quantity": 40.881,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 408.81
+          },
+          {
+            "itemType": "cement",
+            "quantity": 447,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 4470
+          },
+          {
+            "itemType": "sand",
+            "quantity": 1953.2,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 19532
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 15.500031992063999,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 155.00031992063998
+          }
+        ],
+        "subtotal": 429231.00731088134,
+        "tax": 0,
+        "total": 429231.00731088134
+      }
+    },
+    "raw-modeB-house-trusted": {
+      "wallFaceArea": 1080,
+      "openingArea": 58,
+      "netWallArea": 1022,
+      "plasterArea": 2044,
+      "floorArea": 384,
+      "brickCount": 12009,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.009,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.09
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.55,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84276.31,
+        "tax": 0,
+        "total": 84276.31
+      }
+    },
+    "raw-modeB-house-untrusted": {
+      "wallFaceArea": 1080,
+      "openingArea": 58,
+      "netWallArea": 1022,
+      "plasterArea": 2044,
+      "floorArea": 384,
+      "brickCount": 12009,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.009,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.09
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.55,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84276.31,
+        "tax": 0,
+        "total": 84276.31
+      }
+    },
+    "raw-modeB-house-noctx": {
+      "wallFaceArea": 1080,
+      "openingArea": 58,
+      "netWallArea": 1022,
+      "plasterArea": 2044,
+      "floorArea": 384,
+      "brickCount": 12009,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 1022,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10220
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 2044,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 20440
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 58,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 580
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 192,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1920
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 384,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3840
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2428,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 24280
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.009,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 120.09
+          },
+          {
+            "itemType": "cement",
+            "quantity": 142,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1420
+          },
+          {
+            "itemType": "sand",
+            "quantity": 605.55,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 6055.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.536,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 15.36
+          }
+        ],
+        "subtotal": 84276.31,
+        "tax": 0,
+        "total": 84276.31
+      }
+    },
+    "raw-modeB-near-miss-trusted": {
+      "wallFaceArea": 856.9000000000001,
+      "openingArea": 14,
+      "netWallArea": 842.9000000000001,
+      "plasterArea": 1685.8000000000002,
+      "floorArea": 0,
+      "brickCount": 9935,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 842.9000000000001,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 8429
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1685.8000000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 16858
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 14,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 140
+          },
+          {
+            "itemType": "paint",
+            "quantity": 1685.8000000000002,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 16858
+          },
+          {
+            "itemType": "brick",
+            "quantity": 9.935,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 99.35000000000001
+          },
+          {
+            "itemType": "cement",
+            "quantity": 118,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1180
+          },
+          {
+            "itemType": "sand",
+            "quantity": 500.35,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 5003.5
+          }
+        ],
+        "subtotal": 48567.85,
+        "tax": 0,
+        "total": 48567.85
+      }
+    },
+    "raw-modeB-overlap-trusted": {
+      "wallFaceArea": 480,
+      "openingArea": 29,
+      "netWallArea": 451,
+      "plasterArea": 902,
+      "floorArea": 128,
+      "brickCount": 6089,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 451,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 4510
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 902,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9020
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1280
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 0.512,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 5.12
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1280
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 29,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 290
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1280
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1280
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1280
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 128,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1280
+          },
+          {
+            "itemType": "paint",
+            "quantity": 1030,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 10300
+          },
+          {
+            "itemType": "brick",
+            "quantity": 6.089,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 60.89
+          },
+          {
+            "itemType": "cement",
+            "quantity": 67,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 670
+          },
+          {
+            "itemType": "sand",
+            "quantity": 290.91,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 2909.1000000000004
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 0.512,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 5.12
+          }
+        ],
+        "subtotal": 35450.23,
+        "tax": 0,
+        "total": 35450.23
+      }
+    },
+    "raw-modeA-trusted": {
+      "wallFaceArea": 960,
+      "openingArea": 37,
+      "netWallArea": 923,
+      "plasterArea": 1846,
+      "floorArea": 360,
+      "brickCount": 12461,
+      "boq": {
+        "lineItems": [
+          {
+            "itemType": "masonry",
+            "quantity": 923,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 9230
+          },
+          {
+            "itemType": "plaster",
+            "quantity": 1846,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 18460
+          },
+          {
+            "itemType": "shuttering",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "steelFixing",
+            "quantity": 1.44,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 14.399999999999999
+          },
+          {
+            "itemType": "sanitary",
+            "quantity": 1,
+            "unit": "bath",
+            "unitRate": 10,
+            "subtotal": 10
+          },
+          {
+            "itemType": "tileFixing",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "woodwork",
+            "quantity": 37,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 370
+          },
+          {
+            "itemType": "falseCeiling",
+            "quantity": 180,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 1800
+          },
+          {
+            "itemType": "foundation",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "rccRoof",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "electrical",
+            "quantity": 360,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 3600
+          },
+          {
+            "itemType": "paint",
+            "quantity": 2206,
+            "unit": "sqft",
+            "unitRate": 10,
+            "subtotal": 22060
+          },
+          {
+            "itemType": "brick",
+            "quantity": 12.461,
+            "unit": "1000nos",
+            "unitRate": 10,
+            "subtotal": 124.61
+          },
+          {
+            "itemType": "cement",
+            "quantity": 137,
+            "unit": "bag",
+            "unitRate": 10,
+            "subtotal": 1370
+          },
+          {
+            "itemType": "sand",
+            "quantity": 595.35,
+            "unit": "cft",
+            "unitRate": 10,
+            "subtotal": 5953.5
+          },
+          {
+            "itemType": "steelMaterial",
+            "quantity": 1.44,
+            "unit": "ton",
+            "unitRate": 10,
+            "subtotal": 14.399999999999999
+          }
+        ],
+        "subtotal": 77406.90999999999,
+        "tax": 0,
+        "total": 77406.90999999999
+      }
+    }
+  }
+}

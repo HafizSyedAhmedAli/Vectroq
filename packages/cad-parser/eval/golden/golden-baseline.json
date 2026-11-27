@@ -1,0 +1,7167 @@
+{
+  "baselineCommit": "10f8ad0223181fdfff9e0caaa7e86c9628fd6792",
+  "cases": {
+    "fixture:sample-house": {
+      "mode": "-",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 20,
+            "endY": 0,
+            "length": 20,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-1",
+            "startX": 20,
+            "startY": 0,
+            "endX": 20,
+            "endY": 18,
+            "length": 18,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-2",
+            "startX": 20,
+            "startY": 12,
+            "endX": 0,
+            "endY": 12,
+            "length": 20,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-3",
+            "startX": 0,
+            "startY": 12,
+            "endX": 0,
+            "endY": 0,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-0",
+            "startX": 20,
+            "startY": 0,
+            "endX": 35,
+            "endY": 0,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-1",
+            "startX": 35,
+            "startY": 0,
+            "endX": 35,
+            "endY": 18,
+            "length": 18,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-2",
+            "startX": 35,
+            "startY": 18,
+            "endX": 20,
+            "endY": 18,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2-0",
+            "startX": 35,
+            "startY": 0,
+            "endX": 41,
+            "endY": 0,
+            "length": 6,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2-1",
+            "startX": 41,
+            "startY": 0,
+            "endX": 41,
+            "endY": 8,
+            "length": 8,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2-2",
+            "startX": 41,
+            "startY": 8,
+            "endX": 35,
+            "endY": 8,
+            "length": 6,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 240,
+            "type": "kitchen",
+            "labelX": 5,
+            "labelY": 5,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 20,
+                  "y": 0
+                },
+                {
+                  "x": 20,
+                  "y": 12
+                },
+                {
+                  "x": 0,
+                  "y": 12
+                },
+                {
+                  "x": 0,
+                  "y": 0
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living Room",
+            "area": 270,
+            "type": "general",
+            "labelX": 23,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 20,
+                  "y": 0
+                },
+                {
+                  "x": 35,
+                  "y": 0
+                },
+                {
+                  "x": 35,
+                  "y": 18
+                },
+                {
+                  "x": 20,
+                  "y": 18
+                },
+                {
+                  "x": 20,
+                  "y": 0
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bathroom",
+            "area": 48,
+            "type": "bathroom",
+            "labelX": 37,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 35,
+                  "y": 0
+                },
+                {
+                  "x": 41,
+                  "y": 0
+                },
+                {
+                  "x": 41,
+                  "y": 8
+                },
+                {
+                  "x": 35,
+                  "y": 8
+                },
+                {
+                  "x": 35,
+                  "y": 0
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 20,
+            "y": 5.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 0,
+            "y": 5,
+            "angle": -1.5707963267948966
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 41,
+            "maxY": 18,
+            "width": 41,
+            "height": 18,
+            "points": 19
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 3.4166666666666665,
+              "heightFt": 1.5,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 3.4 x 1.5 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 41,
+              "heightFt": 18,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 41.0 x 18.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.13451443569553806,
+              "heightFt": 0.05905511811023622,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 1.3451443569553805,
+              "heightFt": 0.5905511811023622,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 1.3 x 0.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 134.51443569553805,
+              "heightFt": 59.055118110236215,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 135 x 59.1 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "wallsMerged": 2,
+          "wallLengthRemovedFt": 20,
+          "entities": 8,
+          "walls": 10,
+          "rooms": 3,
+          "openings": 2
+        }
+      }
+    },
+    "fixture:whole_house_simple_plan": {
+      "mode": "-",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 0,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 39.37008,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 39.37008,
+            "startY": 32.8084,
+            "endX": 0,
+            "endY": 32.8084,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 32.8084,
+            "endX": 0,
+            "endY": 0,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 16.4042,
+            "startY": 0,
+            "endX": 16.4042,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 27.887140000000002,
+            "startY": 0,
+            "endX": 27.887140000000002,
+            "endY": 18.044620000000002,
+            "length": 18.044620000000002,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 0,
+            "startY": 16.4042,
+            "endX": 16.4042,
+            "endY": 16.4042,
+            "length": 16.4042,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 16.4042,
+            "startY": 18.044620000000002,
+            "endX": 39.37008,
+            "endY": 18.044620000000002,
+            "length": 22.965880000000002,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-8",
+            "startX": 0,
+            "startY": 9.84252,
+            "endX": 6.56168,
+            "endY": 9.84252,
+            "length": 6.56168,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-9",
+            "startX": 6.56168,
+            "startY": 9.84252,
+            "endX": 6.56168,
+            "endY": 16.4042,
+            "length": 6.561679999999999,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-10",
+            "startX": 0,
+            "startY": 26.24672,
+            "endX": 6.56168,
+            "endY": 26.24672,
+            "length": 6.56168,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-11",
+            "startX": 6.56168,
+            "startY": 26.24672,
+            "endX": 6.56168,
+            "endY": 32.8084,
+            "length": 6.561679999999999,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bath 1",
+            "area": 43.03,
+            "type": "bathroom",
+            "labelX": 2.2965880000000003,
+            "labelY": 13.779528,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 9.84
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                },
+                {
+                  "x": 0,
+                  "y": 16.4
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bedroom 1",
+            "area": 225.93,
+            "type": "general",
+            "labelX": 3.937008,
+            "labelY": 4.92126,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 0
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                },
+                {
+                  "x": 0,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 0
+                },
+                {
+                  "x": 16.4,
+                  "y": 0
+                },
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                },
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Living Room",
+            "area": 207.28,
+            "type": "general",
+            "labelX": 18.700788,
+            "labelY": 9.84252,
+            "shapes": [
+              [
+                {
+                  "x": 16.4,
+                  "y": 0
+                },
+                {
+                  "x": 27.89,
+                  "y": 0
+                },
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                },
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                },
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-3",
+            "name": "Kitchen",
+            "area": 207.1,
+            "type": "kitchen",
+            "labelX": 30.183728000000002,
+            "labelY": 9.84252,
+            "shapes": [
+              [
+                {
+                  "x": 27.89,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 9.84
+                },
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                },
+                {
+                  "x": 39.37,
+                  "y": 9.84
+                },
+                {
+                  "x": 39.37,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 39.37,
+                  "y": 16.4
+                },
+                {
+                  "x": 39.37,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-4",
+            "name": "Bath 2",
+            "area": 43.03,
+            "type": "bathroom",
+            "labelX": 2.2965880000000003,
+            "labelY": 29.52756,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 26.25
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 32.81
+                },
+                {
+                  "x": 0,
+                  "y": 32.81
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-5",
+            "name": "Bedroom 2",
+            "area": 226.09,
+            "type": "general",
+            "labelX": 3.937008,
+            "labelY": 20.341208,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 16.4
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                },
+                {
+                  "x": 0,
+                  "y": 18.04
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 18.04
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                },
+                {
+                  "x": 0,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                },
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                },
+                {
+                  "x": 16.4,
+                  "y": 32.81
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 32.81
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-6",
+            "name": "Dining",
+            "area": 339.27,
+            "type": "general",
+            "labelX": 21.32546,
+            "labelY": 25.590552000000002,
+            "shapes": [
+              [
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                },
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 39.37,
+                  "y": 18.04
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                },
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                },
+                {
+                  "x": 27.89,
+                  "y": 32.81
+                },
+                {
+                  "x": 16.4,
+                  "y": 32.81
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 32.81
+                },
+                {
+                  "x": 27.89,
+                  "y": 32.81
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3.28084,
+            "height": 7,
+            "x": 21.32546,
+            "y": 0,
+            "angle": 0,
+            "hingeX": 19.68504,
+            "hingeY": 0,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3.2808400000000013,
+            "height": 7,
+            "x": 16.4042,
+            "y": 7.545932,
+            "angle": 1.5707963267948966,
+            "hingeX": 16.4042,
+            "hingeY": 5.905511999999999,
+            "openAngle": 0
+          },
+          {
+            "id": "door-2",
+            "type": "door",
+            "width": 3.2808400000000013,
+            "height": 7,
+            "x": 16.4042,
+            "y": 22.96588,
+            "angle": 1.5707963267948966,
+            "hingeX": 16.4042,
+            "hingeY": 21.325459999999996,
+            "openAngle": 0
+          },
+          {
+            "id": "door-3",
+            "type": "door",
+            "width": 3.2808399999999978,
+            "height": 7,
+            "x": 27.887140000000002,
+            "y": 6.561680000000001,
+            "angle": 1.5707963267948966,
+            "hingeX": 27.887140000000002,
+            "hingeY": 8.2021,
+            "openAngle": 0
+          },
+          {
+            "id": "door-4",
+            "type": "door",
+            "width": 2.6246720000000003,
+            "height": 7,
+            "x": 2.952756,
+            "y": 9.84252,
+            "angle": 0,
+            "hingeX": 1.64042,
+            "hingeY": 9.84252,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-5",
+            "type": "door",
+            "width": 2.6246720000000003,
+            "height": 7,
+            "x": 2.952756,
+            "y": 26.24672,
+            "angle": 0,
+            "hingeX": 1.64042,
+            "hingeY": 26.24672,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-6",
+            "type": "door",
+            "width": 2.624671999999997,
+            "height": 7,
+            "x": 39.37008,
+            "y": 29.199476,
+            "angle": 1.5707963267948966,
+            "hingeX": 39.37008,
+            "hingeY": 27.887140000000002,
+            "openAngle": 3.141592653589793
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 7.217848000000002,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-1",
+            "type": "window",
+            "width": 2.952756000000001,
+            "height": 4,
+            "x": 25.426510000000004,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-2",
+            "type": "window",
+            "width": 5.905512,
+            "height": 4,
+            "x": 12.139108,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-3",
+            "type": "window",
+            "width": 5.249344000000001,
+            "height": 4,
+            "x": 22.309712,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-4",
+            "type": "window",
+            "width": 5.905512000000002,
+            "height": 4,
+            "x": 32.480316,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-5",
+            "type": "window",
+            "width": 5.249344000000001,
+            "height": 4,
+            "x": 0,
+            "y": 21.653544000000004,
+            "angle": -1.5707963267948966
+          },
+          {
+            "id": "window-6",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 39.37008,
+            "y": 7.217848,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-7",
+            "type": "window",
+            "width": 2.296588,
+            "height": 4,
+            "x": 39.37008,
+            "y": 22.473753999999996,
+            "angle": 1.5707963267948966
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 0.00328084,
+          "source": "plausibility",
+          "confidence": "medium",
+          "confirmed": false,
+          "unit": "millimetre",
+          "insunits": 4,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": -300,
+            "minY": -1000,
+            "maxX": 12800,
+            "maxY": 10000,
+            "width": 13100,
+            "height": 11000,
+            "points": 68
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1091.6666666666665,
+              "heightFt": 916.6666666666666,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1092 x 917 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 13100,
+              "heightFt": 11000,
+              "plausible": false,
+              "reason": "Read as foots the drawing is 13100 x 11000 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 42.979002624671914,
+              "heightFt": 36.08923884514436,
+              "plausible": true,
+              "reason": "Read as millimetres the drawing is 43.0 x 36.1 ft, a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 429.79002624671915,
+              "heightFt": 360.89238845144354,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 430 x 361 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 42979.00262467191,
+              "heightFt": 36089.238845144355,
+              "plausible": false,
+              "reason": "Read as metres the drawing is 42979 x 36089 ft, not a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please confirm the drawing unit. Suggested: millimetres, the only unit giving a plausible building size. This is a guess from the drawing's size, not proof; provisional geometry must not be priced until confirmed."
+          }
+        ],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1,
+          "entities": 45,
+          "walls": 12,
+          "rooms": 7,
+          "openings": 15
+        }
+      }
+    },
+    "fixture:whole_house_connected": {
+      "mode": "-",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 0,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 39.37008,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 39.37008,
+            "startY": 32.8084,
+            "endX": 0,
+            "endY": 32.8084,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 32.8084,
+            "endX": 0,
+            "endY": 0,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 16.4042,
+            "startY": 0,
+            "endX": 16.4042,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 27.887140000000002,
+            "startY": 0,
+            "endX": 27.887140000000002,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 0,
+            "startY": 16.4042,
+            "endX": 16.4042,
+            "endY": 16.4042,
+            "length": 16.4042,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 16.4042,
+            "startY": 18.044620000000002,
+            "endX": 39.37008,
+            "endY": 18.044620000000002,
+            "length": 22.965880000000002,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-8",
+            "startX": 27.887140000000002,
+            "startY": 24.6063,
+            "endX": 39.37008,
+            "endY": 24.6063,
+            "length": 11.48294,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bedroom 1",
+            "area": 268.96,
+            "type": "general",
+            "labelX": 3.937008,
+            "labelY": 8.2021,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 16.4,
+                  "y": 0
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 0,
+                  "y": 16.4
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living Room",
+            "area": 207.28,
+            "type": "general",
+            "labelX": 18.700788,
+            "labelY": 9.84252,
+            "shapes": [
+              [
+                {
+                  "x": 16.4,
+                  "y": 0
+                },
+                {
+                  "x": 27.89,
+                  "y": 0
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Kitchen",
+            "area": 207.1,
+            "type": "kitchen",
+            "labelX": 30.183728000000002,
+            "labelY": 9.84252,
+            "shapes": [
+              [
+                {
+                  "x": 27.89,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 39.37,
+                  "y": 16.4
+                },
+                {
+                  "x": 39.37,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-3",
+            "name": "Bath 1",
+            "area": 75.42,
+            "type": "bathroom",
+            "labelX": 30.183728000000002,
+            "labelY": 21.32546,
+            "shapes": [
+              [
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 39.37,
+                  "y": 18.04
+                },
+                {
+                  "x": 39.37,
+                  "y": 24.61
+                },
+                {
+                  "x": 27.89,
+                  "y": 24.61
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-4",
+            "name": "Bedroom 2",
+            "area": 269.12,
+            "type": "general",
+            "labelX": 3.937008,
+            "labelY": 24.6063,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 0,
+                  "y": 18.04
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 24.61
+                },
+                {
+                  "x": 0,
+                  "y": 24.61
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 24.61
+                },
+                {
+                  "x": 16.4,
+                  "y": 24.61
+                },
+                {
+                  "x": 16.4,
+                  "y": 32.81
+                },
+                {
+                  "x": 0,
+                  "y": 32.81
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-5",
+            "name": "Dining",
+            "area": 169.71,
+            "type": "general",
+            "labelX": 18.700788,
+            "labelY": 25.590552000000002,
+            "shapes": [
+              [
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 24.61
+                },
+                {
+                  "x": 16.4,
+                  "y": 24.61
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 24.61
+                },
+                {
+                  "x": 27.89,
+                  "y": 24.61
+                },
+                {
+                  "x": 27.89,
+                  "y": 32.81
+                },
+                {
+                  "x": 16.4,
+                  "y": 32.81
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-6",
+            "name": "Bath 2",
+            "area": 94.14,
+            "type": "bathroom",
+            "labelX": 30.183728000000002,
+            "labelY": 28.543308,
+            "shapes": [
+              [
+                {
+                  "x": 27.89,
+                  "y": 24.61
+                },
+                {
+                  "x": 39.37,
+                  "y": 24.61
+                },
+                {
+                  "x": 39.37,
+                  "y": 32.81
+                },
+                {
+                  "x": 27.89,
+                  "y": 32.81
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3.28084,
+            "height": 7,
+            "x": 16.404200000000003,
+            "y": 0,
+            "angle": 0,
+            "hingeX": 14.763780000000002,
+            "hingeY": 0,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3.2808400000000013,
+            "height": 7,
+            "x": 16.4042,
+            "y": 7.545932,
+            "angle": 1.5707963267948966,
+            "hingeX": 16.4042,
+            "hingeY": 5.905511999999999,
+            "openAngle": 0
+          },
+          {
+            "id": "door-2",
+            "type": "door",
+            "width": 3.2808400000000013,
+            "height": 7,
+            "x": 16.4042,
+            "y": 22.96588,
+            "angle": 1.5707963267948966,
+            "hingeX": 16.4042,
+            "hingeY": 21.325459999999996,
+            "openAngle": 0
+          },
+          {
+            "id": "door-3",
+            "type": "door",
+            "width": 3.2808399999999978,
+            "height": 7,
+            "x": 27.887140000000002,
+            "y": 22.965879999999995,
+            "angle": 1.5707963267948966,
+            "hingeX": 27.887140000000002,
+            "hingeY": 21.325459999999996,
+            "openAngle": 0
+          },
+          {
+            "id": "door-4",
+            "type": "door",
+            "width": 3.2808399999999978,
+            "height": 7,
+            "x": 27.887140000000002,
+            "y": 6.561680000000001,
+            "angle": 1.5707963267948966,
+            "hingeX": 27.887140000000002,
+            "hingeY": 8.2021,
+            "openAngle": 0
+          },
+          {
+            "id": "door-5",
+            "type": "door",
+            "width": 2.6246720000000003,
+            "height": 7,
+            "x": 27.887140000000002,
+            "y": 27.559055999999998,
+            "angle": 1.5707963267948966,
+            "hingeX": 27.887140000000002,
+            "hingeY": 26.246719999999996,
+            "openAngle": 0
+          },
+          {
+            "id": "door-6",
+            "type": "door",
+            "width": 2.6246720000000003,
+            "height": 7,
+            "x": 27.887140000000002,
+            "y": 22.637795999999994,
+            "angle": 1.5707963267948966,
+            "hingeX": 27.887140000000002,
+            "hingeY": 21.325459999999996,
+            "openAngle": 0
+          },
+          {
+            "id": "door-7",
+            "type": "door",
+            "width": 3.2808399999999978,
+            "height": 7,
+            "x": 21.32546,
+            "y": 18.044620000000002,
+            "angle": 0,
+            "hingeX": 19.68504,
+            "hingeY": 18.044620000000002,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 5.905512000000002,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-1",
+            "type": "window",
+            "width": 5.249344000000001,
+            "height": 4,
+            "x": 22.309712,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-2",
+            "type": "window",
+            "width": 5.905512000000002,
+            "height": 4,
+            "x": 32.480316,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-3",
+            "type": "window",
+            "width": 6.561680000000003,
+            "height": 4,
+            "x": 0,
+            "y": 24.6063,
+            "angle": -1.5707963267948966
+          },
+          {
+            "id": "window-4",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 0,
+            "y": 8.202100000000005,
+            "angle": -1.5707963267948966
+          },
+          {
+            "id": "window-5",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 39.37008,
+            "y": 7.217848,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-6",
+            "type": "window",
+            "width": 2.296588,
+            "height": 4,
+            "x": 39.37008,
+            "y": 22.473753999999996,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-7",
+            "type": "window",
+            "width": 5.249344000000001,
+            "height": 4,
+            "x": 22.309712,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 0.00328084,
+          "source": "plausibility",
+          "confidence": "medium",
+          "confirmed": false,
+          "unit": "millimetre",
+          "insunits": 4,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": 0,
+            "minY": -1000,
+            "maxX": 12000,
+            "maxY": 10000,
+            "width": 12000,
+            "height": 11000,
+            "points": 64
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1000,
+              "heightFt": 916.6666666666666,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1000 x 917 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 12000,
+              "heightFt": 11000,
+              "plausible": false,
+              "reason": "Read as foots the drawing is 12000 x 11000 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 39.37007874015748,
+              "heightFt": 36.08923884514436,
+              "plausible": true,
+              "reason": "Read as millimetres the drawing is 39.4 x 36.1 ft, a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 393.7007874015748,
+              "heightFt": 360.89238845144354,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 394 x 361 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 39370.07874015748,
+              "heightFt": 36089.238845144355,
+              "plausible": false,
+              "reason": "Read as metres the drawing is 39370 x 36089 ft, not a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please confirm the drawing unit. Suggested: millimetres, the only unit giving a plausible building size. This is a guess from the drawing's size, not proof; provisional geometry must not be priced until confirmed."
+          }
+        ],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1,
+          "entities": 43,
+          "walls": 9,
+          "rooms": 7,
+          "openings": 16
+        }
+      }
+    },
+    "fixture:web-sample-house-plan": {
+      "mode": "-",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 0,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 39.37008,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 39.37008,
+            "startY": 32.8084,
+            "endX": 0,
+            "endY": 32.8084,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 32.8084,
+            "endX": 0,
+            "endY": 0,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 16.4042,
+            "startY": 0,
+            "endX": 16.4042,
+            "endY": 32.8084,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 27.887140000000002,
+            "startY": 0,
+            "endX": 27.887140000000002,
+            "endY": 18.044620000000002,
+            "length": 18.044620000000002,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 0,
+            "startY": 16.4042,
+            "endX": 16.4042,
+            "endY": 16.4042,
+            "length": 16.4042,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 16.4042,
+            "startY": 18.044620000000002,
+            "endX": 39.37008,
+            "endY": 18.044620000000002,
+            "length": 22.965880000000002,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-8",
+            "startX": 0,
+            "startY": 9.84252,
+            "endX": 6.56168,
+            "endY": 9.84252,
+            "length": 6.56168,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-9",
+            "startX": 6.56168,
+            "startY": 9.84252,
+            "endX": 6.56168,
+            "endY": 16.4042,
+            "length": 6.561679999999999,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-10",
+            "startX": 0,
+            "startY": 26.24672,
+            "endX": 6.56168,
+            "endY": 26.24672,
+            "length": 6.56168,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-11",
+            "startX": 6.56168,
+            "startY": 26.24672,
+            "endX": 6.56168,
+            "endY": 32.8084,
+            "length": 6.561679999999999,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bath 1",
+            "area": 43.03,
+            "type": "bathroom",
+            "labelX": 2.2965880000000003,
+            "labelY": 13.779528,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 9.84
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                },
+                {
+                  "x": 0,
+                  "y": 16.4
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bedroom 1",
+            "area": 225.93,
+            "type": "general",
+            "labelX": 3.937008,
+            "labelY": 4.92126,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 0
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                },
+                {
+                  "x": 0,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 0
+                },
+                {
+                  "x": 16.4,
+                  "y": 0
+                },
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 9.84
+                },
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Living Room",
+            "area": 207.28,
+            "type": "general",
+            "labelX": 18.700788,
+            "labelY": 9.84252,
+            "shapes": [
+              [
+                {
+                  "x": 16.4,
+                  "y": 0
+                },
+                {
+                  "x": 27.89,
+                  "y": 0
+                },
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                },
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 9.84
+                },
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-3",
+            "name": "Kitchen",
+            "area": 207.1,
+            "type": "kitchen",
+            "labelX": 30.183728000000002,
+            "labelY": 9.84252,
+            "shapes": [
+              [
+                {
+                  "x": 27.89,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 9.84
+                },
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 9.84
+                },
+                {
+                  "x": 39.37,
+                  "y": 9.84
+                },
+                {
+                  "x": 39.37,
+                  "y": 16.4
+                },
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 16.4
+                },
+                {
+                  "x": 39.37,
+                  "y": 16.4
+                },
+                {
+                  "x": 39.37,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-4",
+            "name": "Bath 2",
+            "area": 43.03,
+            "type": "bathroom",
+            "labelX": 2.2965880000000003,
+            "labelY": 29.52756,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 26.25
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 32.81
+                },
+                {
+                  "x": 0,
+                  "y": 32.81
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-5",
+            "name": "Bedroom 2",
+            "area": 226.09,
+            "type": "general",
+            "labelX": 3.937008,
+            "labelY": 20.341208,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 16.4
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                },
+                {
+                  "x": 0,
+                  "y": 18.04
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 16.4
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 18.04
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                },
+                {
+                  "x": 0,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 6.5600000000000005,
+                  "y": 26.25
+                },
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                },
+                {
+                  "x": 16.4,
+                  "y": 32.81
+                },
+                {
+                  "x": 6.5600000000000005,
+                  "y": 32.81
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-6",
+            "name": "Dining",
+            "area": 339.27,
+            "type": "general",
+            "labelX": 21.32546,
+            "labelY": 25.590552000000002,
+            "shapes": [
+              [
+                {
+                  "x": 16.4,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                },
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 18.04
+                },
+                {
+                  "x": 39.37,
+                  "y": 18.04
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 16.4,
+                  "y": 26.25
+                },
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                },
+                {
+                  "x": 27.89,
+                  "y": 32.81
+                },
+                {
+                  "x": 16.4,
+                  "y": 32.81
+                }
+              ],
+              [
+                {
+                  "x": 27.89,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 32.81
+                },
+                {
+                  "x": 27.89,
+                  "y": 32.81
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3.28084,
+            "height": 7,
+            "x": 21.32546,
+            "y": 0,
+            "angle": 0,
+            "hingeX": 19.68504,
+            "hingeY": 0,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3.2808400000000013,
+            "height": 7,
+            "x": 16.4042,
+            "y": 7.545932,
+            "angle": 1.5707963267948966,
+            "hingeX": 16.4042,
+            "hingeY": 5.905511999999999,
+            "openAngle": 0
+          },
+          {
+            "id": "door-2",
+            "type": "door",
+            "width": 3.2808400000000013,
+            "height": 7,
+            "x": 16.4042,
+            "y": 22.96588,
+            "angle": 1.5707963267948966,
+            "hingeX": 16.4042,
+            "hingeY": 21.325459999999996,
+            "openAngle": 0
+          },
+          {
+            "id": "door-3",
+            "type": "door",
+            "width": 3.2808399999999978,
+            "height": 7,
+            "x": 27.887140000000002,
+            "y": 6.561680000000001,
+            "angle": 1.5707963267948966,
+            "hingeX": 27.887140000000002,
+            "hingeY": 8.2021,
+            "openAngle": 0
+          },
+          {
+            "id": "door-4",
+            "type": "door",
+            "width": 2.6246720000000003,
+            "height": 7,
+            "x": 2.952756,
+            "y": 9.84252,
+            "angle": 0,
+            "hingeX": 1.64042,
+            "hingeY": 9.84252,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-5",
+            "type": "door",
+            "width": 2.6246720000000003,
+            "height": 7,
+            "x": 2.952756,
+            "y": 26.24672,
+            "angle": 0,
+            "hingeX": 1.64042,
+            "hingeY": 26.24672,
+            "openAngle": 1.5707963267948966
+          },
+          {
+            "id": "door-6",
+            "type": "door",
+            "width": 2.624671999999997,
+            "height": 7,
+            "x": 39.37008,
+            "y": 29.199476,
+            "angle": 1.5707963267948966,
+            "hingeX": 39.37008,
+            "hingeY": 27.887140000000002,
+            "openAngle": 3.141592653589793
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 7.217848000000002,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-1",
+            "type": "window",
+            "width": 2.952756000000001,
+            "height": 4,
+            "x": 25.426510000000004,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-2",
+            "type": "window",
+            "width": 5.905512,
+            "height": 4,
+            "x": 12.139108,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-3",
+            "type": "window",
+            "width": 5.249344000000001,
+            "height": 4,
+            "x": 22.309712,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-4",
+            "type": "window",
+            "width": 5.905512000000002,
+            "height": 4,
+            "x": 32.480316,
+            "y": 32.8084,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-5",
+            "type": "window",
+            "width": 5.249344000000001,
+            "height": 4,
+            "x": 0,
+            "y": 21.653544000000004,
+            "angle": -1.5707963267948966
+          },
+          {
+            "id": "window-6",
+            "type": "window",
+            "width": 6.561680000000001,
+            "height": 4,
+            "x": 39.37008,
+            "y": 7.217848,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-7",
+            "type": "window",
+            "width": 2.296588,
+            "height": 4,
+            "x": 39.37008,
+            "y": 22.473753999999996,
+            "angle": 1.5707963267948966
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 0.00328084,
+          "source": "plausibility",
+          "confidence": "medium",
+          "confirmed": false,
+          "unit": "millimetre",
+          "insunits": 4,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": -300,
+            "minY": -1000,
+            "maxX": 12800,
+            "maxY": 10000,
+            "width": 13100,
+            "height": 11000,
+            "points": 68
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1091.6666666666665,
+              "heightFt": 916.6666666666666,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1092 x 917 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 13100,
+              "heightFt": 11000,
+              "plausible": false,
+              "reason": "Read as foots the drawing is 13100 x 11000 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 42.979002624671914,
+              "heightFt": 36.08923884514436,
+              "plausible": true,
+              "reason": "Read as millimetres the drawing is 43.0 x 36.1 ft, a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 429.79002624671915,
+              "heightFt": 360.89238845144354,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 430 x 361 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 42979.00262467191,
+              "heightFt": 36089.238845144355,
+              "plausible": false,
+              "reason": "Read as metres the drawing is 42979 x 36089 ft, not a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please confirm the drawing unit. Suggested: millimetres, the only unit giving a plausible building size. This is a guess from the drawing's size, not proof; provisional geometry must not be priced until confirmed."
+          }
+        ],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1,
+          "entities": 45,
+          "walls": 12,
+          "rooms": 7,
+          "openings": 15
+        }
+      }
+    },
+    "modeB-house-closed-openings": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 24,
+            "endY": 0,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 24,
+            "startY": 0,
+            "endX": 24,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 24,
+            "startY": 16,
+            "endX": 0,
+            "endY": 16,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 16,
+            "endX": 0,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 12,
+            "startY": 0,
+            "endX": 12,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 12,
+            "startY": 8,
+            "endX": 24,
+            "endY": 8,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": 18,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": 6,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": 18,
+            "labelY": 12,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 5.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 12,
+            "y": 4.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 18,
+            "y": 16,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": 0,
+            "minY": -3,
+            "maxX": 24,
+            "maxY": 16,
+            "width": 24,
+            "height": 19,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2,
+              "heightFt": 1.5833333333333333,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.0 x 1.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 24,
+              "heightFt": 19,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 24.0 x 19.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.07874015748031496,
+              "heightFt": 0.06233595800524934,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.7874015748031495,
+              "heightFt": 0.6233595800524935,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.8 x 0.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 78.74015748031495,
+              "heightFt": 62.33595800524934,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 78.7 x 62.3 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "entities": 13,
+          "walls": 6,
+          "rooms": 3,
+          "openings": 3
+        }
+      }
+    },
+    "modeB-open-plan": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 20,
+            "endY": 0,
+            "length": 20,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 20,
+            "startY": 0,
+            "endX": 20,
+            "endY": 14,
+            "length": 14,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 20,
+            "startY": 14,
+            "endX": 0,
+            "endY": 14,
+            "length": 20,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 14,
+            "endX": 0,
+            "endY": 6,
+            "length": 8,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 8,
+            "startY": 0,
+            "endX": 8,
+            "endY": 7,
+            "length": 7,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [],
+        "openings": [
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 3,
+            "height": 4,
+            "x": 4.5,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 20,
+            "maxY": 14,
+            "width": 20,
+            "height": 14,
+            "points": 12
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1.6666666666666665,
+              "heightFt": 1.1666666666666665,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1.7 x 1.2 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 20,
+              "heightFt": 14,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 20.0 x 14.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.06561679790026247,
+              "heightFt": 0.045931758530183726,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.6561679790026247,
+              "heightFt": 0.45931758530183725,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.7 x 0.5 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 65.61679790026245,
+              "heightFt": 45.93175853018372,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 65.6 x 45.9 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "entities": 6,
+          "walls": 5,
+          "rooms": 0,
+          "openings": 1
+        }
+      }
+    },
+    "modeB-near-miss": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 10,
+            "endY": 0,
+            "length": 10,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 10.03,
+            "startY": 0,
+            "endX": 20,
+            "endY": 0,
+            "length": 9.97,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 20,
+            "startY": 0,
+            "endX": 20,
+            "endY": 12,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 20,
+            "startY": 12,
+            "endX": 0,
+            "endY": 12,
+            "length": 20,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 0,
+            "startY": 12,
+            "endX": 0,
+            "endY": 0.04,
+            "length": 11.96,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-5",
+            "startX": 5,
+            "startY": 0.04,
+            "endX": 5,
+            "endY": 12,
+            "length": 11.96,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 14,
+            "startY": 12,
+            "endX": 14,
+            "endY": 6.2,
+            "length": 5.8,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 8,
+            "startY": 12,
+            "endX": 8,
+            "endY": 8,
+            "length": 4,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 2,
+            "height": 7,
+            "x": 3,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 20,
+            "maxY": 12,
+            "width": 20,
+            "height": 12,
+            "points": 18
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1.6666666666666665,
+              "heightFt": 1,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1.7 x 1.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 20,
+              "heightFt": 12,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 20.0 x 12.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.06561679790026247,
+              "heightFt": 0.03937007874015748,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.6561679790026247,
+              "heightFt": 0.39370078740157477,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.7 x 0.4 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 65.61679790026245,
+              "heightFt": 39.370078740157474,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 65.6 x 39.4 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "entities": 9,
+          "walls": 8,
+          "rooms": 0,
+          "openings": 1
+        }
+      }
+    },
+    "modeB-overlap-dups": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 32,
+            "endY": 0,
+            "length": 32,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 32,
+            "startY": 0,
+            "endX": 32,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 0,
+            "startY": 0,
+            "endX": 0,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 16,
+            "endX": 32,
+            "endY": 16,
+            "length": 32,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Room 1",
+            "area": 512,
+            "type": "general",
+            "labelX": 16,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0.01
+                },
+                {
+                  "x": 0,
+                  "y": 0.01
+                }
+              ],
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 20,
+                  "y": 0
+                },
+                {
+                  "x": 20,
+                  "y": 0.01
+                },
+                {
+                  "x": 12,
+                  "y": 0.01
+                }
+              ],
+              [
+                {
+                  "x": 20,
+                  "y": 0
+                },
+                {
+                  "x": 32,
+                  "y": 0
+                },
+                {
+                  "x": 32,
+                  "y": 0.01
+                },
+                {
+                  "x": 20,
+                  "y": 0.01
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 0.01
+                },
+                {
+                  "x": 12,
+                  "y": 0.01
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 12,
+                  "y": 0.01
+                },
+                {
+                  "x": 20,
+                  "y": 0.01
+                },
+                {
+                  "x": 20,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 20,
+                  "y": 0.01
+                },
+                {
+                  "x": 32,
+                  "y": 0.01
+                },
+                {
+                  "x": 32,
+                  "y": 8
+                },
+                {
+                  "x": 20,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ],
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 20,
+                  "y": 8
+                },
+                {
+                  "x": 20,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ],
+              [
+                {
+                  "x": 20,
+                  "y": 8
+                },
+                {
+                  "x": 32,
+                  "y": 8
+                },
+                {
+                  "x": 32,
+                  "y": 16
+                },
+                {
+                  "x": 20,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 6,
+            "height": 7,
+            "x": 7,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 26,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 32,
+            "maxY": 16,
+            "width": 32,
+            "height": 16,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2.6666666666666665,
+              "heightFt": 1.3333333333333333,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.7 x 1.3 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 32,
+              "heightFt": 16,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 32.0 x 16.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.10498687664041995,
+              "heightFt": 0.05249343832020997,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 1.0498687664041995,
+              "heightFt": 0.5249343832020997,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 1.0 x 0.5 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 104.98687664041994,
+              "heightFt": 52.49343832020997,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 105 x 52.5 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "wallsMerged": 4,
+          "wallLengthRemovedFt": 79.992,
+          "entities": 10,
+          "walls": 4,
+          "rooms": 1,
+          "openings": 2
+        }
+      }
+    },
+    "modeB-jittered": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": -0.0019531809873878955,
+            "startY": -0.0017521669697016479,
+            "endX": 24.001907630531118,
+            "endY": 0.0007961148228496313,
+            "length": 24.003860946782996,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 24.00008578107413,
+            "startY": -0.0003779132477939129,
+            "endX": 23.99986493053008,
+            "endY": 15.998959700743669,
+            "length": 15.99933761551574,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 24.000213302415794,
+            "startY": 16.000919288359583,
+            "endX": -0.0009687377559021115,
+            "endY": 15.998623793455772,
+            "length": 24.001182149943304,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0.0010563595462590456,
+            "startY": 16.000073610182852,
+            "endX": -0.0012114509595558048,
+            "endY": -0.0005281656263396144,
+            "length": 16.000601936520784,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 11.999172989351674,
+            "startY": 0.00013895810209214686,
+            "endX": 11.999185320992954,
+            "endY": 16.001911784417928,
+            "length": 16.001772826320586,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 11.998990134377033,
+            "startY": 8.001511118382215,
+            "endX": 23.998763166837396,
+            "endY": 7.99857462954428,
+            "length": 11.999773391757431,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": 18,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": 6,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": 18,
+            "labelY": 12,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3.0015736206769796,
+            "height": 7,
+            "x": 5.4994054301554005,
+            "y": -0.001168135421895672,
+            "angle": 0.00010616132975388777,
+            "hingeX": 3.9986186282740146,
+            "hingeY": -0.0013274609450590294,
+            "openAngle": 0.0006275674994403136
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 2.9998208689020944,
+            "height": 7,
+            "x": 11.999178770290394,
+            "y": 7.501595254908136,
+            "angle": 1.5707955561527052,
+            "hingeX": 11.99917761439613,
+            "hingeY": 6.001684820457535,
+            "openAngle": -1.570722042007856
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4.001916940280025,
+            "height": 4,
+            "x": 17.99925637719984,
+            "y": 16.00034535137528,
+            "angle": -3.141497012679568
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": -0.0019531809873878955,
+            "minY": -3,
+            "maxX": 24.001907630531118,
+            "maxY": 16.001911784417928,
+            "width": 24.003860811518507,
+            "height": 19.001911784417928,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2.000321734293209,
+              "heightFt": 1.583492648701494,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.0 x 1.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 24.003860811518507,
+              "heightFt": 19.001911784417928,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 24.0 x 19.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.078752824184772,
+              "heightFt": 0.062342230263838345,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.7875282418477201,
+              "heightFt": 0.6234223026383835,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.8 x 0.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 78.752824184772,
+              "heightFt": 62.34223026383834,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 78.8 x 62.3 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "ROTATION_UNCERTAIN",
+            "severity": "warning",
+            "message": "The plan looks rotated (dominant wall direction 0.00 degrees) but its orientation could not be established confidently: no perpendicular wall family bridging two parallel walls. It was left as drawn."
+          }
+        ],
+        "stats": {
+          "entities": 13,
+          "walls": 6,
+          "rooms": 3,
+          "openings": 3
+        }
+      }
+    },
+    "modeB-rotated-30": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 24,
+            "endY": -1.7763568394002505e-15,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 24,
+            "startY": -1.7763568394002505e-15,
+            "endX": 24,
+            "endY": 15.999999999999996,
+            "length": 15.999999999999998,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 24,
+            "startY": 15.999999999999996,
+            "endX": 1.7763568394002505e-15,
+            "endY": 16,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 1.7763568394002505e-15,
+            "startY": 16,
+            "endX": 0,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 12,
+            "startY": -8.881784197001252e-16,
+            "endX": 12,
+            "endY": 15.999999999999996,
+            "length": 15.999999999999996,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 12,
+            "startY": 7.999999999999998,
+            "endX": 24,
+            "endY": 7.9999999999999964,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": 18,
+            "labelY": 3.9999999999999982,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": 6,
+            "labelY": 7.999999999999998,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": 18,
+            "labelY": 12,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 5.5,
+            "y": -4.070817756958907e-16,
+            "angle": -7.401486830834377e-17
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3.000000000000001,
+            "height": 7,
+            "x": 12,
+            "y": 4.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 18,
+            "y": 15.999999999999996,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": -7.999999999999999,
+            "minY": -1.0000000000000002,
+            "maxX": 20.784609690826528,
+            "maxY": 25.856406460551018,
+            "width": 28.784609690826528,
+            "height": 26.856406460551018,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2.3987174742355437,
+              "heightFt": 2.2380338717125845,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.4 x 2.2 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 28.784609690826528,
+              "heightFt": 26.856406460551018,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 28.8 x 26.9 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.09443769583604504,
+              "heightFt": 0.08811156975246397,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.9443769583604504,
+              "heightFt": 0.8811156975246397,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.9 x 0.9 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 94.43769583604502,
+              "heightFt": 88.11156975246396,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 94.4 x 88.1 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": -0.5235987755982989,
+        "warnings": [
+          {
+            "code": "PLAN_ROTATED",
+            "severity": "info",
+            "message": "The plan was rotated by -30.0000 degrees (counter-clockwise positive) so its walls are axis-aligned."
+          }
+        ],
+        "stats": {
+          "entities": 13,
+          "walls": 6,
+          "rooms": 3,
+          "openings": 3
+        }
+      }
+    },
+    "modeB-rotated-90": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 1.4695761589768238e-15,
+            "endY": 24,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 1.4695761589768238e-15,
+            "startY": 24,
+            "endX": -15.999999999999998,
+            "endY": 24,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": -15.999999999999998,
+            "startY": 24,
+            "endX": -16,
+            "endY": 9.797174393178826e-16,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": -16,
+            "startY": 9.797174393178826e-16,
+            "endX": 0,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 7.347880794884119e-16,
+            "startY": 12,
+            "endX": -16,
+            "endY": 12.000000000000002,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": -7.999999999999999,
+            "startY": 12,
+            "endX": -7.999999999999998,
+            "endY": 24,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": -8,
+            "labelY": 6.000000000000001,
+            "shapes": [
+              [
+                {
+                  "x": -16,
+                  "y": 0
+                },
+                {
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "x": -8,
+                  "y": 12
+                },
+                {
+                  "x": -16,
+                  "y": 12
+                }
+              ],
+              [
+                {
+                  "x": -8,
+                  "y": 0
+                },
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 0,
+                  "y": 12
+                },
+                {
+                  "x": -8,
+                  "y": 12
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": -11.999999999999998,
+            "labelY": 18,
+            "shapes": [
+              [
+                {
+                  "x": -16,
+                  "y": 12
+                },
+                {
+                  "x": -8,
+                  "y": 12
+                },
+                {
+                  "x": -8,
+                  "y": 24
+                },
+                {
+                  "x": -16,
+                  "y": 24
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": -3.999999999999999,
+            "labelY": 18,
+            "shapes": [
+              [
+                {
+                  "x": -8,
+                  "y": 12
+                },
+                {
+                  "x": 0,
+                  "y": 12
+                },
+                {
+                  "x": 0,
+                  "y": 24
+                },
+                {
+                  "x": -8,
+                  "y": 24
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 3.367778697655221e-16,
+            "y": 5.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": -4.499999999999999,
+            "y": 12,
+            "angle": 3.141592653589793
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": -15.999999999999998,
+            "y": 18,
+            "angle": -1.5707963267948968
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": -16,
+            "minY": 0,
+            "maxX": 3.0000000000000004,
+            "maxY": 24,
+            "width": 19,
+            "height": 24,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1.5833333333333333,
+              "heightFt": 2,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1.6 x 2.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 19,
+              "heightFt": 24,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 19.0 x 24.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.06233595800524934,
+              "heightFt": 0.07874015748031496,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.6233595800524935,
+              "heightFt": 0.7874015748031495,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.6 x 0.8 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 62.33595800524934,
+              "heightFt": 78.74015748031495,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 62.3 x 78.7 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "entities": 13,
+          "walls": 6,
+          "rooms": 3,
+          "openings": 3
+        }
+      }
+    },
+    "modeB-near-miss-rotated-17": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 9.563047559630354,
+            "endY": 2.9237170472273677,
+            "length": 9.999999999999998,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-1",
+            "startX": 9.591736702309245,
+            "startY": 2.9324881983690494,
+            "endX": 19.126095119260707,
+            "endY": 5.847434094454735,
+            "length": 9.969999999999999,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-2",
+            "startX": 19.126095119260707,
+            "startY": 5.847434094454735,
+            "endX": 15.617634662587866,
+            "endY": 17.32309116601116,
+            "length": 11.999999999999998,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-3",
+            "startX": 15.617634662587866,
+            "startY": 17.32309116601116,
+            "endX": -3.5084604566728412,
+            "endY": 11.475657071556425,
+            "length": 19.999999999999996,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-4",
+            "startX": -3.5084604566728412,
+            "startY": 11.475657071556425,
+            "endX": -0.01169486818890947,
+            "endY": 0.038252190238521416,
+            "length": 11.959999999999997,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 4.769828911626267,
+            "startY": 1.5001107138522052,
+            "endX": 1.2730633231423356,
+            "endY": 12.937515595170108,
+            "length": 11.959999999999997,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 9.879806126809655,
+            "startY": 15.568860937674739,
+            "endX": 11.575562014201529,
+            "endY": 10.022293353089134,
+            "length": 5.8,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 4.141977591031442,
+            "startY": 13.814630709338319,
+            "endX": 5.311464409922389,
+            "endY": 9.989411685486179,
+            "length": 3.999999999999999,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 2,
+            "height": 7,
+            "x": 2.868914267889106,
+            "y": 0.8771151141682103,
+            "angle": 0.2967059728390361
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": -3.5084604566728412,
+            "minY": 0,
+            "maxX": 19.126095119260707,
+            "maxY": 17.32309116601116,
+            "width": 22.634555575933547,
+            "height": 17.32309116601116,
+            "points": 18
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1.8862129646611288,
+              "heightFt": 1.44359093050093,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1.9 x 1.4 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 22.634555575933547,
+              "heightFt": 17.32309116601116,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 22.6 x 17.3 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.07426035293941452,
+              "heightFt": 0.05683428860239882,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.7426035293941452,
+              "heightFt": 0.5683428860239882,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.7 x 0.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 74.26035293941452,
+              "heightFt": 56.834288602398814,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 74.3 x 56.8 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "ROTATION_UNCERTAIN",
+            "severity": "warning",
+            "message": "The plan looks rotated (dominant wall direction 0.00 degrees) but its orientation could not be established confidently: no perpendicular wall family bridging two parallel walls. It was left as drawn."
+          }
+        ],
+        "stats": {
+          "entities": 9,
+          "walls": 8,
+          "rooms": 0,
+          "openings": 1
+        }
+      }
+    },
+    "modeB-house-untrusted-nounit": {
+      "mode": "B",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 78.74016,
+            "endY": 0,
+            "length": 78.74016,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 78.74016,
+            "startY": 0,
+            "endX": 78.74016,
+            "endY": 52.49344,
+            "length": 52.49344,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 78.74016,
+            "startY": 52.49344,
+            "endX": 0,
+            "endY": 52.49344,
+            "length": 78.74016,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 52.49344,
+            "endX": 0,
+            "endY": 0,
+            "length": 52.49344,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 39.37008,
+            "startY": 0,
+            "endX": 39.37008,
+            "endY": 52.49344,
+            "length": 52.49344,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 39.37008,
+            "startY": 26.24672,
+            "endX": 78.74016,
+            "endY": 26.24672,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 1033.46,
+            "type": "kitchen",
+            "labelX": 59.05512,
+            "labelY": 13.12336,
+            "shapes": [
+              [
+                {
+                  "x": 39.37,
+                  "y": 0
+                },
+                {
+                  "x": 78.74,
+                  "y": 0
+                },
+                {
+                  "x": 78.74,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 2066.53,
+            "type": "general",
+            "labelX": 19.68504,
+            "labelY": 26.24672,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 0
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 0,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 39.37,
+                  "y": 52.49
+                },
+                {
+                  "x": 0,
+                  "y": 52.49
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 1033.07,
+            "type": "bathroom",
+            "labelX": 59.05512,
+            "labelY": 39.37008,
+            "shapes": [
+              [
+                {
+                  "x": 39.37,
+                  "y": 26.25
+                },
+                {
+                  "x": 78.74,
+                  "y": 26.25
+                },
+                {
+                  "x": 78.74,
+                  "y": 52.49
+                },
+                {
+                  "x": 39.37,
+                  "y": 52.49
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 9.842519999999999,
+            "height": 7,
+            "x": 18.04462,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 9.84252,
+            "height": 7,
+            "x": 39.37008,
+            "y": 14.76378,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 13.123359999999998,
+            "height": 4,
+            "x": 59.05512,
+            "y": 52.49344,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 3.28084,
+          "source": "plausibility",
+          "confidence": "low",
+          "confirmed": false,
+          "unit": "metre",
+          "insunits": 6,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": 0,
+            "minY": -3,
+            "maxX": 24,
+            "maxY": 16,
+            "width": 24,
+            "height": 19,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2,
+              "heightFt": 1.5833333333333333,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.0 x 1.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 24,
+              "heightFt": 19,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 24.0 x 19.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.07874015748031496,
+              "heightFt": 0.06233595800524934,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.7874015748031495,
+              "heightFt": 0.6233595800524935,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.8 x 0.6 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 78.74015748031495,
+              "heightFt": 62.33595800524934,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 78.7 x 62.3 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_AMBIGUOUS",
+            "severity": "warning",
+            "message": "More than one unit gives a plausible building size (foots: 24.0 x 19.0 ft; metres: 78.7 x 62.3 ft). The unit cannot be determined from the drawing alone."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please select the drawing unit. Provisional geometry uses metres (the most house-sized reading) and must not be priced until a unit is confirmed."
+          }
+        ],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1,
+          "entities": 13,
+          "walls": 6,
+          "rooms": 3,
+          "openings": 3
+        }
+      }
+    },
+    "modeB-near-miss-untrusted": {
+      "mode": "B",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 32.8084,
+            "endY": 0,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 32.9068252,
+            "startY": 0,
+            "endX": 65.6168,
+            "endY": 0,
+            "length": 32.7099748,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 65.6168,
+            "startY": 0,
+            "endX": 65.6168,
+            "endY": 39.37008,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 65.6168,
+            "startY": 39.37008,
+            "endX": 0,
+            "endY": 39.37008,
+            "length": 65.6168,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 0,
+            "startY": 39.37008,
+            "endX": 0,
+            "endY": 0.1312336,
+            "length": 39.2388464,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-5",
+            "startX": 16.4042,
+            "startY": 0.1312336,
+            "endX": 16.4042,
+            "endY": 39.37008,
+            "length": 39.2388464,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 45.93176,
+            "startY": 39.37008,
+            "endX": 45.93176,
+            "endY": 20.341208,
+            "length": 19.028872,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 26.24672,
+            "startY": 39.37008,
+            "endX": 26.24672,
+            "endY": 26.24672,
+            "length": 13.123360000000002,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 6.56168,
+            "height": 7,
+            "x": 9.84252,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 3.28084,
+          "source": "plausibility",
+          "confidence": "low",
+          "confirmed": false,
+          "unit": "metre",
+          "insunits": 6,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 20,
+            "maxY": 12,
+            "width": 20,
+            "height": 12,
+            "points": 18
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1.6666666666666665,
+              "heightFt": 1,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1.7 x 1.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 20,
+              "heightFt": 12,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 20.0 x 12.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.06561679790026247,
+              "heightFt": 0.03937007874015748,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.6561679790026247,
+              "heightFt": 0.39370078740157477,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.7 x 0.4 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 65.61679790026245,
+              "heightFt": 39.370078740157474,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 65.6 x 39.4 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_AMBIGUOUS",
+            "severity": "warning",
+            "message": "More than one unit gives a plausible building size (foots: 20.0 x 12.0 ft; metres: 65.6 x 39.4 ft). The unit cannot be determined from the drawing alone."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please select the drawing unit. Provisional geometry uses metres (the most house-sized reading) and must not be priced until a unit is confirmed."
+          }
+        ],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1,
+          "entities": 9,
+          "walls": 8,
+          "rooms": 0,
+          "openings": 1
+        }
+      }
+    },
+    "modeB-overlap-untrusted": {
+      "mode": "B",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 32.8084,
+            "endY": 0,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 19.68504,
+            "startY": 0,
+            "endX": 52.49344,
+            "endY": 0,
+            "length": 32.8084,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 52.49344,
+            "startY": 0,
+            "endX": 52.49344,
+            "endY": 26.24672,
+            "length": 26.24672,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 0,
+            "endX": 0,
+            "endY": 26.24672,
+            "length": 26.24672,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 0,
+            "startY": 26.24672,
+            "endX": 52.49344,
+            "endY": 26.24672,
+            "length": 52.49344,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-5",
+            "startX": 52.49344,
+            "startY": 0.01312336,
+            "endX": 52.49344,
+            "endY": 13.12336,
+            "length": 13.11023664,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Room 1",
+            "area": 1377.86,
+            "type": "general",
+            "labelX": 26.245,
+            "labelY": 13.125000000000002,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 19.69,
+                  "y": 0
+                },
+                {
+                  "x": 19.69,
+                  "y": 0.01
+                },
+                {
+                  "x": 0,
+                  "y": 0.01
+                }
+              ],
+              [
+                {
+                  "x": 19.69,
+                  "y": 0
+                },
+                {
+                  "x": 32.81,
+                  "y": 0
+                },
+                {
+                  "x": 32.81,
+                  "y": 0.01
+                },
+                {
+                  "x": 19.69,
+                  "y": 0.01
+                }
+              ],
+              [
+                {
+                  "x": 32.81,
+                  "y": 0
+                },
+                {
+                  "x": 52.49,
+                  "y": 0
+                },
+                {
+                  "x": 52.49,
+                  "y": 0.01
+                },
+                {
+                  "x": 32.81,
+                  "y": 0.01
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 0.01
+                },
+                {
+                  "x": 19.69,
+                  "y": 0.01
+                },
+                {
+                  "x": 19.69,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 0,
+                  "y": 13.120000000000001
+                }
+              ],
+              [
+                {
+                  "x": 19.69,
+                  "y": 0.01
+                },
+                {
+                  "x": 32.81,
+                  "y": 0.01
+                },
+                {
+                  "x": 32.81,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 19.69,
+                  "y": 13.120000000000001
+                }
+              ],
+              [
+                {
+                  "x": 32.81,
+                  "y": 0.01
+                },
+                {
+                  "x": 52.49,
+                  "y": 0.01
+                },
+                {
+                  "x": 52.49,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 32.81,
+                  "y": 13.120000000000001
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 19.69,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 19.69,
+                  "y": 26.25
+                },
+                {
+                  "x": 0,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 19.69,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 32.81,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 32.81,
+                  "y": 26.25
+                },
+                {
+                  "x": 19.69,
+                  "y": 26.25
+                }
+              ],
+              [
+                {
+                  "x": 32.81,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 52.49,
+                  "y": 13.120000000000001
+                },
+                {
+                  "x": 52.49,
+                  "y": 26.25
+                },
+                {
+                  "x": 32.81,
+                  "y": 26.25
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 9.84252,
+            "height": 7,
+            "x": 11.482939999999997,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 6.5616799999999955,
+            "height": 4,
+            "x": 42.65092,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 3.28084,
+          "source": "plausibility",
+          "confidence": "medium",
+          "confirmed": false,
+          "unit": "metre",
+          "insunits": 6,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 16,
+            "maxY": 8,
+            "width": 16,
+            "height": 8,
+            "points": 20
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 1.3333333333333333,
+              "heightFt": 0.6666666666666666,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 1.3 x 0.7 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 16,
+              "heightFt": 8,
+              "plausible": false,
+              "reason": "Read as foots the drawing is 16.0 x 8.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.05249343832020997,
+              "heightFt": 0.026246719160104987,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.5249343832020997,
+              "heightFt": 0.26246719160104987,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 0.5 x 0.3 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 52.49343832020997,
+              "heightFt": 26.246719160104984,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 52.5 x 26.2 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please confirm the drawing unit. Suggested: metres, the only unit giving a plausible building size. This is a guess from the drawing's size, not proof; provisional geometry must not be priced until confirmed."
+          }
+        ],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1,
+          "entities": 10,
+          "walls": 6,
+          "rooms": 1,
+          "openings": 2
+        }
+      }
+    },
+    "modeA-two-rooms": {
+      "mode": "A",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 15,
+            "endY": 0,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-1",
+            "startX": 15,
+            "startY": 0,
+            "endX": 15,
+            "endY": 12,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-2",
+            "startX": 15,
+            "startY": 12,
+            "endX": 0,
+            "endY": 12,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-3",
+            "startX": 0,
+            "startY": 12,
+            "endX": 0,
+            "endY": 0,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-0",
+            "startX": 15,
+            "startY": 0,
+            "endX": 30,
+            "endY": 0,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-1",
+            "startX": 30,
+            "startY": 0,
+            "endX": 30,
+            "endY": 12,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-2",
+            "startX": 30,
+            "startY": 12,
+            "endX": 15,
+            "endY": 12,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bedroom",
+            "area": 180,
+            "type": "general",
+            "labelX": 5,
+            "labelY": 6,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 15,
+                  "y": 0
+                },
+                {
+                  "x": 15,
+                  "y": 12
+                },
+                {
+                  "x": 0,
+                  "y": 12
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bath",
+            "area": 180,
+            "type": "bathroom",
+            "labelX": 20,
+            "labelY": 6,
+            "shapes": [
+              [
+                {
+                  "x": 15,
+                  "y": 0
+                },
+                {
+                  "x": 30,
+                  "y": 0
+                },
+                {
+                  "x": 30,
+                  "y": 12
+                },
+                {
+                  "x": 15,
+                  "y": 12
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 6.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 22,
+            "y": 12,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 30,
+            "maxY": 12,
+            "width": 30,
+            "height": 12,
+            "points": 12
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2.5,
+              "heightFt": 1,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.5 x 1.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 30,
+              "heightFt": 12,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 30.0 x 12.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.09842519685039369,
+              "heightFt": 0.03937007874015748,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.984251968503937,
+              "heightFt": 0.39370078740157477,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 1.0 x 0.4 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 98.42519685039369,
+              "heightFt": 39.370078740157474,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 98.4 x 39.4 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [],
+        "stats": {
+          "wallsMerged": 1,
+          "wallLengthRemovedFt": 12,
+          "entities": 6,
+          "walls": 7,
+          "rooms": 2,
+          "openings": 2
+        }
+      }
+    },
+    "modeA-two-rooms-rotated": {
+      "mode": "A",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 15,
+            "endY": -8.881784197001252e-16,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-1",
+            "startX": 15,
+            "startY": -8.881784197001252e-16,
+            "endX": 15,
+            "endY": 11.999999999999998,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-2",
+            "startX": 15,
+            "startY": 11.999999999999998,
+            "endX": 0,
+            "endY": 12,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-3",
+            "startX": 0,
+            "startY": 12,
+            "endX": 0,
+            "endY": 0,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-0",
+            "startX": 15,
+            "startY": -8.881784197001252e-16,
+            "endX": 30,
+            "endY": -1.7763568394002505e-15,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-1",
+            "startX": 30,
+            "startY": -1.7763568394002505e-15,
+            "endX": 30.000000000000004,
+            "endY": 11.999999999999996,
+            "length": 11.999999999999998,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-2",
+            "startX": 30.000000000000004,
+            "startY": 11.999999999999996,
+            "endX": 15,
+            "endY": 11.999999999999998,
+            "length": 15.000000000000004,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bedroom",
+            "area": 180,
+            "type": "general",
+            "labelX": 5,
+            "labelY": 5.999999999999999,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 15,
+                  "y": -8.881784197001252e-16
+                },
+                {
+                  "x": 15,
+                  "y": 11.999999999999998
+                },
+                {
+                  "x": 0,
+                  "y": 12
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bath",
+            "area": 180,
+            "type": "bathroom",
+            "labelX": 20,
+            "labelY": 5.999999999999998,
+            "shapes": [
+              [
+                {
+                  "x": 15,
+                  "y": -8.881784197001252e-16
+                },
+                {
+                  "x": 30,
+                  "y": -1.7763568394002505e-15
+                },
+                {
+                  "x": 30.000000000000004,
+                  "y": 11.999999999999996
+                },
+                {
+                  "x": 15,
+                  "y": 11.999999999999998
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3.000000000000001,
+            "height": 7,
+            "x": 6.5,
+            "y": -3.848773152033876e-16,
+            "angle": -5.921189464667501e-17
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 22,
+            "y": 11.999999999999998,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 1,
+          "source": "header",
+          "confidence": "high",
+          "confirmed": false,
+          "unit": "foot",
+          "insunits": 2,
+          "needsConfirmation": false,
+          "extents": {
+            "minX": -5.071419140888393,
+            "minY": 0,
+            "maxX": 27.1892336110995,
+            "maxY": 23.554241296660784,
+            "width": 32.26065275198789,
+            "height": 23.554241296660784,
+            "points": 12
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2.688387729332324,
+              "heightFt": 1.9628534413883987,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.7 x 2.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 32.26065275198789,
+              "heightFt": 23.554241296660784,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 32.3 x 23.6 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.10584203658788678,
+              "heightFt": 0.07727769454285034,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.1 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 1.0584203658788678,
+              "heightFt": 0.7727769454285034,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 1.1 x 0.8 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 105.84203658788677,
+              "heightFt": 77.27769454285033,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 106 x 77.3 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": -0.43633231299858244,
+        "warnings": [
+          {
+            "code": "PLAN_ROTATED",
+            "severity": "info",
+            "message": "The plan was rotated by -25.0000 degrees (counter-clockwise positive) so its walls are axis-aligned."
+          }
+        ],
+        "stats": {
+          "wallsMerged": 1,
+          "wallLengthRemovedFt": 12,
+          "entities": 6,
+          "walls": 7,
+          "rooms": 2,
+          "openings": 2
+        }
+      }
+    },
+    "modeA-two-rooms-untrusted": {
+      "mode": "A",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 49.2126,
+            "endY": 0,
+            "length": 49.2126,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-1",
+            "startX": 49.2126,
+            "startY": 0,
+            "endX": 49.2126,
+            "endY": 39.37008,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-2",
+            "startX": 49.2126,
+            "startY": 39.37008,
+            "endX": 0,
+            "endY": 39.37008,
+            "length": 49.2126,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-3",
+            "startX": 0,
+            "startY": 39.37008,
+            "endX": 0,
+            "endY": 0,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-0",
+            "startX": 49.2126,
+            "startY": 0,
+            "endX": 98.4252,
+            "endY": 0,
+            "length": 49.2126,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-1",
+            "startX": 98.4252,
+            "startY": 0,
+            "endX": 98.4252,
+            "endY": 39.37008,
+            "length": 39.37008,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-2",
+            "startX": 98.4252,
+            "startY": 39.37008,
+            "endX": 49.2126,
+            "endY": 39.37008,
+            "length": 49.2126,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bedroom",
+            "area": 1937.5039990080002,
+            "type": "general",
+            "labelX": 16.4042,
+            "labelY": 19.68504,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 49.2126,
+                  "y": 0
+                },
+                {
+                  "x": 49.2126,
+                  "y": 39.37008
+                },
+                {
+                  "x": 0,
+                  "y": 39.37008
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bath",
+            "area": 1937.503999008,
+            "type": "bathroom",
+            "labelX": 65.6168,
+            "labelY": 19.68504,
+            "shapes": [
+              [
+                {
+                  "x": 49.2126,
+                  "y": 0
+                },
+                {
+                  "x": 98.4252,
+                  "y": 0
+                },
+                {
+                  "x": 98.4252,
+                  "y": 39.37008
+                },
+                {
+                  "x": 49.2126,
+                  "y": 39.37008
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 9.84252,
+            "height": 7,
+            "x": 21.325460000000003,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 13.123360000000005,
+            "height": 4,
+            "x": 72.17848000000001,
+            "y": 39.37008,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {
+          "feetPerUnit": 3.28084,
+          "source": "plausibility",
+          "confidence": "low",
+          "confirmed": false,
+          "unit": "metre",
+          "insunits": 6,
+          "needsConfirmation": true,
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "maxX": 30,
+            "maxY": 12,
+            "width": 30,
+            "height": 12,
+            "points": 12
+          },
+          "candidates": [
+            {
+              "unit": "inch",
+              "insunits": 1,
+              "feetPerUnit": 0.08333333333333333,
+              "widthFt": 2.5,
+              "heightFt": 1,
+              "plausible": false,
+              "reason": "Read as inchs the drawing is 2.5 x 1.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "foot",
+              "insunits": 2,
+              "feetPerUnit": 1,
+              "widthFt": 30,
+              "heightFt": 12,
+              "plausible": true,
+              "reason": "Read as foots the drawing is 30.0 x 12.0 ft, a plausible building footprint."
+            },
+            {
+              "unit": "millimetre",
+              "insunits": 4,
+              "feetPerUnit": 0.0032808398950131233,
+              "widthFt": 0.09842519685039369,
+              "heightFt": 0.03937007874015748,
+              "plausible": false,
+              "reason": "Read as millimetres the drawing is 0.1 x 0.0 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "centimetre",
+              "insunits": 5,
+              "feetPerUnit": 0.03280839895013123,
+              "widthFt": 0.984251968503937,
+              "heightFt": 0.39370078740157477,
+              "plausible": false,
+              "reason": "Read as centimetres the drawing is 1.0 x 0.4 ft, not a plausible building footprint."
+            },
+            {
+              "unit": "metre",
+              "insunits": 6,
+              "feetPerUnit": 3.280839895013123,
+              "widthFt": 98.42519685039369,
+              "heightFt": 39.370078740157474,
+              "plausible": true,
+              "reason": "Read as metres the drawing is 98.4 x 39.4 ft, a plausible building footprint."
+            }
+          ]
+        },
+        "rotationRad": 0,
+        "warnings": [
+          {
+            "code": "UNIT_METADATA_MISSING",
+            "severity": "warning",
+            "message": "The DXF has no $INSUNITS header, so its units are not declared."
+          },
+          {
+            "code": "UNIT_AMBIGUOUS",
+            "severity": "warning",
+            "message": "More than one unit gives a plausible building size (foots: 30.0 x 12.0 ft; metres: 98.4 x 39.4 ft). The unit cannot be determined from the drawing alone."
+          },
+          {
+            "code": "UNIT_CONFIRMATION_REQUIRED",
+            "severity": "warning",
+            "message": "Please select the drawing unit. Provisional geometry uses metres (the most house-sized reading) and must not be priced until a unit is confirmed."
+          }
+        ],
+        "stats": {
+          "wallsMerged": 1,
+          "wallLengthRemovedFt": 39.37008,
+          "entities": 6,
+          "walls": 7,
+          "rooms": 2,
+          "openings": 2
+        }
+      }
+    },
+    "raw-modeB-house-trusted": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 24,
+            "endY": 0,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 24,
+            "startY": 0,
+            "endX": 24,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 24,
+            "startY": 16,
+            "endX": 0,
+            "endY": 16,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 16,
+            "endX": 0,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 12,
+            "startY": 0,
+            "endX": 12,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 12,
+            "startY": 8,
+            "endX": 24,
+            "endY": 8,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": 18,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": 6,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": 18,
+            "labelY": 12,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 5.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 12,
+            "y": 4.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 18,
+            "y": 16,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {},
+        "warnings": [],
+        "stats": {}
+      }
+    },
+    "raw-modeB-house-untrusted": {
+      "mode": "B",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 24,
+            "endY": 0,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 24,
+            "startY": 0,
+            "endX": 24,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 24,
+            "startY": 16,
+            "endX": 0,
+            "endY": 16,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 16,
+            "endX": 0,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 12,
+            "startY": 0,
+            "endX": 12,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 12,
+            "startY": 8,
+            "endX": 24,
+            "endY": 8,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": 18,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": 6,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": 18,
+            "labelY": 12,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 5.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 12,
+            "y": 4.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 18,
+            "y": 16,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {},
+        "warnings": [],
+        "stats": {
+          "wallMergeSkippedUnitUnconfirmed": 1
+        }
+      }
+    },
+    "raw-modeB-house-noctx": {
+      "mode": "B",
+      "trusted": false,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 24,
+            "endY": 0,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 24,
+            "startY": 0,
+            "endX": 24,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 24,
+            "startY": 16,
+            "endX": 0,
+            "endY": 16,
+            "length": 24,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 16,
+            "endX": 0,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 12,
+            "startY": 0,
+            "endX": 12,
+            "endY": 16,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-5",
+            "startX": 12,
+            "startY": 8,
+            "endX": 24,
+            "endY": 8,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Kitchen",
+            "area": 96,
+            "type": "kitchen",
+            "labelX": 18,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 0
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Living 192 sq ft",
+            "area": 192,
+            "type": "general",
+            "labelX": 6,
+            "labelY": 8,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 0
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                },
+                {
+                  "x": 0,
+                  "y": 16
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-2",
+            "name": "Bath",
+            "area": 96,
+            "type": "bathroom",
+            "labelX": 18,
+            "labelY": 12,
+            "shapes": [
+              [
+                {
+                  "x": 12,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 8
+                },
+                {
+                  "x": 24,
+                  "y": 16
+                },
+                {
+                  "x": 12,
+                  "y": 16
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 5.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "door-1",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 12,
+            "y": 4.5,
+            "angle": 1.5707963267948966
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 18,
+            "y": 16,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {},
+        "warnings": [],
+        "stats": {}
+      }
+    },
+    "raw-modeB-near-miss-trusted": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 10,
+            "endY": 0,
+            "length": 10,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 10.03,
+            "startY": 0,
+            "endX": 20,
+            "endY": 0,
+            "length": 9.97,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 20,
+            "startY": 0,
+            "endX": 20,
+            "endY": 12,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 20,
+            "startY": 12,
+            "endX": 0,
+            "endY": 12,
+            "length": 20,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-4",
+            "startX": 0,
+            "startY": 12,
+            "endX": 0,
+            "endY": 0.04,
+            "length": 11.96,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-5",
+            "startX": 5,
+            "startY": 0.04,
+            "endX": 5,
+            "endY": 12,
+            "length": 11.96,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-6",
+            "startX": 14,
+            "startY": 12,
+            "endX": 14,
+            "endY": 6.2,
+            "length": 5.8,
+            "height": 10,
+            "thickness": 0.375
+          },
+          {
+            "id": "wall-7",
+            "startX": 8,
+            "startY": 12,
+            "endX": 8,
+            "endY": 8,
+            "length": 4,
+            "height": 10,
+            "thickness": 0.375
+          }
+        ],
+        "rooms": [],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 2,
+            "height": 7,
+            "x": 3,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {},
+        "warnings": [],
+        "stats": {}
+      }
+    },
+    "raw-modeB-overlap-trusted": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 16,
+            "endY": 0,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1",
+            "startX": 16,
+            "startY": 0,
+            "endX": 16,
+            "endY": 8,
+            "length": 8,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-2",
+            "startX": 0,
+            "startY": 0,
+            "endX": 0,
+            "endY": 8,
+            "length": 8,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-3",
+            "startX": 0,
+            "startY": 8,
+            "endX": 16,
+            "endY": 8,
+            "length": 16,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Room 1",
+            "area": 128,
+            "type": "general",
+            "labelX": 8,
+            "labelY": 4,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 6,
+                  "y": 0
+                },
+                {
+                  "x": 6,
+                  "y": 4
+                },
+                {
+                  "x": 0,
+                  "y": 4
+                }
+              ],
+              [
+                {
+                  "x": 6,
+                  "y": 0
+                },
+                {
+                  "x": 10,
+                  "y": 0
+                },
+                {
+                  "x": 10,
+                  "y": 4
+                },
+                {
+                  "x": 6,
+                  "y": 4
+                }
+              ],
+              [
+                {
+                  "x": 10,
+                  "y": 0
+                },
+                {
+                  "x": 16,
+                  "y": 0
+                },
+                {
+                  "x": 16,
+                  "y": 4
+                },
+                {
+                  "x": 10,
+                  "y": 4
+                }
+              ],
+              [
+                {
+                  "x": 0,
+                  "y": 4
+                },
+                {
+                  "x": 6,
+                  "y": 4
+                },
+                {
+                  "x": 6,
+                  "y": 8
+                },
+                {
+                  "x": 0,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 6,
+                  "y": 4
+                },
+                {
+                  "x": 10,
+                  "y": 4
+                },
+                {
+                  "x": 10,
+                  "y": 8
+                },
+                {
+                  "x": 6,
+                  "y": 8
+                }
+              ],
+              [
+                {
+                  "x": 10,
+                  "y": 4
+                },
+                {
+                  "x": 16,
+                  "y": 4
+                },
+                {
+                  "x": 16,
+                  "y": 8
+                },
+                {
+                  "x": 10,
+                  "y": 8
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 3.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 2,
+            "height": 4,
+            "x": 13,
+            "y": 0,
+            "angle": 0
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {},
+        "warnings": [],
+        "stats": {
+          "wallsMerged": 4,
+          "wallLengthRemovedFt": 39.996
+        }
+      }
+    },
+    "raw-modeA-trusted": {
+      "mode": "B",
+      "trusted": true,
+      "geometry": {
+        "walls": [
+          {
+            "id": "wall-0-0",
+            "startX": 0,
+            "startY": 0,
+            "endX": 15,
+            "endY": 0,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-1",
+            "startX": 15,
+            "startY": 0,
+            "endX": 15,
+            "endY": 12,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-2",
+            "startX": 15,
+            "startY": 12,
+            "endX": 0,
+            "endY": 12,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-0-3",
+            "startX": 0,
+            "startY": 12,
+            "endX": 0,
+            "endY": 0,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-0",
+            "startX": 15,
+            "startY": 0,
+            "endX": 30,
+            "endY": 0,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-1",
+            "startX": 30,
+            "startY": 0,
+            "endX": 30,
+            "endY": 12,
+            "length": 12,
+            "height": 10,
+            "thickness": 0.75
+          },
+          {
+            "id": "wall-1-2",
+            "startX": 30,
+            "startY": 12,
+            "endX": 15,
+            "endY": 12,
+            "length": 15,
+            "height": 10,
+            "thickness": 0.75
+          }
+        ],
+        "rooms": [
+          {
+            "id": "room-0",
+            "name": "Bedroom",
+            "area": 180,
+            "type": "general",
+            "labelX": 5,
+            "labelY": 6,
+            "shapes": [
+              [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 15,
+                  "y": 0
+                },
+                {
+                  "x": 15,
+                  "y": 12
+                },
+                {
+                  "x": 0,
+                  "y": 12
+                }
+              ]
+            ]
+          },
+          {
+            "id": "room-1",
+            "name": "Bath",
+            "area": 180,
+            "type": "bathroom",
+            "labelX": 20,
+            "labelY": 6,
+            "shapes": [
+              [
+                {
+                  "x": 15,
+                  "y": 0
+                },
+                {
+                  "x": 30,
+                  "y": 0
+                },
+                {
+                  "x": 30,
+                  "y": 12
+                },
+                {
+                  "x": 15,
+                  "y": 12
+                }
+              ]
+            ]
+          }
+        ],
+        "openings": [
+          {
+            "id": "door-0",
+            "type": "door",
+            "width": 3,
+            "height": 7,
+            "x": 6.5,
+            "y": 0,
+            "angle": 0
+          },
+          {
+            "id": "window-0",
+            "type": "window",
+            "width": 4,
+            "height": 4,
+            "x": 22,
+            "y": 12,
+            "angle": 3.141592653589793
+          }
+        ]
+      },
+      "meta": {
+        "parserVersion": "0.2.0-stage3b",
+        "unit": {},
+        "warnings": [],
+        "stats": {
+          "wallsMerged": 1,
+          "wallLengthRemovedFt": 12
+        }
+      }
+    }
+  }
+}

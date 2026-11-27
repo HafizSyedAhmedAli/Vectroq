@@ -6,3 +6,7 @@ export * from "./units";
 export * from "./orientation";
 export * from "./rotate-entities";
 export * from "./normalize-orientation";
+export * from "./topology";
+export * from "./provenance";
+export { dedupeWithAliases } from "./line-plan";
+export type { DedupeAlias, DedupeWithAliases } from "./line-plan";
