@@ -7,13 +7,15 @@ import type {
   RoomType,
   Wall,
 } from "@vectroq/shared-types";
-import { roomsFromWallSegments, segmentsToWalls } from "./line-plan";
+import { roomsFromWallSegments, segmentsToWalls, type Seg } from "./line-plan";
+import type { WallProvenance } from "./provenance";
 import { normalizeModeBSegments } from "./mode-b-walls";
 import { Point2D, distance, pointInPolygon, polygonArea } from "./polygon";
 import { snapToWall } from "./place-openings";
 import { RawArc, swingFromArc } from "./door-swing";
 import { buildModeAEdgeWalls, buildModeAWalls } from "./mode-a-walls";
 import type { ParseReport } from "./report";
+import { analyzeEndpointTopology, type TopologyLedger } from "./topology";
 
 // --- Layer conventions this parser expects the CAD file to follow ---
 // A client's actual drawings may use different layer names; treat these
@@ -114,22 +116,43 @@ function layerKind(layer: string): "wall" | "door" | "window" | null {
   return null;
 }
 
+export interface DxfToGeometryContext {
+  /** Optional. When given, shared-wall (Mode A) and wall-merge (Mode B) decisions are reported into it. */
+  report?: ParseReport;
+  /**
+   * Opt-in. Mode B merges overlapping wall lines only when this is exactly
+   * true, because the merge tolerances are in feet and are meaningless on
+   * geometry whose unit is not established. false, undefined, or a missing
+   * ctx all skip merging (the previous exact-duplicate removal). parseDxf()
+   * passes `!unit.needsConfirmation`.
+   */
+  unitTrusted?: boolean;
+}
+
+export interface GeometryDetailed {
+  geometry: Geometry;
+  /**
+   * Stage 3c-0 endpoint diagnostics. Defined only for Mode B with
+   * unitTrusted === true and at least two usable wall segments. Read-only: no
+   * part of the geometry was built from it.
+   */
+  topology?: TopologyLedger;
+}
+
+/** Public entry point. Signature and output unchanged. */
 export function dxfToGeometry(
   dxf: RawDxfDocument,
   d: ConstructionDefaults = DEFAULT_CONSTRUCTION,
-  ctx: {
-    /** Optional. When given, shared-wall (Mode A) and wall-merge (Mode B) decisions are reported into it. */
-    report?: ParseReport;
-    /**
-     * Opt-in. Mode B merges overlapping wall lines only when this is exactly
-     * true, because the merge tolerances are in feet and are meaningless on
-     * geometry whose unit is not established. false, undefined, or a missing
-     * ctx all skip merging (the previous exact-duplicate removal). parseDxf()
-     * passes `!unit.needsConfirmation`.
-     */
-    unitTrusted?: boolean;
-  } = {},
+  ctx: DxfToGeometryContext = {},
 ): Geometry {
+  return dxfToGeometryDetailed(dxf, d, ctx).geometry;
+}
+
+export function dxfToGeometryDetailed(
+  dxf: RawDxfDocument,
+  d: ConstructionDefaults = DEFAULT_CONSTRUCTION,
+  ctx: DxfToGeometryContext = {},
+): GeometryDetailed {
   const roomPolylines = dxf.entities.filter(
     (e): e is RawPolylineEntity =>
       e.type === "LWPOLYLINE" && layerKind(e.layer) === "wall",
@@ -165,20 +188,30 @@ export function dxfToGeometry(
     (e): e is RawLineEntity =>
       e.type === "LINE" && layerKind(e.layer) === "wall",
   );
+  // DXF entity index of each WALLS line (provenance only; raw index = position here).
+  const entityIndices: number[] = [];
+  dxf.entities.forEach((e, i) => {
+    if (e.type === "LINE" && layerKind(e.layer) === "wall")
+      entityIndices.push(i);
+  });
 
   // Drawings made of separate wall LINEs (most real plans) instead of one
   // closed polyline per room.
   if (roomPolylines.length === 0 && wallLines.length > 0) {
     // Each physical wall run is one wall (INV-2): overlapping LINEs are merged
     // (Stage 3a) only when the unit is explicitly trusted, as the tolerances are feet.
-    const { wallSegs, legacySegs } = normalizeModeBSegments(
+    const { wallSegs, legacySegs, provenance } = normalizeModeBSegments(
       wallLines.map((l) => ({
         x1: l.vertices[0].x,
         y1: l.vertices[0].y,
         x2: l.vertices[1].x,
         y2: l.vertices[1].y,
       })),
-      { merge: ctx.unitTrusted === true, report: ctx.report },
+      {
+        merge: ctx.unitTrusted === true,
+        report: ctx.report,
+        entityIndices,
+      },
     );
     const walls = segmentsToWalls(
       wallSegs,
@@ -203,7 +236,7 @@ export function dxfToGeometry(
         toOpening(l, i, "window", d.windowHeightFt, hostWalls, doorArcs),
       ),
     ];
-    return {
+    const geometry: Geometry = {
       walls,
       // Room detection is unchanged by Stage 3a: it reads the pre-merge segments.
       rooms: roomsFromWallSegments(
@@ -216,6 +249,13 @@ export function dxfToGeometry(
       ),
       openings,
     };
+    // Stage 3c-0: diagnostics only. Runs after everything above is built, on
+    // cloned segments, and nothing it returns flows back into the geometry.
+    const topology =
+      ctx.unitTrusted === true
+        ? runTopologyDiagnostics(legacySegs, provenance, ctx.report)
+        : undefined;
+    return topology ? { geometry, topology } : { geometry };
   }
 
   const rooms: Room[] = [];
@@ -273,7 +313,44 @@ export function dxfToGeometry(
     ),
   ];
 
-  return { walls, rooms, openings };
+  return { geometry: { walls, rooms, openings } };
+}
+
+/**
+ * Runs the Stage 3c-0 analyzer and, when it found near-misses, adds ONE
+ * aggregate info warning. Counts exclude satisfied endpoints and ordinary free
+ * ends. Failure of a diagnostic must never fail the parse.
+ */
+function runTopologyDiagnostics(
+  legacySegs: Seg[],
+  provenance: WallProvenance,
+  report?: ParseReport,
+): TopologyLedger | undefined {
+  const eligible = legacySegs.filter(
+    (s) =>
+      Number.isFinite(s.x1 + s.y1 + s.x2 + s.y2) &&
+      (s.x1 !== s.x2 || s.y1 !== s.y2),
+  );
+  if (eligible.length < 2) return undefined;
+  let ledger: TopologyLedger;
+  try {
+    ledger = analyzeEndpointTopology(
+      legacySegs.map((s) => ({ x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2 })),
+      provenance,
+      {},
+    );
+  } catch {
+    report?.stat("wallTopologyAnalysisFailed", 1);
+    return undefined;
+  }
+  const { unique, ambiguous, reportOnly } = ledger.counts;
+  if (report && unique + ambiguous + reportOnly > 0) {
+    report.info(
+      "WALL_ENDPOINT_NEAR_MISSES",
+      `Wall ends that nearly meet another wall: ${unique} with one possible connection, ${ambiguous} ambiguous, ${reportOnly} report-only. Diagnostics only: no walls were moved or connected and room, opening and quantity results are unchanged.`,
+    );
+  }
+  return ledger;
 }
 
 function toOpening(

@@ -5,7 +5,8 @@ import type {
   ParseMeta,
 } from "@vectroq/shared-types";
 import DxfParser from "dxf-parser";
-import { dxfToGeometry, type RawEntity } from "./dxf-to-geometry";
+import { dxfToGeometryDetailed, type RawEntity } from "./dxf-to-geometry";
+import type { TopologyLedger } from "./topology";
 import { normalizeOrientation } from "./normalize-orientation";
 import { ParseReport } from "./report";
 import { resolveUnits, type UnitChoice } from "./units";
@@ -57,6 +58,11 @@ export interface ParseOptions {
 export interface ParseResult {
   geometry: Geometry;
   meta: ParseMeta;
+  /**
+   * Stage 3c-0 endpoint diagnostics (in memory only, never persisted).
+   * Undefined for Mode A, untrusted units, and plans with fewer than two usable wall lines.
+   */
+  topology?: TopologyLedger;
 }
 
 /**
@@ -103,10 +109,14 @@ export function parseDxf(
     normalised.map((e) => scaleEntity(e, k)),
     report,
   );
-  const geometry = dxfToGeometry({ entities: oriented }, opts.construction, {
-    report,
-    unitTrusted: !unit.needsConfirmation,
-  });
+  const { geometry, topology } = dxfToGeometryDetailed(
+    { entities: oriented },
+    opts.construction,
+    {
+      report,
+      unitTrusted: !unit.needsConfirmation,
+    },
+  );
 
   report.stat("entities", entities.length);
   report.stat("walls", geometry.walls.length);
@@ -114,7 +124,7 @@ export function parseDxf(
   report.stat("openings", geometry.openings.length);
 
   const meta = report.toMeta(unit, { rotationRad });
-  return { geometry, meta };
+  return topology ? { geometry, meta, topology } : { geometry, meta };
 }
 
 /** Backward-compatible entry point. Unchanged signature and output. */

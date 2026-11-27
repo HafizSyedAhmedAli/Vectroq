@@ -9,9 +9,22 @@ vi.mock("dxf-parser", () => ({
     }
   },
 }));
-vi.mock("./dxf-to-geometry", () => ({
-  dxfToGeometry: vi.fn((input: unknown) => ({ walls: [], rooms: [], openings: [], input })),
-}));
+vi.mock("./dxf-to-geometry", () => {
+  const dxfToGeometry = vi.fn((input: unknown) => ({
+    walls: [],
+    rooms: [],
+    openings: [],
+    input,
+  }));
+  return {
+    dxfToGeometry,
+    // Stage 3c-0: parseDxf now calls the detailed variant. The stub delegates to the
+    // mocked dxfToGeometry so every assertion below (arguments, calls) is unchanged.
+    dxfToGeometryDetailed: (...args: unknown[]) => ({
+      geometry: (dxfToGeometry as any)(...args),
+    }),
+  };
+});
 
 import { feetPerUnit, parseDxfToGeometry } from "./parse-dxf";
 import { dxfToGeometry } from "./dxf-to-geometry";
